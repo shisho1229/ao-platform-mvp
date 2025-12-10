@@ -37,7 +37,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           id: staff.id,
           email: staff.email,
           name: staff.name,
-          jukuName: staff.jukuName,
+          jukuCampus: staff.jukuCampus,
           role: staff.role,
         };
       },
@@ -47,7 +47,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.jukuName = user.jukuName;
+        token.jukuCampus = user.jukuCampus;
         token.role = user.role;
       }
       return token;
@@ -55,7 +55,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
-        session.user.jukuName = token.jukuName as string;
+        session.user.jukuCampus = token.jukuCampus as string;
         session.user.role = token.role as string;
       }
       return session;

@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
         consultationType: body.consultationType,
         preferredDate: body.preferredDate,
         preferredTime: body.preferredTime,
-        jukuName: body.jukuName || 'AO義塾',
+        jukuCampus: body.jukuCampus || '渋谷',
       },
     });
 

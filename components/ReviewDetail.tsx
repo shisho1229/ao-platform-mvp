@@ -21,7 +21,7 @@ interface Experience {
   faculty: string;
   year: number;
   authorPseudonym: string;
-  jukuName: string;
+  jukuCampus: string;
   submitterName: string;
   submitterEmail: string;
   submitterPhone: string | null;
@@ -376,8 +376,10 @@ export default function ReviewDetail({ experience, reviewerName }: ReviewDetailP
               <p className="font-semibold text-gray-900">{experience.authorPseudonym}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-600">塾名</p>
-              <p className="font-semibold text-gray-900">{experience.jukuName}</p>
+              <p className="text-sm text-gray-600">Loohcs志塾の校舎</p>
+              <p className="font-semibold text-gray-900">
+                {experience.jukuCampus === '自力合格' ? '自力合格' : `${experience.jukuCampus}校`}
+              </p>
             </div>
           </div>
         </div>

@@ -14,7 +14,7 @@ model Experience {
   faculty             String
   year                Int
   authorPseudonym     String
-  jukuName            String   @default("自力合格")
+  jukuCampus          String   @default("自力合格")  // Loohcs志塾の校舎名
 
   // 投稿者情報
   submitterName       String
@@ -65,8 +65,8 @@ model Consultation {
   consultationType String
   preferredDate    String
   preferredTime    String
-  
-  jukuName         String
+
+  jukuCampus       String   // Loohcs志塾の校舎名
   status           String   @default("PENDING")
   
   createdAt        DateTime @default(now())
@@ -74,35 +74,35 @@ model Consultation {
   @@map("consultations")
 }
 
-// 塾スタッフ
+// Loohcs志塾スタッフ
 model Staff {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  name      String
-  password  String
-  jukuName  String
-  role      String   @default("STAFF")
-  
-  createdAt DateTime @default(now())
-  
+  id         String   @id @default(uuid())
+  email      String   @unique
+  name       String
+  password   String
+  jukuCampus String   // 所属校舎
+  role       String   @default("STAFF")
+
+  createdAt  DateTime @default(now())
+
   @@map("staff")
 }
 
-// 塾の書類
+// Loohcs志塾の書類
 model Document {
   id           String   @id @default(uuid())
-  jukuName     String
-  
+  jukuCampus   String   // 校舎名
+
   university   String
   faculty      String
   year         Int
   documentType String
   title        String
-  
+
   fullText     String
-  
+
   viewCount    Int      @default(0)
   createdAt    DateTime @default(now())
-  
+
   @@map("documents")
 }

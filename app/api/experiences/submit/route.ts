@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
       faculty,
       year,
       authorPseudonym,
-      jukuName,
+      jukuCampus,
       selectionProcess,
       interviewQuestions,
       interviewAtmosphere,
@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
       !faculty ||
       !year ||
       !authorPseudonym ||
-      !jukuName ||
+      !jukuCampus ||
       !selectionProcess ||
       !interviewQuestions ||
       !interviewAtmosphere ||
@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
         faculty,
         year: parseInt(year),
         authorPseudonym,
-        jukuName,
+        jukuCampus,
         selectionProcess,
         interviewQuestions,
         interviewAtmosphere,

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Award, Send } from 'lucide-react';
+import { getCampuses } from '@/lib/jukuData';
 
 export default function SubmitExperiencePage() {
   const router = useRouter();
@@ -22,7 +23,7 @@ export default function SubmitExperiencePage() {
     faculty: '',
     year: new Date().getFullYear(),
     authorPseudonym: '',
-    jukuName: '自力合格',
+    jukuCampus: '自力合格',
 
     // 選考情報
     selectionProcess: '',
@@ -234,16 +235,21 @@ export default function SubmitExperiencePage() {
 
               <div className="mt-4">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  通っていた塾名 <span className="text-red-500">*</span>
+                  通っていたLoohcs志塾の校舎 <span className="text-red-500">*</span>
                 </label>
-                <input
-                  type="text"
+                <select
                   required
-                  value={formData.jukuName}
-                  onChange={(e) => setFormData({ ...formData, jukuName: e.target.value })}
+                  value={formData.jukuCampus}
+                  onChange={(e) => setFormData({ ...formData, jukuCampus: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="例: AO義塾（自力合格の場合は「自力合格」と入力）"
-                />
+                >
+                  {getCampuses().map((campus) => (
+                    <option key={campus} value={campus}>
+                      {campus === '自力合格' ? '自力合格（Loohcs志塾に通っていない）' : `${campus}校`}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-xs text-gray-500 mt-1">※Loohcs志塾に通っていない場合は「自力合格」を選択してください</p>
               </div>
             </section>
 

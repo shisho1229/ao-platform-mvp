@@ -15,7 +15,7 @@ async function main() {
       faculty: '政治経済学部',
       year: 2024,
       authorPseudonym: '匿名A',
-      jukuName: 'AO義塾',
+      jukuCampus: '渋谷',
       submitterName: '田中花子',
       submitterEmail: 'tanaka@example.com',
       submitterPhone: '090-1234-5678',
@@ -42,7 +42,7 @@ async function main() {
       faculty: 'SFC',
       year: 2024,
       authorPseudonym: '匿名B',
-      jukuName: '洋々',
+      jukuCampus: '下北沢',
       submitterName: '佐藤太郎',
       submitterEmail: 'sato@example.com',
       selectionProcess: '一次選考: 書類審査\n二次選考: プレゼンテーション + 質疑応答',
@@ -67,7 +67,7 @@ async function main() {
       faculty: '外国語学部',
       year: 2024,
       authorPseudonym: '匿名C',
-      jukuName: 'AO義塾',
+      jukuCampus: '自力合格',
       submitterName: '鈴木美咲',
       submitterEmail: 'suzuki@example.com',
       submitterPhone: '080-9876-5432',
@@ -93,22 +93,22 @@ async function main() {
   const hashedPassword = await bcrypt.hash('password123', 10);
   await prisma.staff.create({
     data: {
-      email: 'staff@ao-juku.com',
+      email: 'staff@loohcs-shijuku.com',
       name: '山田太郎',
       password: hashedPassword,
-      jukuName: 'AO義塾',
+      jukuCampus: '渋谷',
       role: 'ADMIN',
     },
   });
 
-  console.log('✅ 塾スタッフを作成しました');
+  console.log('✅ Loohcs志塾スタッフを作成しました');
 
   // サンプル書類を作成
   console.log('📄 サンプル書類を作成中...');
-  
+
   await prisma.document.create({
     data: {
-      jukuName: 'AO義塾',
+      jukuCampus: '渋谷',
       university: '早稲田大学',
       faculty: '政治経済学部',
       year: 2024,

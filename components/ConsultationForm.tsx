@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Phone, Calendar, Clock, CheckCircle, User, Mail, School, ChevronRight, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
+import { getCampuses } from '@/lib/jukuData';
 
 export default function ConsultationForm() {
   const [step, setStep] = useState(1);
@@ -17,7 +18,7 @@ export default function ConsultationForm() {
     preferredDate: '',
     preferredTime: '',
     concerns: '',
-    jukuName: 'AO義塾',
+    jukuCampus: '渋谷',
   });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -71,7 +72,7 @@ export default function ConsultationForm() {
           </h2>
           <p className="text-lg text-gray-600 mb-8">
             ご予約ありがとうございます。<br />
-            AO義塾から24時間以内に確認のご連絡をさせていただきます。
+            Loohcs志塾から24時間以内に確認のご連絡をさせていただきます。
           </p>
           
           <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-6 mb-8 text-left">
@@ -104,7 +105,7 @@ export default function ConsultationForm() {
             無料相談予約
           </div>
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            AO義塾 無料相談予約
+            Loohcs志塾 無料相談予約
           </h1>
           <p className="text-lg text-gray-600">
             実際の合格者書類を見ながら、プロ講師があなたの合格戦略をアドバイスします
@@ -294,11 +295,30 @@ export default function ConsultationForm() {
                     <div className="text-center">
                       <div className="text-2xl mb-2">🏢</div>
                       <div>対面</div>
-                      <div className="text-xs mt-1 opacity-70">(渋谷オフィス)</div>
+                      <div className="text-xs mt-1 opacity-70">(Loohcs志塾の各校舎)</div>
                     </div>
                   </button>
                 </div>
               </div>
+
+              {formData.consultationType === 'offline' && (
+                <div>
+                  <label className="block text-sm font-semibold text-gray-900 mb-2">
+                    希望校舎 <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={formData.jukuCampus}
+                    onChange={(e) => handleChange('jukuCampus', e.target.value)}
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none text-lg"
+                  >
+                    {getCampuses().filter(campus => campus !== '自力合格' && campus !== 'オンライン').map((campus) => (
+                      <option key={campus} value={campus}>
+                        {campus}校
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
 
               <div>
                 <label className="block text-sm font-semibold text-gray-900 mb-2">
