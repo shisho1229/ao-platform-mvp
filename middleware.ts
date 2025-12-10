@@ -6,7 +6,7 @@ export default auth((req) => {
   const isLoggedIn = !!req.auth;
 
   // 認証が必要なパス
-  const protectedPaths = ['/dashboard', '/documents'];
+  const protectedPaths = ['/dashboard', '/documents', '/review'];
   const isProtectedPath = protectedPaths.some((path) => pathname.startsWith(path));
 
   if (isProtectedPath && !isLoggedIn) {

@@ -16,6 +16,9 @@ async function main() {
       year: 2024,
       authorPseudonym: '匿名A',
       jukuName: 'AO義塾',
+      submitterName: '田中花子',
+      submitterEmail: 'tanaka@example.com',
+      submitterPhone: '090-1234-5678',
       selectionProcess: '一次選考: 書類審査(志望理由書1,200字、活動報告書800字)\n二次選考: 個人面接30分',
       interviewQuestions: JSON.stringify([
         '志望理由を3分で説明してください',
@@ -29,6 +32,7 @@ async function main() {
       adviceToJuniors: '「自分の経験を学問と結びつける」ことを常に意識してください。単なる経験の羅列ではなく、「なぜその経験が重要なのか」「そこから何を学び、大学で何を研究したいのか」を明確に示すことが合格の鍵だと思います。',
       motivationTheme: '地域経済の活性化とデータ分析',
       motivationStructure: '第1段落: 問題意識(地方の過疎化)\n第2段落: 自身の経験(ボランティア活動)\n第3段落: 大学で学びたいこと(計量経済学)\n第4段落: 卒業後のビジョン(シンクタンク)',
+      status: 'PUBLISHED',
     },
   });
 
@@ -39,6 +43,8 @@ async function main() {
       year: 2024,
       authorPseudonym: '匿名B',
       jukuName: '洋々',
+      submitterName: '佐藤太郎',
+      submitterEmail: 'sato@example.com',
       selectionProcess: '一次選考: 書類審査\n二次選考: プレゼンテーション + 質疑応答',
       interviewQuestions: JSON.stringify([
         'あなたの研究テーマについて5分でプレゼンしてください',
@@ -51,6 +57,7 @@ async function main() {
       adviceToJuniors: 'SFCは自分の研究テーマを明確に持つことが重要です。「なぜSFCなのか」を具体的に説明できるようにしてください。',
       motivationTheme: 'データサイエンスと社会課題解決',
       motivationStructure: '問題提起 → 自分の取り組み → SFCで学ぶ理由 → 将来の展望',
+      status: 'APPROVED',
     },
   });
 
@@ -61,6 +68,9 @@ async function main() {
       year: 2024,
       authorPseudonym: '匿名C',
       jukuName: 'AO義塾',
+      submitterName: '鈴木美咲',
+      submitterEmail: 'suzuki@example.com',
+      submitterPhone: '080-9876-5432',
       selectionProcess: '一次選考: 書類審査\n二次選考: 個人面接 + 英語面接',
       interviewQuestions: JSON.stringify([
         'Why do you want to study at Sophia?',
@@ -71,6 +81,7 @@ async function main() {
       interviewAtmosphere: '英語面接は10分程度。思ったより優しかったです。英語力よりも、コミュニケーション能力を見られていると感じました。',
       preparationTips: '英語面接の対策に1ヶ月かけました。ネイティブの先生と週2回練習しました。',
       adviceToJuniors: '英語力は必須です。日常会話レベルは必要ですが、完璧である必要はありません。自分の意見を英語で伝えられれば大丈夫です。',
+      status: 'PENDING_REVIEW',
     },
   });
 
