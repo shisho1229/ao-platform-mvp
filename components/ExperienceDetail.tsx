@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { ArrowLeft, Users, Eye, Phone } from 'lucide-react';
 import Link from 'next/link';
 
 interface Experience {
@@ -20,15 +21,6 @@ interface Experience {
   viewCount: number;
   createdAt: string;
 }
-
-interface ExperienceDetailProps {
-  id: string;
-}
-'use client';
-
-import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Users, Calendar, Eye, Phone } from 'lucide-react';
-import Link from 'next/link';
 
 interface ExperienceDetailProps {
   id: string;
@@ -70,7 +62,6 @@ export default function ExperienceDetail({ id }: ExperienceDetailProps) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
         <div className="max-w-5xl mx-auto px-4 py-4">
           <Link href="/" className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition">
@@ -80,9 +71,7 @@ export default function ExperienceDetail({ id }: ExperienceDetailProps) {
         </div>
       </header>
 
-      {/* Main Content */}
       <div className="max-w-5xl mx-auto px-4 py-8">
-        {/* Title Section */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 mb-6">
           <div className="flex items-center gap-3 mb-4">
             <span className="px-3 py-1 bg-blue-100 text-blue-700 text-sm font-semibold rounded-full">
@@ -114,7 +103,6 @@ export default function ExperienceDetail({ id }: ExperienceDetailProps) {
           </div>
         </div>
 
-        {/* Tabs */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 mb-6">
           <div className="border-b border-gray-200">
             <nav className="flex">
@@ -140,7 +128,6 @@ export default function ExperienceDetail({ id }: ExperienceDetailProps) {
           </div>
 
           <div className="p-8">
-            {/* 基本情報 */}
             {activeTab === 'basic' && (
               <div className="space-y-6">
                 <div>
@@ -152,7 +139,6 @@ export default function ExperienceDetail({ id }: ExperienceDetailProps) {
               </div>
             )}
 
-            {/* 面接 */}
             {activeTab === 'interview' && (
               <div className="space-y-6">
                 <div>
@@ -178,7 +164,6 @@ export default function ExperienceDetail({ id }: ExperienceDetailProps) {
               </div>
             )}
 
-            {/* 志望理由書 */}
             {activeTab === 'motivation' && (
               <div className="space-y-6">
                 {experience.motivationTheme && (
@@ -199,7 +184,6 @@ export default function ExperienceDetail({ id }: ExperienceDetailProps) {
                   </div>
                 )}
 
-                {/* 塾への誘導 */}
                 <div className="mt-8 p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border-2 border-blue-200">
                   <h3 className="text-xl font-bold text-gray-900 mb-2">📄 志望理由書の全文を読むには?</h3>
                   <p className="text-gray-600 mb-4">
@@ -224,7 +208,6 @@ export default function ExperienceDetail({ id }: ExperienceDetailProps) {
               </div>
             )}
 
-            {/* 対策 */}
             {activeTab === 'tips' && (
               <div className="space-y-6">
                 <div>
@@ -245,7 +228,6 @@ export default function ExperienceDetail({ id }: ExperienceDetailProps) {
           </div>
         </div>
 
-        {/* CTA */}
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-center text-white">
           <h3 className="text-2xl font-bold mb-4">もっと詳しく知りたい方へ</h3>
           <p className="text-lg mb-6 opacity-90">

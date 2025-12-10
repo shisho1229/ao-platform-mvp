@@ -12,12 +12,6 @@ interface Experience {
   jukuName?: string;
 }
 
-'use client';
-
-import React, { useState, useEffect } from 'react';
-import { Search, BookOpen, Award, ChevronRight, Users } from 'lucide-react';
-import Link from 'next/link';
-
 export default function HomePage() {
   const [experiences, setExperiences] = useState<Experience[]>([]);
   const [loading, setLoading] = useState(true);
@@ -26,10 +20,14 @@ export default function HomePage() {
     fetch('/api/experiences')
       .then(res => res.json())
       .then(data => {
-       const experiences = Array.isArray(data) ? data : [];
-  setExperiences(experiences.slice(0, 3));
-  setLoading(false);
-})
+        const experiences = Array.isArray(data) ? data : [];
+        setExperiences(experiences.slice(0, 3));
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
+      });
   }, []);
 
   return (
@@ -106,9 +104,9 @@ export default function HomePage() {
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-12 text-center text-white">
           <h3 className="text-3xl font-bold mb-4">無料相談を予約しよう</h3>
           <p className="text-xl mb-8 opacity-90">
-  実際の合格者書類を見ながら、プロ講師があなたの合格戦略をアドバイス
-</p>
- <Link href="/consultation">
+            実際の合格者書類を見ながら、プロ講師があなたの合格戦略をアドバイス
+          </p>
+          <Link href="/consultation">
             <button className="px-8 py-4 bg-white text-blue-600 rounded-xl font-semibold hover:bg-gray-100 transition text-lg">
               無料相談を予約する
             </button>
