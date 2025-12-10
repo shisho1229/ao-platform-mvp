@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -16,15 +16,15 @@ model Experience {
   authorPseudonym     String
   jukuName            String?
   
-  selectionProcess    String   @db.Text
-  interviewQuestions  String[]
-  interviewAtmosphere String   @db.Text
-  
-  preparationTips     String   @db.Text
-  adviceToJuniors     String   @db.Text
-  
+  selectionProcess    String
+  interviewQuestions  String
+  interviewAtmosphere String
+
+  preparationTips     String
+  adviceToJuniors     String
+
   motivationTheme     String?
-  motivationStructure String?  @db.Text
+  motivationStructure String?
   
   viewCount           Int      @default(0)
   createdAt           DateTime @default(now())
@@ -43,7 +43,7 @@ model Consultation {
   grade           String
   university      String
   faculty         String
-  concerns        String   @db.Text
+  concerns        String
   
   consultationType String
   preferredDate    String
@@ -82,7 +82,7 @@ model Document {
   documentType String
   title        String
   
-  fullText     String   @db.Text
+  fullText     String
   
   viewCount    Int      @default(0)
   createdAt    DateTime @default(now())
