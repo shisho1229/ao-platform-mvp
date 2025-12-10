@@ -1,0 +1,91 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 体験記
+model Experience {
+  id                  String   @id @default(uuid())
+  university          String
+  faculty             String
+  year                Int
+  authorPseudonym     String
+  jukuName            String?
+  
+  selectionProcess    String   @db.Text
+  interviewQuestions  String[]
+  interviewAtmosphere String   @db.Text
+  
+  preparationTips     String   @db.Text
+  adviceToJuniors     String   @db.Text
+  
+  motivationTheme     String?
+  motivationStructure String?  @db.Text
+  
+  viewCount           Int      @default(0)
+  createdAt           DateTime @default(now())
+  
+  @@map("experiences")
+}
+
+// 無料相談予約
+model Consultation {
+  id              String   @id @default(uuid())
+  trackingId      String   @unique @default(uuid())
+  
+  name            String
+  email           String
+  phone           String
+  grade           String
+  university      String
+  faculty         String
+  concerns        String   @db.Text
+  
+  consultationType String
+  preferredDate    String
+  preferredTime    String
+  
+  jukuName         String
+  status           String   @default("PENDING")
+  
+  createdAt        DateTime @default(now())
+  
+  @@map("consultations")
+}
+
+// 塾スタッフ
+model Staff {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String
+  password  String
+  jukuName  String
+  role      String   @default("STAFF")
+  
+  createdAt DateTime @default(now())
+  
+  @@map("staff")
+}
+
+// 塾の書類
+model Document {
+  id           String   @id @default(uuid())
+  jukuName     String
+  
+  university   String
+  faculty      String
+  year         Int
+  documentType String
+  title        String
+  
+  fullText     String   @db.Text
+  
+  viewCount    Int      @default(0)
+  createdAt    DateTime @default(now())
+  
+  @@map("documents")
+}
