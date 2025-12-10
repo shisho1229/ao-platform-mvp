@@ -1,6 +1,32 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+
+interface Experience {
+  id: string;
+  university: string;
+  faculty: string;
+  year: number;
+  authorPseudonym: string;
+  jukuName?: string;
+  selectionProcess: string;
+  interviewQuestions: string[];
+  interviewAtmosphere: string;
+  preparationTips: string;
+  adviceToJuniors: string;
+  motivationTheme?: string;
+  motivationStructure?: string;
+  viewCount: number;
+  createdAt: string;
+}
+
+interface ExperienceDetailProps {
+  id: string;
+}
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Users, Calendar, Eye, Phone } from 'lucide-react';
 import Link from 'next/link';
 
@@ -9,7 +35,7 @@ interface ExperienceDetailProps {
 }
 
 export default function ExperienceDetail({ id }: ExperienceDetailProps) {
-  const [experience, setExperience] = useState<any>(null);
+  const [experience, setExperience] = useState<Experience | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('basic');
 

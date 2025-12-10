@@ -1,11 +1,25 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { BookOpen, Award, ChevronRight, Users } from 'lucide-react';
+import Link from 'next/link';
+
+interface Experience {
+  id: string;
+  university: string;
+  faculty: string;
+  year: number;
+  jukuName?: string;
+}
+
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import { Search, BookOpen, Award, ChevronRight, Users } from 'lucide-react';
 import Link from 'next/link';
 
 export default function HomePage() {
-  const [experiences, setExperiences] = useState([]);
+  const [experiences, setExperiences] = useState<Experience[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -56,7 +70,7 @@ export default function HomePage() {
           <div className="text-center py-12">読み込み中...</div>
         ) : (
           <div className="space-y-4">
-            {experiences.map((exp: any) => (
+            {experiences.map((exp) => (
               <Link key={exp.id} href={`/experiences/${exp.id}`}>
                 <div className="bg-white p-6 rounded-xl border-2 border-gray-200 hover:border-blue-500 hover:shadow-lg transition cursor-pointer">
                   <div className="flex items-center justify-between">
