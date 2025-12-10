@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { BookOpen, Award, ChevronRight, Users } from 'lucide-react';
+import { BookOpen, Award, ChevronRight, Users, PenTool } from 'lucide-react';
 import Link from 'next/link';
 
 interface Experience {
@@ -42,6 +42,10 @@ export default function HomePage() {
           </Link>
           <nav className="hidden md:flex items-center gap-6">
             <Link href="/" className="text-gray-600 hover:text-blue-600 transition">体験記を探す</Link>
+            <Link href="/submit-experience" className="text-gray-600 hover:text-blue-600 transition flex items-center gap-1">
+              <PenTool className="w-4 h-4" />
+              体験記を書く
+            </Link>
             <Link href="/consultation" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
               無料相談予約
             </Link>
@@ -101,16 +105,33 @@ export default function HomePage() {
       </section>
 
       <section className="max-w-7xl mx-auto px-4 py-16">
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-12 text-center text-white">
-          <h3 className="text-3xl font-bold mb-4">無料相談を予約しよう</h3>
-          <p className="text-xl mb-8 opacity-90">
-            実際の合格者書類を見ながら、プロ講師があなたの合格戦略をアドバイス
-          </p>
-          <Link href="/consultation">
-            <button className="px-8 py-4 bg-white text-blue-600 rounded-xl font-semibold hover:bg-gray-100 transition text-lg">
-              無料相談を予約する
-            </button>
-          </Link>
+        <div className="grid md:grid-cols-2 gap-6">
+          <div className="bg-gradient-to-br from-green-500 to-teal-600 rounded-2xl p-8 text-white">
+            <div className="flex items-center gap-3 mb-4">
+              <PenTool className="w-8 h-8" />
+              <h3 className="text-2xl font-bold">体験記を投稿しよう</h3>
+            </div>
+            <p className="text-lg mb-6 opacity-90">
+              あなたの合格体験を後輩に共有しませんか？報酬もお支払いします
+            </p>
+            <Link href="/submit-experience">
+              <button className="px-6 py-3 bg-white text-green-600 rounded-xl font-semibold hover:bg-gray-100 transition">
+                体験記を書く
+              </button>
+            </Link>
+          </div>
+
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-white">
+            <h3 className="text-2xl font-bold mb-4">無料相談を予約しよう</h3>
+            <p className="text-lg mb-6 opacity-90">
+              実際の合格者書類を見ながら、プロ講師があなたの合格戦略をアドバイス
+            </p>
+            <Link href="/consultation">
+              <button className="px-6 py-3 bg-white text-blue-600 rounded-xl font-semibold hover:bg-gray-100 transition">
+                無料相談を予約する
+              </button>
+            </Link>
+          </div>
         </div>
       </section>
     </div>

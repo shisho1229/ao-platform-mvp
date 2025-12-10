@@ -4,6 +4,9 @@ import { prisma } from '@/lib/prisma';
 export async function GET() {
   try {
     const experiences = await prisma.experience.findMany({
+      where: {
+        status: 'PUBLISHED',
+      },
       orderBy: { createdAt: 'desc' },
       take: 20,
     });
