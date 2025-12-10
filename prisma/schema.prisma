@@ -14,8 +14,13 @@ model Experience {
   faculty             String
   year                Int
   authorPseudonym     String
-  jukuName            String?
-  
+  jukuName            String   @default("自力合格")
+
+  // 投稿者情報
+  submitterName       String
+  submitterEmail      String
+  submitterPhone      String?
+
   selectionProcess    String
   interviewQuestions  String
   interviewAtmosphere String
@@ -25,10 +30,22 @@ model Experience {
 
   motivationTheme     String?
   motivationStructure String?
-  
+
+  // レビュー・承認フロー
+  status              String   @default("PENDING_REVIEW") // DRAFT, PENDING_REVIEW, REVISION_REQUESTED, APPROVED, PUBLISHED
+  reviewComments      String?
+  reviewedBy          String?
+  reviewedAt          DateTime?
+
+  // 報酬管理
+  paymentStatus       String   @default("PENDING") // PENDING, COMPLETED
+  paymentAmount       Int?
+  paymentDate         DateTime?
+
   viewCount           Int      @default(0)
   createdAt           DateTime @default(now())
-  
+  updatedAt           DateTime @updatedAt
+
   @@map("experiences")
 }
 
