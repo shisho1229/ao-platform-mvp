@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { BookOpen, Award, ChevronRight, Users, PenTool } from 'lucide-react';
+import { BookOpen, Award, ChevronRight, Users, PenTool, Menu, X } from 'lucide-react';
 import Link from 'next/link';
 
 interface Experience {
@@ -15,6 +15,7 @@ interface Experience {
 export default function HomePage() {
   const [experiences, setExperiences] = useState<Experience[]>([]);
   const [loading, setLoading] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     fetch('/api/experiences')
@@ -40,6 +41,7 @@ export default function HomePage() {
               AO Compass
             </h1>
           </Link>
+          {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-6">
             <Link href="/" className="text-gray-600 hover:text-blue-600 transition">体験記を探す</Link>
             <Link href="/submit-experience" className="text-gray-600 hover:text-blue-600 transition flex items-center gap-1">
@@ -50,7 +52,46 @@ export default function HomePage() {
               無料相談予約
             </Link>
           </nav>
+
+          {/* Mobile Menu Button */}
+          <button
+            className="md:hidden p-2 text-gray-600 hover:text-blue-600"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="メニュー"
+          >
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
         </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-white border-t border-gray-200">
+            <nav className="flex flex-col py-4">
+              <Link
+                href="/"
+                className="px-4 py-3 text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                体験記を探す
+              </Link>
+              <Link
+                href="/submit-experience"
+                className="px-4 py-3 text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition flex items-center gap-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <PenTool className="w-4 h-4" />
+                体験記を書く
+              </Link>
+              <Link
+                href="/consultation"
+                className="mx-4 my-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-center"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                無料相談予約
+              </Link>
+            </nav>
+          </div>
+        )}
       </header>
 
       <section className="max-w-7xl mx-auto px-4 py-16 text-center">
