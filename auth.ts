@@ -64,27 +64,5 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
       return session
     },
-    authorized({ auth, request: { nextUrl } }) {
-      const isLoggedIn = !!auth?.user
-      const isOnSignIn = nextUrl.pathname.startsWith('/auth/signin')
-      const isOnSignUp = nextUrl.pathname.startsWith('/auth/signup')
-
-      // 公開ルート
-      if (isOnSignIn || isOnSignUp) {
-        return true
-      }
-
-      // ログインが必要
-      if (!isLoggedIn) {
-        return false
-      }
-
-      // ログイン済みでサインインページにアクセスした場合はホームにリダイレクト
-      if (isLoggedIn && isOnSignIn) {
-        return Response.redirect(new URL('/', nextUrl))
-      }
-
-      return true
-    },
   },
 })

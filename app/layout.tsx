@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 import Navbar from "@/components/Navbar";
+import AuthGuard from "@/components/AuthGuard";
 
 export const metadata: Metadata = {
   title: "合格体験談プラットフォーム",
@@ -17,8 +18,10 @@ export default function RootLayout({
     <html lang="ja">
       <body className="antialiased">
         <SessionProvider>
-          <Navbar />
-          {children}
+          <AuthGuard>
+            <Navbar />
+            {children}
+          </AuthGuard>
         </SessionProvider>
       </body>
     </html>
