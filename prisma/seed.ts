@@ -6,117 +6,193 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('🌱 シードデータを投入中...');
 
-  // 体験記を3件作成
-  console.log('📝 体験記を作成中...');
-  
-  await prisma.experience.create({
-    data: {
-      university: '早稲田大学',
-      faculty: '政治経済学部',
-      year: 2024,
-      authorPseudonym: '匿名A',
-      jukuName: 'AO義塾',
-      selectionProcess: '一次選考: 書類審査(志望理由書1,200字、活動報告書800字)\n二次選考: 個人面接30分',
-      interviewQuestions: [
-        '志望理由を3分で説明してください',
-        '活動報告書の地域ボランティアについて詳しく教えてください',
-        '入学後にやりたいことは具体的に何ですか?',
-        'なぜ慶應ではなく早稲田なのですか?',
-        '卒業後はどのような進路を考えていますか?'
-      ],
-      interviewAtmosphere: '面接官3名(40代男性2名、30代女性1名)。和やかな雰囲気で、笑顔で質問してくださいました。圧迫的な質問は一切なく、私の活動について興味を持って深掘りしてくれた印象です。',
-      preparationTips: '志望理由書は夏休みから準備を始め、4回の添削を受けました。特に第2段落のエピソードの書き方を変えたことで、説得力が格段に上がりました。面接対策は予想質問を50個作り、すべてに対する回答を準備しました。',
-      adviceToJuniors: '「自分の経験を学問と結びつける」ことを常に意識してください。単なる経験の羅列ではなく、「なぜその経験が重要なのか」「そこから何を学び、大学で何を研究したいのか」を明確に示すことが合格の鍵だと思います。',
-      motivationTheme: '地域経済の活性化とデータ分析',
-      motivationStructure: '第1段落: 問題意識(地方の過疎化)\n第2段落: 自身の経験(ボランティア活動)\n第3段落: 大学で学びたいこと(計量経済学)\n第4段落: 卒業後のビジョン(シンクタンク)',
-    },
-  });
+  // 探究テーマ（固定12分類）を作成
+  console.log('🎯 探究テーマを作成中...');
 
-  await prisma.experience.create({
-    data: {
-      university: '慶應義塾大学',
-      faculty: 'SFC',
-      year: 2024,
-      authorPseudonym: '匿名B',
-      jukuName: '洋々',
-      selectionProcess: '一次選考: 書類審査\n二次選考: プレゼンテーション + 質疑応答',
-      interviewQuestions: [
-        'あなたの研究テーマについて5分でプレゼンしてください',
-        'このテーマを選んだ理由は?',
-        'SFCで何を学びたいですか?',
-        '先行研究は調べましたか?'
-      ],
-      interviewAtmosphere: '面接官2名。プレゼン後の質疑応答が活発で、研究の深掘りをされました。厳しいというより、研究に対する本気度を見られている感じでした。',
-      preparationTips: 'プレゼン資料の作成に2週間かけました。何度も練習して、5分ぴったりに収まるように調整しました。',
-      adviceToJuniors: 'SFCは自分の研究テーマを明確に持つことが重要です。「なぜSFCなのか」を具体的に説明できるようにしてください。',
-      motivationTheme: 'データサイエンスと社会課題解決',
-      motivationStructure: '問題提起 → 自分の取り組み → SFCで学ぶ理由 → 将来の展望',
-    },
-  });
+  const themes = [
+    { name: '国際・グローバル', description: '国際関係、グローバル課題、多文化共生など' },
+    { name: '政治・公共政策', description: '政治学、公共政策、行政、ガバナンスなど' },
+    { name: '法・人権・社会正義', description: '法学、人権問題、社会正義、平等など' },
+    { name: '経済・ビジネス', description: '経済学、経営学、マーケティング、金融など' },
+    { name: '起業・イノベーション', description: 'スタートアップ、新規事業、技術革新など' },
+    { name: '環境・サステナビリティ', description: '環境問題、持続可能性、気候変動など' },
+    { name: '教育・子ども', description: '教育学、子どもの権利、学習支援など' },
+    { name: '医療・福祉・健康', description: '医療、福祉、公衆衛生、ウェルビーイングなど' },
+    { name: 'スポーツ・身体', description: 'スポーツ科学、健康科学、体育など' },
+    { name: '文化・芸術・メディア', description: '文化研究、芸術、メディア、コミュニケーションなど' },
+    { name: '科学・テクノロジー', description: '科学技術、情報工学、データサイエンスなど' },
+    { name: '地域・社会課題', description: '地域活性化、まちづくり、社会課題解決など' },
+  ];
 
-  await prisma.experience.create({
-    data: {
-      university: '上智大学',
-      faculty: '外国語学部',
-      year: 2024,
-      authorPseudonym: '匿名C',
-      jukuName: 'AO義塾',
-      selectionProcess: '一次選考: 書類審査\n二次選考: 個人面接 + 英語面接',
-      interviewQuestions: [
-        'Why do you want to study at Sophia?',
-        'Tell me about your volunteer experience.',
-        '外国語を学ぶ意義は何だと思いますか?',
-        '入学後はどの言語を重点的に学びますか?'
-      ],
-      interviewAtmosphere: '英語面接は10分程度。思ったより優しかったです。英語力よりも、コミュニケーション能力を見られていると感じました。',
-      preparationTips: '英語面接の対策に1ヶ月かけました。ネイティブの先生と週2回練習しました。',
-      adviceToJuniors: '英語力は必須です。日常会話レベルは必要ですが、完璧である必要はありません。自分の意見を英語で伝えられれば大丈夫です。',
-    },
-  });
+  for (const theme of themes) {
+    await prisma.explorationTheme.create({
+      data: theme,
+    });
+  }
 
-  console.log('✅ 体験記3件を作成しました');
+  console.log('✅ 探究テーマ12件を作成しました');
 
-  // 塾スタッフを作成
-  console.log('👤 塾スタッフを作成中...');
-  
+  // ユーザーを作成
+  console.log('👤 ユーザーを作成中...');
+
   const hashedPassword = await bcrypt.hash('password123', 10);
-  await prisma.staff.create({
+
+  // Admin
+  const admin = await prisma.user.create({
     data: {
-      email: 'staff@ao-juku.com',
-      name: '山田太郎',
+      email: 'admin@example.com',
+      name: '管理者',
       password: hashedPassword,
-      jukuName: 'AO義塾',
       role: 'ADMIN',
     },
   });
 
-  console.log('✅ 塾スタッフを作成しました');
-
-  // サンプル書類を作成
-  console.log('📄 サンプル書類を作成中...');
-  
-  await prisma.document.create({
+  // Staff
+  const staff = await prisma.user.create({
     data: {
-      jukuName: 'AO義塾',
-      university: '早稲田大学',
-      faculty: '政治経済学部',
-      year: 2024,
-      documentType: '志望理由書',
-      title: '2024年度 早稲田・政経 合格者A',
-      fullText: `私が早稲田大学政治経済学部を志望する理由は、地域経済の活性化に関する研究を深めたいからです。
-
-私は高校2年生の時、地元の商店街活性化プロジェクトにボランティアとして参加しました。そこで、過疎化が進む地方都市の現状を目の当たりにし、データに基づいた政策立案の重要性を痛感しました。
-
-貴学の計量経済学研究室では、統計データを用いた実証分析を学ぶことができます。また、○○ゼミでは地域経済をテーマにしたフィールドワークも行われており、理論と実践の両面から学べる環境が整っています。
-
-将来は、シンクタンクで地方創生に関する政策提言を行いたいと考えています。貴学で学んだデータ分析の手法を活かし、持続可能な地域社会の実現に貢献したいです。
-
-以上の理由から、私は早稲田大学政治経済学部で学びたいと考えています。`,
+      email: 'staff@example.com',
+      name: '山田太郎',
+      password: hashedPassword,
+      role: 'STAFF',
     },
   });
 
-  console.log('✅ サンプル書類を作成しました');
+  // Graduate
+  const graduate1 = await prisma.user.create({
+    data: {
+      email: 'graduate1@example.com',
+      name: '佐藤花子',
+      password: hashedPassword,
+      role: 'GRADUATE',
+    },
+  });
+
+  const graduate2 = await prisma.user.create({
+    data: {
+      email: 'graduate2@example.com',
+      name: '鈴木一郎',
+      password: hashedPassword,
+      role: 'GRADUATE',
+    },
+  });
+
+  // Student
+  const student = await prisma.user.create({
+    data: {
+      email: 'student@example.com',
+      name: '田中次郎',
+      password: hashedPassword,
+      role: 'STUDENT',
+    },
+  });
+
+  console.log('✅ ユーザー5件を作成しました');
+
+  // 合格体験談を作成
+  console.log('📝 合格体験談を作成中...');
+
+  // 体験談1: 早稲田大学 政治経済学部
+  const story1 = await prisma.graduateStory.create({
+    data: {
+      authorId: graduate1.id,
+      gender: 'FEMALE',
+      highSchoolLevel: 'LEVEL_3',
+      gradeAverage: 'RANGE_4',
+      admissionType: '総合型選抜',
+      university: '早稲田大学',
+      faculty: '政治経済学部',
+      activityContent: '地元の商店街活性化プロジェクトにボランティアとして参加。高校2年生から約1年間、毎週末活動し、地域経済の現状を学びました。',
+      activityResults: '商店街のインスタグラムアカウントを立ち上げ、フォロワー3,000人超を獲得。来客数が前年比30%増加という成果を出しました。',
+      hasSportsAchievement: false,
+      englishLevel: 'LV2',
+      englishDetail: '英検2級（高2取得）、TOEIC L&R 750点（高3取得）',
+      hasStudyAbroad: false,
+      hasLeaderExperience: true,
+      leaderExperience: '生徒会副会長（高3）',
+      interviewQuestions: `- 志望理由を3分で説明してください
+- 活動報告書の地域ボランティアについて詳しく教えてください
+- 入学後にやりたいことは具体的に何ですか?
+- なぜ慶應ではなく早稲田なのですか?
+- 卒業後はどのような進路を考えていますか?`,
+      documentThemes: '地域経済の活性化、データに基づいた政策立案、計量経済学への関心',
+      preparationMethod: `志望理由書は夏休みから準備を始め、4回の添削を受けました。特に第2段落のエピソードの書き方を変えたことで、説得力が格段に上がりました。
+面接対策は予想質問を50個作り、すべてに対する回答を準備しました。塾の先生と週1回模擬面接を実施。`,
+      materials: '参考書：「総合型選抜の教科書」「政治経済入門」\n添削：塾での4回の添削指導',
+      adviceToJuniors: '「自分の経験を学問と結びつける」ことを常に意識してください。単なる経験の羅列ではなく、「なぜその経験が重要なのか」「そこから何を学び、大学で何を研究したいのか」を明確に示すことが合格の鍵だと思います。',
+    },
+  });
+
+  // 探究テーマを関連付け（経済・ビジネス、地域・社会課題）
+  await prisma.storyExplorationTheme.createMany({
+    data: [
+      { storyId: story1.id, themeId: 4 }, // 経済・ビジネス
+      { storyId: story1.id, themeId: 12 }, // 地域・社会課題
+    ],
+  });
+
+  // 併願校
+  await prisma.concurrentApplication.createMany({
+    data: [
+      { storyId: story1.id, university: '慶應義塾大学', faculty: '経済学部', result: 'REJECTED' },
+      { storyId: story1.id, university: '上智大学', faculty: '経済学部', result: 'ACCEPTED' },
+    ],
+  });
+
+  // 体験談2: 慶應義塾大学 SFC
+  const story2 = await prisma.graduateStory.create({
+    data: {
+      authorId: graduate2.id,
+      gender: 'MALE',
+      highSchoolLevel: 'LEVEL_4',
+      gradeAverage: 'RANGE_5',
+      admissionType: '総合型選抜（AO入試）',
+      university: '慶應義塾大学',
+      faculty: '総合政策学部',
+      activityContent: '高校1年生からプログラミングを独学し、地域の課題解決アプリを開発。地元の観光情報を多言語で提供するWebアプリを制作しました。',
+      activityResults: 'アプリは1,500ダウンロードを達成。市の観光協会にも採用され、実際に観光客に利用されています。',
+      hasSportsAchievement: true,
+      sportsAchievement: 'サッカー部（県大会ベスト16）',
+      englishLevel: 'LV3',
+      englishDetail: '英検準1級（高2取得）、TOEFL iBT 85点（高3取得）',
+      hasStudyAbroad: true,
+      hasLeaderExperience: true,
+      leaderExperience: 'サッカー部キャプテン（高3）',
+      interviewQuestions: `- あなたの研究テーマについて5分でプレゼンしてください
+- このテーマを選んだ理由は?
+- SFCで何を学びたいですか?
+- 先行研究は調べましたか?
+- 技術的な課題はどう解決しましたか?`,
+      documentThemes: 'データサイエンス、地域活性化、テクノロジーを活用した社会課題解決',
+      preparationMethod: `プレゼン資料の作成に2週間かけました。何度も練習して、5分ぴったりに収まるように調整。
+研究計画書は3ヶ月かけて作成し、10回以上のブラッシュアップを重ねました。`,
+      materials: '参考書：「データサイエンス入門」「AO入試完全ガイド」\nオンライン講座：Coursera「Machine Learning」',
+      adviceToJuniors: 'SFCは自分の研究テーマを明確に持つことが重要です。「なぜSFCなのか」を具体的に説明できるようにしてください。また、実際に手を動かして何かを作った経験があると強いです。',
+    },
+  });
+
+  // 探究テーマを関連付け（科学・テクノロジー、地域・社会課題）
+  await prisma.storyExplorationTheme.createMany({
+    data: [
+      { storyId: story2.id, themeId: 11 }, // 科学・テクノロジー
+      { storyId: story2.id, themeId: 12 }, // 地域・社会課題
+    ],
+  });
+
+  // 併願校
+  await prisma.concurrentApplication.createMany({
+    data: [
+      { storyId: story2.id, university: '早稲田大学', faculty: '基幹理工学部', result: 'ACCEPTED' },
+    ],
+  });
+
+  console.log('✅ 合格体験談2件を作成しました');
   console.log('🎉 シードデータの投入が完了しました!');
+  console.log('\n📋 作成されたユーザー:');
+  console.log('  - Admin: admin@example.com / password123');
+  console.log('  - Staff: staff@example.com / password123');
+  console.log('  - Graduate1: graduate1@example.com / password123');
+  console.log('  - Graduate2: graduate2@example.com / password123');
+  console.log('  - Student: student@example.com / password123');
 }
 
 main()

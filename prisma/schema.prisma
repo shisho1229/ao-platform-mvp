@@ -7,85 +7,169 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// 体験記
-model Experience {
-  id                  String   @id @default(uuid())
-  university          String
-  faculty             String
-  year                Int
-  authorPseudonym     String
-  jukuName            String?
-  
-  selectionProcess    String   @db.Text
-  interviewQuestions  String[]
-  interviewAtmosphere String   @db.Text
-  
-  preparationTips     String   @db.Text
-  adviceToJuniors     String   @db.Text
-  
-  motivationTheme     String?
-  motivationStructure String?  @db.Text
-  
-  viewCount           Int      @default(0)
-  createdAt           DateTime @default(now())
-  
-  @@map("experiences")
+// ユーザー（Admin, Staff, Graduate, Student）
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  password      String
+  name          String
+  role          UserRole
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // リレーション
+  graduateStories GraduateStory[]
+  admissionDocuments AdmissionDocument[]
+
+  @@map("users")
 }
 
-// 無料相談予約
-model Consultation {
-  id              String   @id @default(uuid())
-  trackingId      String   @unique @default(uuid())
-  
-  name            String
-  email           String
-  phone           String
-  grade           String
+enum UserRole {
+  ADMIN
+  STAFF
+  GRADUATE
+  STUDENT
+}
+
+// 合格体験談（生徒も閲覧可能）
+model GraduateStory {
+  id              String    @id @default(uuid())
+  authorId        String
+  author          User      @relation(fields: [authorId], references: [id])
+
+  // 基礎属性
+  gender          Gender?
+  highSchoolLevel HighSchoolLevel
+  gradeAverage    GradeAverage
+  admissionType   String    // 入試方式（総合型選抜、学校推薦型選抜など）
   university      String
   faculty         String
-  concerns        String   @db.Text
-  
-  consultationType String
-  preferredDate    String
-  preferredTime    String
-  
-  jukuName         String
-  status           String   @default("PENDING")
-  
-  createdAt        DateTime @default(now())
-  
-  @@map("consultations")
+
+  // 探究・活動（多対多）
+  explorationThemes StoryExplorationTheme[]
+  activityContent String?   @db.Text
+  activityResults String?   @db.Text
+
+  // 実績
+  hasSportsAchievement Boolean @default(false)
+  sportsAchievement String?   @db.Text
+  englishLevel      EnglishLevel
+  englishDetail     String?   // 資格種類・スコア・取得時期
+  hasStudyAbroad    Boolean   @default(false)
+  hasLeaderExperience Boolean @default(false)
+  leaderExperience  String?   // 部長、生徒会など
+
+  // 選考情報
+  interviewQuestions String?  @db.Text
+  documentThemes    String?   @db.Text  // 提出書類の大まかなテーマ
+
+  // 対策
+  preparationMethod String?   @db.Text
+  materials         String?   @db.Text  // 使用教材・参考書
+
+  // 後輩へのアドバイス
+  adviceToJuniors   String?   @db.Text
+
+  // 併願校
+  concurrentApplications ConcurrentApplication[]
+
+  // 関連する合格書類
+  admissionDocuments AdmissionDocument[]
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@map("graduate_stories")
 }
 
-// 塾スタッフ
-model Staff {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  name      String
-  password  String
-  jukuName  String
-  role      String   @default("STAFF")
-  
-  createdAt DateTime @default(now())
-  
-  @@map("staff")
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+  PREFER_NOT_TO_SAY
 }
 
-// 塾の書類
-model Document {
-  id           String   @id @default(uuid())
-  jukuName     String
-  
-  university   String
-  faculty      String
-  year         Int
-  documentType String
-  title        String
-  
-  fullText     String   @db.Text
-  
-  viewCount    Int      @default(0)
-  createdAt    DateTime @default(now())
-  
-  @@map("documents")
+enum HighSchoolLevel {
+  LEVEL_1  // 偏差値 ~50
+  LEVEL_2  // 偏差値 51-60
+  LEVEL_3  // 偏差値 61-70
+  LEVEL_4  // 偏差値 71~
+}
+
+enum GradeAverage {
+  RANGE_1  // ~3.0
+  RANGE_2  // 3.1-3.5
+  RANGE_3  // 3.6-4.0
+  RANGE_4  // 4.1-4.5
+  RANGE_5  // 4.6~
+}
+
+enum EnglishLevel {
+  LV0  // なし
+  LV1  // 基礎（英検準2級程度）
+  LV2  // 標準（英検2級 / CEFR B1）
+  LV3  // 上位（英検準1級 / CEFR B2）
+  LV4  // 最上位（英検1級 / IELTS6.5+ / TOEFL80+）
+}
+
+// 探究テーマ（固定12分類）
+model ExplorationTheme {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  description String?
+
+  stories     StoryExplorationTheme[]
+
+  @@map("exploration_themes")
+}
+
+// 中間テーブル（合格体験談 ⟷ 探究テーマ）
+model StoryExplorationTheme {
+  storyId   String
+  themeId   Int
+
+  story     GraduateStory     @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  theme     ExplorationTheme  @relation(fields: [themeId], references: [id])
+
+  @@id([storyId, themeId])
+  @@map("story_exploration_themes")
+}
+
+// 併願校
+model ConcurrentApplication {
+  id          String    @id @default(uuid())
+  storyId     String
+  story       GraduateStory @relation(fields: [storyId], references: [id], onDelete: Cascade)
+
+  university  String
+  faculty     String
+  result      ApplicationResult
+
+  @@map("concurrent_applications")
+}
+
+enum ApplicationResult {
+  ACCEPTED
+  REJECTED
+  PENDING
+}
+
+// 合格書類（スタッフのみ閲覧可能）
+model AdmissionDocument {
+  id            String    @id @default(uuid())
+  storyId       String
+  story         GraduateStory @relation(fields: [storyId], references: [id], onDelete: Cascade)
+
+  uploadedBy    String
+  uploader      User      @relation(fields: [uploadedBy], references: [id])
+
+  documentType  String    // 志望理由書、活動報告書など
+  fileName      String
+  filePath      String    // PDFファイルのパス
+  fileSize      Int       // バイト単位
+
+  createdAt     DateTime  @default(now())
+
+  @@map("admission_documents")
 }
