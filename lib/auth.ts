@@ -1,0 +1,59 @@
+import { auth } from "@/auth"
+import { UserRole } from "@prisma/client"
+
+export async function getSession() {
+  return await auth()
+}
+
+export async function getCurrentUser() {
+  const session = await getSession()
+  return session?.user
+}
+
+export async function requireAuth() {
+  const session = await getSession()
+  if (!session?.user) {
+    throw new Error("認証が必要です")
+  }
+  return session.user
+}
+
+export async function requireRole(allowedRoles: UserRole[]) {
+  const user = await requireAuth()
+  if (!allowedRoles.includes(user.role)) {
+    throw new Error("権限がありません")
+  }
+  return user
+}
+
+export async function isAdmin() {
+  const user = await getCurrentUser()
+  return user?.role === "ADMIN"
+}
+
+export async function isStaff() {
+  const user = await getCurrentUser()
+  return user?.role === "STAFF" || user?.role === "ADMIN"
+}
+
+export async function isGraduate() {
+  const user = await getCurrentUser()
+  return user?.role === "GRADUATE"
+}
+
+export async function isStudent() {
+  const user = await getCurrentUser()
+  return user?.role === "STUDENT"
+}
+
+export function canViewDocuments(userRole: UserRole) {
+  return userRole === "ADMIN" || userRole === "STAFF"
+}
+
+export function canCreateStory(userRole: UserRole) {
+  return userRole === "GRADUATE"
+}
+
+export function canUploadDocument(userRole: UserRole) {
+  return userRole === "ADMIN" || userRole === "STAFF"
+}
