@@ -3,6 +3,7 @@
 import { signIn } from "next-auth/react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 
 export default function SignInPage() {
   const router = useRouter()
@@ -45,6 +46,12 @@ export default function SignInPage() {
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
             ログインしてください
+          </p>
+          <p className="mt-2 text-center text-sm text-gray-600">
+            または{' '}
+            <Link href="/auth/signup" className="font-medium text-blue-600 hover:text-blue-500">
+              新規アカウントを作成
+            </Link>
           </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -100,14 +107,6 @@ export default function SignInPage() {
             </button>
           </div>
         </form>
-
-        <div className="mt-6 text-center text-sm text-gray-600">
-          <p>テストアカウント:</p>
-          <p>Admin: admin@example.com / password123</p>
-          <p>Staff: staff@example.com / password123</p>
-          <p>Graduate: graduate1@example.com / password123</p>
-          <p>Student: student@example.com / password123</p>
-        </div>
       </div>
     </div>
   )
