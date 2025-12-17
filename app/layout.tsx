@@ -17,7 +17,12 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body className="antialiased">
-        {children}
+        <SessionProvider>
+          <AuthGuard>
+            <Navbar />
+            {children}
+          </AuthGuard>
+        </SessionProvider>
       </body>
     </html>
   );
