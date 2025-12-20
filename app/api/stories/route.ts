@@ -95,6 +95,12 @@ export async function POST(request: NextRequest) {
     const user = await requireRole(["USER"])
     const body = await request.json()
 
+    console.log("受信したデータ:", {
+      ...body,
+      explorationThemeIds: body.explorationThemeIds,
+      concurrentApplications: body.concurrentApplications
+    })
+
     const {
       gender,
       highSchoolLevel,
@@ -186,6 +192,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(story, { status: 201 })
   } catch (error: any) {
     console.error("Error creating story:", error)
+    console.error("Error details:", {
+      message: error.message,
+      code: error.code,
+      meta: error.meta,
+      stack: error.stack
+    })
 
     if (error.message === "権限がありません") {
       return NextResponse.json(
@@ -194,8 +206,15 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Prismaエラーの詳細を返す（開発環境用）
+    const errorMessage = error.message || "体験談の投稿に失敗しました"
+    const errorDetails = error.code ? ` (Code: ${error.code})` : ""
+
     return NextResponse.json(
-      { error: "体験談の投稿に失敗しました" },
+      {
+        error: `体験談の投稿に失敗しました: ${errorMessage}${errorDetails}`,
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      },
       { status: 500 }
     )
   }

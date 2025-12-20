@@ -119,26 +119,32 @@ export default function NewStoryPage() {
     }
 
     try {
+      const payload = {
+        ...formData,
+        concurrentApplications:
+          concurrentApplications.length > 0 ? concurrentApplications : undefined,
+      }
+
+      console.log("投稿データ:", payload)
+
       const res = await fetch("/api/stories", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          ...formData,
-          concurrentApplications:
-            concurrentApplications.length > 0 ? concurrentApplications : null,
-        }),
+        body: JSON.stringify(payload),
       })
 
       if (res.ok) {
         router.push("/stories")
       } else {
         const data = await res.json()
-        setError(data.error || "投稿に失敗しました")
+        console.error("投稿エラー:", data)
+        setError(data.error || data.details || "投稿に失敗しました")
       }
     } catch (error) {
-      setError("投稿に失敗しました")
+      console.error("投稿エラー (catch):", error)
+      setError(`投稿に失敗しました: ${error instanceof Error ? error.message : '不明なエラー'}`)
     } finally {
       setIsLoading(false)
     }
