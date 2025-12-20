@@ -103,6 +103,7 @@ export async function POST(request: NextRequest) {
     })
 
     const {
+      authorName,
       gender,
       highSchoolLevel,
       highSchoolName,
@@ -150,6 +151,7 @@ export async function POST(request: NextRequest) {
     const story = await prisma.graduateStory.create({
       data: {
         authorId: user.id,
+        authorName: authorName || null,
         gender: gender || null,
         highSchoolLevel,
         highSchoolName: highSchoolName || null,
@@ -157,7 +159,9 @@ export async function POST(request: NextRequest) {
         admissionType,
         university,
         faculty,
-        year: year || null,
+        year: year ? parseInt(year) : null,
+        status: "PENDING_REVIEW",
+        published: false,
         researchTheme,
         researchMotivation,
         researchDetails,

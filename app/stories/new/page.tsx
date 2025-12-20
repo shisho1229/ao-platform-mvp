@@ -17,6 +17,7 @@ export default function NewStoryPage() {
 
   // フォームデータ
   const [formData, setFormData] = useState({
+    authorName: "",
     gender: "",
     highSchoolLevel: "LEVEL_2",
     highSchoolName: "",
@@ -118,13 +119,19 @@ export default function NewStoryPage() {
       return
     }
 
+    // 必須フィールドのチェック
+    if (!formData.authorName?.trim()) {
+      setError("名前を入力してください")
+      setIsLoading(false)
+      return
+    }
+
     if (formData.explorationThemeIds.length === 0) {
       setError("探究テーマを少なくとも1つ選択してください")
       setIsLoading(false)
       return
     }
 
-    // 必須フィールドのチェック
     if (!formData.researchTheme?.trim()) {
       setError("探究テーマを入力してください")
       setIsLoading(false)
@@ -236,6 +243,22 @@ export default function NewStoryPage() {
           {/* 基礎属性 */}
           <div className="space-y-6">
             <h2 className="text-xl font-semibold text-gray-900">基礎属性</h2>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                名前 *
+              </label>
+              <input
+                type="text"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                placeholder="例：山田 太郎"
+                required
+                value={formData.authorName}
+                onChange={(e) =>
+                  setFormData({ ...formData, authorName: e.target.value })
+                }
+              />
+            </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
@@ -411,7 +434,7 @@ export default function NewStoryPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                受験年度（任意）
+                受験年度 *
               </label>
               <input
                 type="number"
@@ -419,6 +442,7 @@ export default function NewStoryPage() {
                 placeholder="例：2024"
                 min="2000"
                 max="2030"
+                required
                 value={formData.year}
                 onChange={(e) =>
                   setFormData({ ...formData, year: e.target.value })
@@ -961,12 +985,13 @@ export default function NewStoryPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                面接で聞かれた内容（任意）
+                面接で聞かれた内容 *
               </label>
               <textarea
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 rows={4}
                 placeholder="面接での質問内容を教えてください"
+                required
                 value={formData.interviewQuestions}
                 onChange={(e) =>
                   setFormData({
@@ -1038,12 +1063,13 @@ export default function NewStoryPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                書類対策（任意）
+                書類対策 *
               </label>
               <textarea
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 rows={4}
                 placeholder="志望理由書や活動報告書などの書類対策について教えてください"
+                required
                 value={formData.documentPreparation}
                 onChange={(e) =>
                   setFormData({
@@ -1056,12 +1082,13 @@ export default function NewStoryPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                二次対策（任意）
+                二次対策 *
               </label>
               <textarea
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 rows={4}
                 placeholder="面接や論述試験などの二次対策について教えてください"
+                required
                 value={formData.secondRoundPreparation}
                 onChange={(e) =>
                   setFormData({
@@ -1074,12 +1101,13 @@ export default function NewStoryPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                使用教材・参考書（任意）
+                使用教材・参考書 *
               </label>
               <textarea
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 rows={3}
                 placeholder="役に立った教材や参考書"
+                required
                 value={formData.materials}
                 onChange={(e) =>
                   setFormData({ ...formData, materials: e.target.value })
@@ -1089,12 +1117,13 @@ export default function NewStoryPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                後輩へのアドバイス（任意）
+                後輩へのアドバイス *
               </label>
               <textarea
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 rows={4}
                 placeholder="後輩に伝えたいことを自由に書いてください"
+                required
                 value={formData.adviceToJuniors}
                 onChange={(e) =>
                   setFormData({ ...formData, adviceToJuniors: e.target.value })
