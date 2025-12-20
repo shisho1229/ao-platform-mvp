@@ -79,8 +79,9 @@ model GraduateStory {
   selectionFlowType  String?   // 選考フロータイプ（春AO/夏秋AO/自己推薦入試など）
 
   // 対策
-  preparationMethod String?   @db.Text
-  materials         String?   @db.Text  // 使用教材・参考書
+  documentPreparation    String?   @db.Text  // 書類対策
+  secondRoundPreparation String?   @db.Text  // 二次対策
+  materials              String?   @db.Text  // 使用教材・参考書
 
   // 後輩へのアドバイス
   adviceToJuniors   String?   @db.Text

@@ -46,7 +46,8 @@ export default function NewStoryPage() {
     selectionFlowType: "",
     firstRoundResult: "",
     secondRoundResult: "",
-    preparationMethod: "",
+    documentPreparation: "",
+    secondRoundPreparation: "",
     materials: "",
     adviceToJuniors: "",
   })
@@ -311,7 +312,7 @@ export default function NewStoryPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                志望大学 *
+                受験大学 *
               </label>
               <select
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
@@ -410,7 +411,7 @@ export default function NewStoryPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                合格年度（任意）
+                受験年度（任意）
               </label>
               <input
                 type="number"
@@ -424,6 +425,100 @@ export default function NewStoryPage() {
                 }
               />
             </div>
+
+            {/* 合否情報 */}
+            {formData.admissionType && (
+              <div className="space-y-4 border-l-4 border-green-500 pl-4">
+                <h3 className="text-lg font-medium text-gray-900">合否情報</h3>
+
+                {formData.admissionType === "FIT入試" ? (
+                  <>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        一次選考 *
+                      </label>
+                      <select
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        required
+                        value={formData.firstRoundResult}
+                        onChange={(e) =>
+                          setFormData({ ...formData, firstRoundResult: e.target.value })
+                        }
+                      >
+                        <option value="">選択してください</option>
+                        <option value="AB合格">AB合格</option>
+                        <option value="A合格">A合格</option>
+                        <option value="B合格">B合格</option>
+                        <option value="不合格">不合格</option>
+                      </select>
+                    </div>
+
+                    {(formData.firstRoundResult === "AB合格" || formData.firstRoundResult === "A合格" || formData.firstRoundResult === "B合格") && (
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700">
+                          最終選考 *
+                        </label>
+                        <select
+                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                          required
+                          value={formData.secondRoundResult}
+                          onChange={(e) =>
+                            setFormData({ ...formData, secondRoundResult: e.target.value })
+                          }
+                        >
+                          <option value="">選択してください</option>
+                          <option value="AB合格">AB合格</option>
+                          <option value="A合格">A合格</option>
+                          <option value="B合格">B合格</option>
+                          <option value="不合格">不合格</option>
+                        </select>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        一次選考 *
+                      </label>
+                      <select
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        required
+                        value={formData.firstRoundResult}
+                        onChange={(e) =>
+                          setFormData({ ...formData, firstRoundResult: e.target.value })
+                        }
+                      >
+                        <option value="">選択してください</option>
+                        <option value="合格">合格</option>
+                        <option value="不合格">不合格</option>
+                        <option value="なし">なし</option>
+                      </select>
+                    </div>
+
+                    {(formData.firstRoundResult === "合格" || formData.firstRoundResult === "なし") && (
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700">
+                          最終選考 *
+                        </label>
+                        <select
+                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                          required
+                          value={formData.secondRoundResult}
+                          onChange={(e) =>
+                            setFormData({ ...formData, secondRoundResult: e.target.value })
+                          }
+                        >
+                          <option value="">選択してください</option>
+                          <option value="合格">合格</option>
+                          <option value="不合格">不合格</option>
+                        </select>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
           </div>
 
           {/* 実績 */}
@@ -943,17 +1038,35 @@ export default function NewStoryPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                対策方法（任意）
+                書類対策（任意）
               </label>
               <textarea
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 rows={4}
-                placeholder="どのように対策しましたか？"
-                value={formData.preparationMethod}
+                placeholder="志望理由書や活動報告書などの書類対策について教えてください"
+                value={formData.documentPreparation}
                 onChange={(e) =>
                   setFormData({
                     ...formData,
-                    preparationMethod: e.target.value,
+                    documentPreparation: e.target.value,
+                  })
+                }
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                二次対策（任意）
+              </label>
+              <textarea
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                rows={4}
+                placeholder="面接や論述試験などの二次対策について教えてください"
+                value={formData.secondRoundPreparation}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    secondRoundPreparation: e.target.value,
                   })
                 }
               />
@@ -1004,10 +1117,12 @@ export default function NewStoryPage() {
               </div>
               <div className="ml-3 text-sm">
                 <label htmlFor="agree-terms" className="font-medium text-gray-700">
-                  投稿内容の公開に同意します *
+                  体験談の提供および広報活用に関する同意 *
                 </label>
                 <p className="text-gray-500 mt-1">
-                  この体験談は他のユーザーに公開されます。個人を特定できる情報（氏名、連絡先など）は含めないでください。
+                  私は、私が提供する体験談・コメント・受験を通じた感想等について、loohcs志塾のWebサイト、SNS、パンフレット等の広報活動に活用されることに同意します。<br />
+                  なお、広報において氏名・出身校・進学先・学年等の個人情報を使用する場合には、事前に本人の同意を得た上で、同意された範囲内でのみ使用されることを確認しています。<br />
+                  本フォームを通じて提供される情報は、上記目的の範囲内で適切に管理されます。
                 </p>
               </div>
             </div>
