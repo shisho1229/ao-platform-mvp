@@ -23,14 +23,6 @@ export async function GET(
           }
         },
         concurrentApplications: true,
-        admissionDocuments: {
-          select: {
-            id: true,
-            documentType: true,
-            fileName: true,
-            createdAt: true,
-          }
-        }
       },
     })
 

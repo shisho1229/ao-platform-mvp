@@ -8,6 +8,7 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams
     const university = searchParams.get("university")
     const faculty = searchParams.get("faculty")
+    const year = searchParams.get("year")
     const themeIds = searchParams.get("themeIds")?.split(",").map(Number)
 
     const where: any = {}
@@ -18,6 +19,10 @@ export async function GET(request: NextRequest) {
 
     if (faculty) {
       where.faculty = { contains: faculty }
+    }
+
+    if (year) {
+      where.year = parseInt(year)
     }
 
     if (themeIds && themeIds.length > 0) {

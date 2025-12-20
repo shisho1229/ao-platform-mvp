@@ -248,6 +248,47 @@ export default function NewStoryPage() {
             </div>
           </div>
 
+          {/* 選考情報 */}
+          <div className="space-y-4">
+            <h2 className="text-xl font-semibold text-gray-900">選考情報</h2>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                面接で聞かれた内容（任意）
+              </label>
+              <textarea
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                rows={4}
+                placeholder="面接での質問内容を教えてください"
+                value={formData.interviewQuestions}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    interviewQuestions: e.target.value,
+                  })
+                }
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                提出書類の大まかなテーマ（任意）
+              </label>
+              <textarea
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                rows={3}
+                placeholder="志望理由書や活動報告書のテーマ"
+                value={formData.documentThemes}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    documentThemes: e.target.value,
+                  })
+                }
+              />
+            </div>
+          </div>
+
           {/* 探究テーマ */}
           <div className="space-y-4">
             <h2 className="text-xl font-semibold text-gray-900">
@@ -490,47 +531,6 @@ export default function NewStoryPage() {
             >
               + 併願校を追加
             </button>
-          </div>
-
-          {/* 選考情報 */}
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-gray-900">選考情報</h2>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                面接で聞かれた内容（任意）
-              </label>
-              <textarea
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                rows={4}
-                placeholder="面接での質問内容を教えてください"
-                value={formData.interviewQuestions}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    interviewQuestions: e.target.value,
-                  })
-                }
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                提出書類の大まかなテーマ（任意）
-              </label>
-              <textarea
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                rows={3}
-                placeholder="志望理由書や活動報告書のテーマ"
-                value={formData.documentThemes}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    documentThemes: e.target.value,
-                  })
-                }
-              />
-            </div>
           </div>
 
           {/* 対策 */}

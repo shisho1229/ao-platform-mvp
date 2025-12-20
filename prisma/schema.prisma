@@ -21,7 +21,6 @@ model User {
 
   // リレーション
   graduateStories GraduateStory[]
-  admissionDocuments AdmissionDocument[]
 
   @@map("users")
 }
@@ -74,9 +73,6 @@ model GraduateStory {
 
   // 併願校
   concurrentApplications ConcurrentApplication[]
-
-  // 関連する合格書類
-  admissionDocuments AdmissionDocument[]
 
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
@@ -154,23 +150,4 @@ enum ApplicationResult {
   ACCEPTED
   REJECTED
   PENDING
-}
-
-// 合格書類（スタッフのみ閲覧可能）
-model AdmissionDocument {
-  id            String    @id @default(uuid())
-  storyId       String
-  story         GraduateStory @relation(fields: [storyId], references: [id], onDelete: Cascade)
-
-  uploadedBy    String
-  uploader      User      @relation(fields: [uploadedBy], references: [id])
-
-  documentType  String    // 志望理由書、活動報告書など
-  fileName      String
-  filePath      String    // PDFファイルのパス
-  fileSize      Int       // バイト単位
-
-  createdAt     DateTime  @default(now())
-
-  @@map("admission_documents")
 }

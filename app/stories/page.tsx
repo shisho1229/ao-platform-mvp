@@ -30,14 +30,25 @@ export default function StoriesPage() {
   const { data: session } = useSession()
   const [stories, setStories] = useState<Story[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [universityFilter, setUniversityFilter] = useState("")
+  const [facultyFilter, setFacultyFilter] = useState("")
+  const [yearFilter, setYearFilter] = useState("")
 
   useEffect(() => {
     fetchStories()
-  }, [])
+  }, [universityFilter, facultyFilter, yearFilter])
 
   const fetchStories = async () => {
     try {
-      const res = await fetch("/api/stories")
+      const params = new URLSearchParams()
+      if (universityFilter) params.append("university", universityFilter)
+      if (facultyFilter) params.append("faculty", facultyFilter)
+      if (yearFilter) params.append("year", yearFilter)
+
+      const queryString = params.toString()
+      const url = queryString ? `/api/stories?${queryString}` : "/api/stories"
+
+      const res = await fetch(url)
       if (res.ok) {
         const data = await res.json()
         setStories(data)
@@ -47,6 +58,12 @@ export default function StoriesPage() {
     } finally {
       setIsLoading(false)
     }
+  }
+
+  const clearFilters = () => {
+    setUniversityFilter("")
+    setFacultyFilter("")
+    setYearFilter("")
   }
 
   const highSchoolLevelLabel = (level: string) => {
@@ -94,6 +111,57 @@ export default function StoriesPage() {
               体験談を投稿
             </Link>
           )}
+        </div>
+
+        {/* フィルター */}
+        <div className="bg-white rounded-lg shadow p-6 mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">フィルター</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                大学名
+              </label>
+              <input
+                type="text"
+                className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                placeholder="例：早稲田大学"
+                value={universityFilter}
+                onChange={(e) => setUniversityFilter(e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                学部名
+              </label>
+              <input
+                type="text"
+                className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                placeholder="例：政治経済学部"
+                value={facultyFilter}
+                onChange={(e) => setFacultyFilter(e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                年度
+              </label>
+              <input
+                type="number"
+                className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                placeholder="例：2024"
+                value={yearFilter}
+                onChange={(e) => setYearFilter(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="mt-4">
+            <button
+              onClick={clearFilters}
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+            >
+              フィルターをクリア
+            </button>
+          </div>
         </div>
 
         {isLoading ? (

@@ -39,11 +39,6 @@ interface Story {
     faculty: string
     result: string
   }>
-  admissionDocuments: Array<{
-    id: string
-    documentType: string
-    fileName: string
-  }>
   createdAt: string
 }
 
@@ -131,8 +126,6 @@ export default function StoryDetailPage() {
       </div>
     )
   }
-
-  const canViewDocuments = session?.user?.role === "ADMIN" || session?.user?.role === "STAFF"
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -358,30 +351,6 @@ export default function StoryDetailPage() {
               <p className="text-gray-700 whitespace-pre-wrap">
                 {story.adviceToJuniors}
               </p>
-            </div>
-          )}
-
-          {/* 合格書類（スタッフのみ） */}
-          {canViewDocuments && story.admissionDocuments.length > 0 && (
-            <div className="border-t pt-6 bg-yellow-50 p-4 rounded">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                合格書類（スタッフ専用）
-              </h2>
-              <div className="space-y-2">
-                {story.admissionDocuments.map((doc) => (
-                  <div key={doc.id} className="flex justify-between items-center">
-                    <span className="text-gray-700">
-                      {doc.documentType}: {doc.fileName}
-                    </span>
-                    <Link
-                      href={`/api/documents/${doc.id}`}
-                      className="text-blue-600 hover:text-blue-800 text-sm"
-                    >
-                      ダウンロード
-                    </Link>
-                  </div>
-                ))}
-              </div>
             </div>
           )}
         </div>
