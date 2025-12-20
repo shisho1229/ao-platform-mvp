@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma"
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams
+    const keyword = searchParams.get("keyword")
     const university = searchParams.get("university")
     const faculty = searchParams.get("faculty")
     const year = searchParams.get("year")
@@ -13,6 +14,19 @@ export async function GET(request: NextRequest) {
     const themeIds = searchParams.get("themeIds")?.split(",").map(Number)
 
     const where: any = {}
+
+    // キーワード検索（大学名、学部、入試方式、活動内容などで検索）
+    if (keyword) {
+      where.OR = [
+        { university: { contains: keyword, mode: 'insensitive' } },
+        { faculty: { contains: keyword, mode: 'insensitive' } },
+        { admissionType: { contains: keyword, mode: 'insensitive' } },
+        { activityContent: { contains: keyword, mode: 'insensitive' } },
+        { activityResults: { contains: keyword, mode: 'insensitive' } },
+        { preparationMethod: { contains: keyword, mode: 'insensitive' } },
+        { adviceToJuniors: { contains: keyword, mode: 'insensitive' } },
+      ]
+    }
 
     if (university) {
       where.university = { contains: university }

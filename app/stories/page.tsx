@@ -36,6 +36,7 @@ export default function StoriesPage() {
   const { data: session } = useSession()
   const [stories, setStories] = useState<Story[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [keywordFilter, setKeywordFilter] = useState("")
   const [universityFilter, setUniversityFilter] = useState("")
   const [facultyFilter, setFacultyFilter] = useState("")
   const [yearFilter, setYearFilter] = useState("")
@@ -44,11 +45,12 @@ export default function StoriesPage() {
 
   useEffect(() => {
     fetchStories()
-  }, [universityFilter, facultyFilter, yearFilter, campusFilter])
+  }, [keywordFilter, universityFilter, facultyFilter, yearFilter, campusFilter])
 
   const fetchStories = async () => {
     try {
       const params = new URLSearchParams()
+      if (keywordFilter) params.append("keyword", keywordFilter)
       if (universityFilter) params.append("university", universityFilter)
       if (facultyFilter) params.append("faculty", facultyFilter)
       if (yearFilter) params.append("year", yearFilter)
@@ -70,6 +72,7 @@ export default function StoriesPage() {
   }
 
   const clearFilters = () => {
+    setKeywordFilter("")
     setUniversityFilter("")
     setFacultyFilter("")
     setYearFilter("")
@@ -146,6 +149,18 @@ export default function StoriesPage() {
 
           {showFilters && (
             <div className="mt-4 bg-white rounded-2xl shadow-lg p-6 border" style={{ borderColor: '#bac9d0' }}>
+              <div className="mb-4">
+                <label className="block text-sm font-semibold mb-2" style={{ color: '#02475f' }}>
+                  キーワード検索
+                </label>
+                <input
+                  type="text"
+                  className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  placeholder="大学名、学部、入試方式、活動内容などで検索"
+                  value={keywordFilter}
+                  onChange={(e) => setKeywordFilter(e.target.value)}
+                />
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
                   <label className="block text-sm font-semibold mb-2" style={{ color: '#02475f' }}>
@@ -202,7 +217,7 @@ export default function StoriesPage() {
                   </select>
                 </div>
               </div>
-              {(universityFilter || facultyFilter || yearFilter || campusFilter) && (
+              {(keywordFilter || universityFilter || facultyFilter || yearFilter || campusFilter) && (
                 <div className="flex justify-end">
                   <button
                     onClick={clearFilters}
@@ -227,10 +242,10 @@ export default function StoriesPage() {
               <BookOpen className="w-10 h-10 text-gray-400" />
             </div>
             <p className="text-gray-600 text-lg">
-              {universityFilter || facultyFilter || yearFilter || campusFilter ? "条件に一致する体験談が見つかりませんでした" : "まだ体験談が投稿されていません"}
+              {keywordFilter || universityFilter || facultyFilter || yearFilter || campusFilter ? "条件に一致する体験談が見つかりませんでした" : "まだ体験談が投稿されていません"}
             </p>
             <p className="text-gray-500 text-sm mt-2">
-              {universityFilter || facultyFilter || yearFilter || campusFilter ? "フィルターを変更してみてください" : "最初の体験談を投稿してみませんか？"}
+              {keywordFilter || universityFilter || facultyFilter || yearFilter || campusFilter ? "フィルターを変更してみてください" : "最初の体験談を投稿してみませんか？"}
             </p>
           </div>
         ) : (
