@@ -47,6 +47,7 @@ model GraduateStory {
   highSchoolLevel HighSchoolLevel
   highSchoolName  String?   // 高校名
   gradeAverage    GradeAverage
+  campus          String?   // 所属校舎
   admissionType   String    // 入試方式（総合型選抜、学校推薦型選抜など）
   university      String
   faculty         String

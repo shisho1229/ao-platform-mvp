@@ -22,6 +22,7 @@ export default function NewStoryPage() {
     highSchoolLevel: "LEVEL_2",
     highSchoolName: "",
     gradeAverage: "RANGE_3",
+    campus: "",
     admissionType: "",
     university: "",
     faculty: "",
@@ -122,6 +123,12 @@ export default function NewStoryPage() {
     // 必須フィールドのチェック
     if (!formData.authorName?.trim()) {
       setError("名前を入力してください")
+      setIsLoading(false)
+      return
+    }
+
+    if (!formData.campus?.trim()) {
+      setError("所属校舎を選択してください")
       setIsLoading(false)
       return
     }
@@ -311,6 +318,28 @@ export default function NewStoryPage() {
                   setFormData({ ...formData, highSchoolName: e.target.value })
                 }
               />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                所属校舎 *
+              </label>
+              <select
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                required
+                value={formData.campus}
+                onChange={(e) =>
+                  setFormData({ ...formData, campus: e.target.value })
+                }
+              >
+                <option value="">選択してください</option>
+                <option value="武蔵小杉">武蔵小杉</option>
+                <option value="下北沢">下北沢</option>
+                <option value="渋谷">渋谷</option>
+                <option value="オンライン">オンライン</option>
+                <option value="青葉台">青葉台</option>
+                <option value="自由が丘">自由が丘</option>
+              </select>
             </div>
 
             <div>
