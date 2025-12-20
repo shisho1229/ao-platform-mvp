@@ -8,7 +8,9 @@ export default function SignUpPage() {
   const router = useRouter()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
   const [name, setName] = useState("")
+  const [campus, setCampus] = useState("")
   const [error, setError] = useState("")
   const [success, setSuccess] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -16,6 +18,13 @@ export default function SignUpPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
+
+    // パスワード確認チェック
+    if (password !== confirmPassword) {
+      setError("パスワードが一致しません")
+      return
+    }
+
     setIsLoading(true)
 
     try {
@@ -24,7 +33,7 @@ export default function SignUpPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password, name }),
+        body: JSON.stringify({ email, password, name, campus }),
       })
 
       const data = await response.json()
@@ -122,6 +131,28 @@ export default function SignUpPage() {
               />
             </div>
             <div>
+              <label htmlFor="campus" className="block text-sm font-medium text-gray-700 mb-1">
+                所属校舎 *
+              </label>
+              <select
+                id="campus"
+                name="campus"
+                required
+                className="appearance-none relative block w-full px-3 py-2 border border-gray-300 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:border-transparent sm:text-sm"
+                value={campus}
+                onChange={(e) => setCampus(e.target.value)}
+                disabled={isLoading}
+              >
+                <option value="">選択してください</option>
+                <option value="武蔵小杉">武蔵小杉</option>
+                <option value="下北沢">下北沢</option>
+                <option value="自由が丘">自由が丘</option>
+                <option value="渋谷">渋谷</option>
+                <option value="オンライン">オンライン</option>
+                <option value="青葉台">青葉台</option>
+              </select>
+            </div>
+            <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
                 パスワード
               </label>
@@ -135,6 +166,23 @@ export default function SignUpPage() {
                 placeholder="8文字以上"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                disabled={isLoading}
+              />
+            </div>
+            <div>
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+                パスワード（確認）
+              </label>
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                autoComplete="new-password"
+                required
+                className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:border-transparent sm:text-sm"
+                placeholder="パスワードを再入力"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
                 disabled={isLoading}
               />
             </div>

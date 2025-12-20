@@ -17,6 +17,11 @@ interface Story {
   hasStudyAbroad: boolean
   hasSportsAchievement: boolean
   hasLeaderExperience: boolean
+  year?: number
+  author: {
+    name: string
+    campus?: string
+  }
   explorationThemes: Array<{
     theme: {
       id: number
@@ -33,17 +38,21 @@ export default function StoriesPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [universityFilter, setUniversityFilter] = useState("")
   const [facultyFilter, setFacultyFilter] = useState("")
+  const [yearFilter, setYearFilter] = useState("")
+  const [campusFilter, setCampusFilter] = useState("")
   const [showFilters, setShowFilters] = useState(false)
 
   useEffect(() => {
     fetchStories()
-  }, [universityFilter, facultyFilter])
+  }, [universityFilter, facultyFilter, yearFilter, campusFilter])
 
   const fetchStories = async () => {
     try {
       const params = new URLSearchParams()
       if (universityFilter) params.append("university", universityFilter)
       if (facultyFilter) params.append("faculty", facultyFilter)
+      if (yearFilter) params.append("year", yearFilter)
+      if (campusFilter) params.append("campus", campusFilter)
 
       const queryString = params.toString()
       const url = queryString ? `/api/stories?${queryString}` : "/api/stories"
@@ -63,6 +72,8 @@ export default function StoriesPage() {
   const clearFilters = () => {
     setUniversityFilter("")
     setFacultyFilter("")
+    setYearFilter("")
+    setCampusFilter("")
   }
 
   const highSchoolLevelLabel = (level: string) => {
@@ -160,8 +171,38 @@ export default function StoriesPage() {
                     onChange={(e) => setFacultyFilter(e.target.value)}
                   />
                 </div>
+                <div>
+                  <label className="block text-sm font-semibold mb-2" style={{ color: '#02475f' }}>
+                    年度
+                  </label>
+                  <input
+                    type="number"
+                    className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    placeholder="例：2024"
+                    value={yearFilter}
+                    onChange={(e) => setYearFilter(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold mb-2" style={{ color: '#02475f' }}>
+                    校舎
+                  </label>
+                  <select
+                    className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    value={campusFilter}
+                    onChange={(e) => setCampusFilter(e.target.value)}
+                  >
+                    <option value="">すべて</option>
+                    <option value="武蔵小杉">武蔵小杉</option>
+                    <option value="下北沢">下北沢</option>
+                    <option value="自由が丘">自由が丘</option>
+                    <option value="渋谷">渋谷</option>
+                    <option value="オンライン">オンライン</option>
+                    <option value="青葉台">青葉台</option>
+                  </select>
+                </div>
               </div>
-              {(universityFilter || facultyFilter) && (
+              {(universityFilter || facultyFilter || yearFilter || campusFilter) && (
                 <div className="flex justify-end">
                   <button
                     onClick={clearFilters}
@@ -186,10 +227,10 @@ export default function StoriesPage() {
               <BookOpen className="w-10 h-10 text-gray-400" />
             </div>
             <p className="text-gray-600 text-lg">
-              {universityFilter || facultyFilter ? "条件に一致する体験談が見つかりませんでした" : "まだ体験談が投稿されていません"}
+              {universityFilter || facultyFilter || yearFilter || campusFilter ? "条件に一致する体験談が見つかりませんでした" : "まだ体験談が投稿されていません"}
             </p>
             <p className="text-gray-500 text-sm mt-2">
-              {universityFilter || facultyFilter ? "フィルターを変更してみてください" : "最初の体験談を投稿してみませんか？"}
+              {universityFilter || facultyFilter || yearFilter || campusFilter ? "フィルターを変更してみてください" : "最初の体験談を投稿してみませんか？"}
             </p>
           </div>
         ) : (

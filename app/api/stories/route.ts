@@ -9,6 +9,7 @@ export async function GET(request: NextRequest) {
     const university = searchParams.get("university")
     const faculty = searchParams.get("faculty")
     const year = searchParams.get("year")
+    const campus = searchParams.get("campus")
     const themeIds = searchParams.get("themeIds")?.split(",").map(Number)
 
     const where: any = {}
@@ -25,6 +26,12 @@ export async function GET(request: NextRequest) {
       where.year = parseInt(year)
     }
 
+    if (campus) {
+      where.author = {
+        campus: campus
+      }
+    }
+
     if (themeIds && themeIds.length > 0) {
       where.explorationThemes = {
         some: {
@@ -39,6 +46,7 @@ export async function GET(request: NextRequest) {
         author: {
           select: {
             name: true,
+            campus: true,
           }
         },
         explorationThemes: {
@@ -76,6 +84,7 @@ export async function POST(request: NextRequest) {
       admissionType,
       university,
       faculty,
+      year,
       explorationThemeIds,
       activityContent,
       activityResults,
@@ -107,6 +116,7 @@ export async function POST(request: NextRequest) {
         admissionType,
         university,
         faculty,
+        year: year || null,
         activityContent,
         activityResults,
         hasSportsAchievement,

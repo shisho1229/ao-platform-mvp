@@ -23,6 +23,7 @@ export default function NewStoryPage() {
     admissionType: "",
     university: "",
     faculty: "",
+    year: "",
     explorationThemeIds: [] as number[],
     activityContent: "",
     activityResults: "",
@@ -301,6 +302,23 @@ export default function NewStoryPage() {
                 />
               </div>
             )}
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                合格年度（任意）
+              </label>
+              <input
+                type="number"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                placeholder="例：2024"
+                min="2000"
+                max="2030"
+                value={formData.year}
+                onChange={(e) =>
+                  setFormData({ ...formData, year: e.target.value })
+                }
+              />
+            </div>
           </div>
 
           {/* 選考フロー */}

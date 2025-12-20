@@ -15,6 +15,7 @@ model User {
   password      String
   name          String
   role          UserRole
+  campus        String?   // 所属校舎
   approved      Boolean   @default(false) // 管理者による承認フラグ
 
   createdAt     DateTime  @default(now())
@@ -45,6 +46,7 @@ model GraduateStory {
   admissionType   String    // 入試方式（総合型選抜、学校推薦型選抜など）
   university      String
   faculty         String
+  year            Int?      // 合格年度
 
   // 探究・活動（多対多）
   explorationThemes StoryExplorationTheme[]

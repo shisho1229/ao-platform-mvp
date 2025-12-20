@@ -4,12 +4,12 @@ import bcrypt from "bcryptjs"
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password, name } = await request.json()
+    const { email, password, name, campus } = await request.json()
 
     // バリデーション
-    if (!email || !password || !name) {
+    if (!email || !password || !name || !campus) {
       return NextResponse.json(
-        { error: "メールアドレス、パスワード、名前は必須です" },
+        { error: "メールアドレス、パスワード、名前、所属校舎は必須です" },
         { status: 400 }
       )
     }
@@ -35,6 +35,7 @@ export async function POST(request: NextRequest) {
         email,
         password: hashedPassword,
         name,
+        campus,
         role: "USER",
         approved: false, // 管理者の承認待ち
       },
