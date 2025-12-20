@@ -26,19 +26,21 @@ export default function NewStoryPage() {
     faculty: "",
     year: "",
     explorationThemeIds: [] as number[],
-    activityContent: "",
     researchTheme: "",
     researchMotivation: "",
-    researchMethod: "",
+    researchDetails: "",
     targetProfessor: "",
     hasSportsAchievement: false,
-    sportsAchievement: "",
-    contestAchievement: "",
-    englishLevel: "LV0",
-    englishDetail: "",
+    sportsDetails: "",
+    sportsAchievements: [] as string[],
+    hasEnglishQualification: false,
+    englishQualification: "",
     hasStudyAbroad: false,
+    studyAbroadDetails: "",
     hasLeaderExperience: false,
-    leaderExperience: "",
+    leaderExperienceDetails: "",
+    hasContestAchievement: false,
+    contestAchievementDetails: "",
     interviewQuestions: "",
     // 選考フロー
     selectionFlowType: "",
@@ -117,6 +119,69 @@ export default function NewStoryPage() {
 
     if (formData.explorationThemeIds.length === 0) {
       setError("探究テーマを少なくとも1つ選択してください")
+      setIsLoading(false)
+      return
+    }
+
+    // 必須フィールドのチェック
+    if (!formData.researchTheme?.trim()) {
+      setError("探究テーマを入力してください")
+      setIsLoading(false)
+      return
+    }
+
+    if (!formData.researchMotivation?.trim()) {
+      setError("きっかけを入力してください")
+      setIsLoading(false)
+      return
+    }
+
+    if (!formData.researchDetails?.trim()) {
+      setError("探究活動の詳細を入力してください")
+      setIsLoading(false)
+      return
+    }
+
+    if (!formData.targetProfessor?.trim()) {
+      setError("大学で学びたい教授を入力してください")
+      setIsLoading(false)
+      return
+    }
+
+    // チェックボックスがONの場合の詳細フィールドの必須チェック
+    if (formData.hasSportsAchievement) {
+      if (!formData.sportsDetails?.trim()) {
+        setError("スポーツの競技名を入力してください")
+        setIsLoading(false)
+        return
+      }
+      if (formData.sportsAchievements.length === 0) {
+        setError("スポーツ実績を少なくとも1つ選択してください")
+        setIsLoading(false)
+        return
+      }
+    }
+
+    if (formData.hasEnglishQualification && !formData.englishQualification?.trim()) {
+      setError("英語資格の内容を入力してください")
+      setIsLoading(false)
+      return
+    }
+
+    if (formData.hasStudyAbroad && !formData.studyAbroadDetails?.trim()) {
+      setError("留学先と期間を入力してください")
+      setIsLoading(false)
+      return
+    }
+
+    if (formData.hasLeaderExperience && !formData.leaderExperienceDetails?.trim()) {
+      setError("リーダー経験の詳細を入力してください")
+      setIsLoading(false)
+      return
+    }
+
+    if (formData.hasContestAchievement && !formData.contestAchievementDetails?.trim()) {
+      setError("コンテスト実績の詳細を入力してください")
       setIsLoading(false)
       return
     }
@@ -365,7 +430,8 @@ export default function NewStoryPage() {
           <div className="space-y-4">
             <h2 className="text-xl font-semibold text-gray-900">実績</h2>
 
-            <div>
+            {/* スポーツ実績 */}
+            <div className="space-y-3">
               <label className="flex items-center space-x-2">
                 <input
                   type="checkbox"
@@ -374,6 +440,8 @@ export default function NewStoryPage() {
                     setFormData({
                       ...formData,
                       hasSportsAchievement: e.target.checked,
+                      sportsDetails: e.target.checked ? formData.sportsDetails : "",
+                      sportsAchievements: e.target.checked ? formData.sportsAchievements : [],
                     })
                   }
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
@@ -383,59 +451,116 @@ export default function NewStoryPage() {
                 </span>
               </label>
               {formData.hasSportsAchievement && (
-                <textarea
-                  className="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                  rows={2}
-                  placeholder="スポーツ実績の詳細"
-                  value={formData.sportsAchievement}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      sportsAchievement: e.target.value,
-                    })
-                  }
-                />
+                <div className="ml-6 space-y-3">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      競技名 *
+                    </label>
+                    <input
+                      type="text"
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                      placeholder="例：サッカー、バスケットボール"
+                      value={formData.sportsDetails}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          sportsDetails: e.target.value,
+                        })
+                      }
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      実績（複数選択可）*
+                    </label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                      {[
+                        "都道府県ベスト8",
+                        "都道府県優勝・準優勝",
+                        "地方大会出場（関東大会など）",
+                        "地方大会優勝・準優勝",
+                        "全国大会出場",
+                        "全国ベスト32",
+                        "全国ベスト16",
+                        "全国ベスト8",
+                        "全国ベスト4",
+                        "全国3位",
+                        "全国準優勝",
+                        "全国優勝",
+                        "世界大会出場",
+                        "日本代表選出",
+                      ].map((achievement) => (
+                        <label
+                          key={achievement}
+                          className="flex items-center space-x-2 p-2 border rounded hover:bg-gray-50"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={formData.sportsAchievements.includes(achievement)}
+                            onChange={(e) => {
+                              const newAchievements = e.target.checked
+                                ? [...formData.sportsAchievements, achievement]
+                                : formData.sportsAchievements.filter((a) => a !== achievement)
+                              setFormData({
+                                ...formData,
+                                sportsAchievements: newAchievements,
+                              })
+                            }}
+                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                          />
+                          <span className="text-sm text-gray-700">{achievement}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               )}
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                英語資格レベル *
+            {/* 英語資格 */}
+            <div className="space-y-3">
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={formData.hasEnglishQualification}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      hasEnglishQualification: e.target.checked,
+                      englishQualification: e.target.checked ? formData.englishQualification : "",
+                    })
+                  }
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <span className="text-sm font-medium text-gray-700">
+                  英語資格あり
+                </span>
               </label>
-              <select
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                required
-                value={formData.englishLevel}
-                onChange={(e) =>
-                  setFormData({ ...formData, englishLevel: e.target.value })
-                }
-              >
-                <option value="LV0">なし</option>
-                <option value="LV1">基礎（英検準2級程度）</option>
-                <option value="LV2">標準（英検2級 / CEFR B1）</option>
-                <option value="LV3">上位（英検準1級 / CEFR B2）</option>
-                <option value="LV4">
-                  最上位（英検1級 / IELTS6.5+ / TOEFL80+）
-                </option>
-              </select>
+              {formData.hasEnglishQualification && (
+                <div className="ml-6">
+                  <label className="block text-sm font-medium text-gray-700">
+                    資格内容 *
+                  </label>
+                  <textarea
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    rows={2}
+                    placeholder="例：英検準1級（高2取得）、TOEFL iBT 85点（高3取得）"
+                    value={formData.englishQualification}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        englishQualification: e.target.value,
+                      })
+                    }
+                    required
+                  />
+                </div>
+              )}
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                英語資格詳細（任意）
-              </label>
-              <input
-                type="text"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                placeholder="例：英検2級（高2取得）、TOEIC 750点"
-                value={formData.englishDetail}
-                onChange={(e) =>
-                  setFormData({ ...formData, englishDetail: e.target.value })
-                }
-              />
-            </div>
-
-            <div>
+            {/* 留学経験 */}
+            <div className="space-y-3">
               <label className="flex items-center space-x-2">
                 <input
                   type="checkbox"
@@ -444,6 +569,7 @@ export default function NewStoryPage() {
                     setFormData({
                       ...formData,
                       hasStudyAbroad: e.target.checked,
+                      studyAbroadDetails: e.target.checked ? formData.studyAbroadDetails : "",
                     })
                   }
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
@@ -452,9 +578,30 @@ export default function NewStoryPage() {
                   留学経験あり
                 </span>
               </label>
+              {formData.hasStudyAbroad && (
+                <div className="ml-6">
+                  <label className="block text-sm font-medium text-gray-700">
+                    留学先と期間 *
+                  </label>
+                  <textarea
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    rows={2}
+                    placeholder="例：アメリカ・カリフォルニア州（高1夏休み、3週間）"
+                    value={formData.studyAbroadDetails}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        studyAbroadDetails: e.target.value,
+                      })
+                    }
+                    required
+                  />
+                </div>
+              )}
             </div>
 
-            <div>
+            {/* リーダー経験 */}
+            <div className="space-y-3">
               <label className="flex items-center space-x-2">
                 <input
                   type="checkbox"
@@ -463,6 +610,7 @@ export default function NewStoryPage() {
                     setFormData({
                       ...formData,
                       hasLeaderExperience: e.target.checked,
+                      leaderExperienceDetails: e.target.checked ? formData.leaderExperienceDetails : "",
                     })
                   }
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
@@ -472,37 +620,66 @@ export default function NewStoryPage() {
                 </span>
               </label>
               {formData.hasLeaderExperience && (
-                <input
-                  type="text"
-                  className="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                  placeholder="例：生徒会副会長、部長など"
-                  value={formData.leaderExperience}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      leaderExperience: e.target.value,
-                    })
-                  }
-                />
+                <div className="ml-6">
+                  <label className="block text-sm font-medium text-gray-700">
+                    詳細 *
+                  </label>
+                  <textarea
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    rows={2}
+                    placeholder="例：生徒会副会長（高3）、サッカー部キャプテン（高3）"
+                    value={formData.leaderExperienceDetails}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        leaderExperienceDetails: e.target.value,
+                      })
+                    }
+                    required
+                  />
+                </div>
               )}
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                コンテスト実績（任意）
+            {/* コンテスト実績 */}
+            <div className="space-y-3">
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={formData.hasContestAchievement}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      hasContestAchievement: e.target.checked,
+                      contestAchievementDetails: e.target.checked ? formData.contestAchievementDetails : "",
+                    })
+                  }
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <span className="text-sm font-medium text-gray-700">
+                  コンテスト実績あり
+                </span>
               </label>
-              <textarea
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                rows={3}
-                placeholder="コンテストでの受賞歴や実績があれば記入してください"
-                value={formData.contestAchievement}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    contestAchievement: e.target.value,
-                  })
-                }
-              />
+              {formData.hasContestAchievement && (
+                <div className="ml-6">
+                  <label className="block text-sm font-medium text-gray-700">
+                    詳細 *
+                  </label>
+                  <textarea
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    rows={3}
+                    placeholder="例：U-22プログラミングコンテストでファイナリスト、科学オリンピック銀メダル"
+                    value={formData.contestAchievementDetails}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        contestAchievementDetails: e.target.value,
+                      })
+                    }
+                    required
+                  />
+                </div>
+              )}
             </div>
           </div>
 
@@ -540,27 +717,13 @@ export default function NewStoryPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                活動内容（任意）
-              </label>
-              <textarea
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                rows={4}
-                placeholder="どのような活動をしましたか？"
-                value={formData.activityContent}
-                onChange={(e) =>
-                  setFormData({ ...formData, activityContent: e.target.value })
-                }
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                探究テーマ（任意）
+                探究テーマ *
               </label>
               <textarea
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 rows={3}
                 placeholder="研究や探究活動のテーマを教えてください"
+                required
                 value={formData.researchTheme}
                 onChange={(e) =>
                   setFormData({ ...formData, researchTheme: e.target.value })
@@ -570,12 +733,13 @@ export default function NewStoryPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                きっかけ（任意）
+                きっかけ *
               </label>
               <textarea
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 rows={3}
                 placeholder="そのテーマに興味を持ったきっかけを教えてください"
+                required
                 value={formData.researchMotivation}
                 onChange={(e) =>
                   setFormData({ ...formData, researchMotivation: e.target.value })
@@ -585,27 +749,29 @@ export default function NewStoryPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                探究活動方法（任意）
+                探究活動の詳細 *
               </label>
               <textarea
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                rows={3}
-                placeholder="どのような方法で探究活動を行いましたか？"
-                value={formData.researchMethod}
+                rows={4}
+                placeholder="どのような方法で探究活動を行いましたか？具体的に記述してください"
+                required
+                value={formData.researchDetails}
                 onChange={(e) =>
-                  setFormData({ ...formData, researchMethod: e.target.value })
+                  setFormData({ ...formData, researchDetails: e.target.value })
                 }
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                大学で学びたい教授（任意）
+                大学で学びたい教授 *
               </label>
               <textarea
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 rows={2}
                 placeholder="大学でどの教授のもとで学びたいかを教えてください"
+                required
                 value={formData.targetProfessor}
                 onChange={(e) =>
                   setFormData({ ...formData, targetProfessor: e.target.value })

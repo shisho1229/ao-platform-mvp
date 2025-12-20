@@ -52,21 +52,23 @@ model GraduateStory {
 
   // 探究・活動（多対多）
   explorationThemes StoryExplorationTheme[]
-  activityContent String?   @db.Text
-  researchTheme   String?   @db.Text  // 探究テーマ
-  researchMotivation String? @db.Text  // きっかけ
-  researchMethod  String?   @db.Text  // 探究活動方法
-  targetProfessor String?   @db.Text  // 大学で学びたい教授
+  researchTheme   String?   @db.Text  // 探究テーマ（必須）
+  researchMotivation String? @db.Text  // きっかけ（必須）
+  researchDetails String?   @db.Text  // 探究活動の詳細（必須）
+  targetProfessor String?   @db.Text  // 大学で学びたい教授（必須）
 
   // 実績
   hasSportsAchievement Boolean @default(false)
-  sportsAchievement String?   @db.Text
-  contestAchievement String?  @db.Text  // コンテスト実績
-  englishLevel      EnglishLevel
-  englishDetail     String?   // 資格種類・スコア・取得時期
+  sportsDetails     String?   @db.Text  // 競技名
+  sportsAchievements String[] // 実績（複数選択）
+  hasEnglishQualification Boolean @default(false)
+  englishQualification String?   @db.Text // 英語資格の詳細
   hasStudyAbroad    Boolean   @default(false)
+  studyAbroadDetails String?  @db.Text  // 留学先と期間
   hasLeaderExperience Boolean @default(false)
-  leaderExperience  String?   // 部長、生徒会など
+  leaderExperienceDetails String?   @db.Text // リーダー経験の詳細
+  hasContestAchievement Boolean @default(false)
+  contestAchievementDetails String? @db.Text // コンテスト実績の詳細
 
   // 選考情報
   interviewQuestions String?  @db.Text
@@ -116,14 +118,6 @@ enum GradeAverage {
   RANGE_3  // 3.6-4.0
   RANGE_4  // 4.1-4.5
   RANGE_5  // 4.6~
-}
-
-enum EnglishLevel {
-  LV0  // なし
-  LV1  // 基礎（英検準2級程度）
-  LV2  // 標準（英検2級 / CEFR B1）
-  LV3  // 上位（英検準1級 / CEFR B2）
-  LV4  // 最上位（英検1級 / IELTS6.5+ / TOEFL80+）
 }
 
 // 探究テーマ（固定12分類）
