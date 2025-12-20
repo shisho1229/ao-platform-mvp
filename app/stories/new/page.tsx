@@ -339,190 +339,6 @@ export default function NewStoryPage() {
             </div>
           </div>
 
-          {/* 選考フロー */}
-          {(formData.admissionType === "春AO" || formData.admissionType === "夏秋AO" || formData.admissionType === "自己推薦入試") && (
-            <div className="space-y-4">
-              <h2 className="text-xl font-semibold text-gray-900">選考フロー</h2>
-
-              {(formData.admissionType === "春AO" || formData.admissionType === "夏秋AO") && (
-                <>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      一次選考（書類選考）の結果 *
-                    </label>
-                    <select
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                      required
-                      value={formData.firstRoundResult}
-                      onChange={(e) =>
-                        setFormData({ ...formData, firstRoundResult: e.target.value })
-                      }
-                    >
-                      <option value="">選択してください</option>
-                      <option value="合格">合格</option>
-                      <option value="不合格">不合格</option>
-                    </select>
-                  </div>
-
-                  {formData.firstRoundResult === "合格" && (
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">
-                        二次選考（面接）の結果 *
-                      </label>
-                      <select
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                        required
-                        value={formData.secondRoundResult}
-                        onChange={(e) =>
-                          setFormData({ ...formData, secondRoundResult: e.target.value })
-                        }
-                      >
-                        <option value="">選択してください</option>
-                        <option value="合格">合格</option>
-                        <option value="不合格">不合格</option>
-                      </select>
-                    </div>
-                  )}
-                </>
-              )}
-
-              {formData.admissionType === "自己推薦入試" && (
-                <>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      書類提出
-                    </label>
-                    <p className="mt-1 text-sm text-gray-500">
-                      書類を提出しました
-                    </p>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      論述試験の結果 *
-                    </label>
-                    <select
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                      required
-                      value={formData.secondRoundResult}
-                      onChange={(e) =>
-                        setFormData({ ...formData, secondRoundResult: e.target.value })
-                      }
-                    >
-                      <option value="">選択してください</option>
-                      <option value="合格">合格</option>
-                      <option value="不合格">不合格</option>
-                    </select>
-                  </div>
-                </>
-              )}
-            </div>
-          )}
-
-          {/* 選考情報 */}
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-gray-900">選考情報</h2>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                面接で聞かれた内容（任意）
-              </label>
-              <textarea
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                rows={4}
-                placeholder="面接での質問内容を教えてください"
-                value={formData.interviewQuestions}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    interviewQuestions: e.target.value,
-                  })
-                }
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                提出書類の大まかなテーマ（任意）
-              </label>
-              <textarea
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                rows={3}
-                placeholder="志望理由書や活動報告書のテーマ"
-                value={formData.documentThemes}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    documentThemes: e.target.value,
-                  })
-                }
-              />
-            </div>
-          </div>
-
-          {/* 探究テーマ */}
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-gray-900">
-              探究テーマ（複数選択可）*
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {themes.map((theme) => (
-                <label
-                  key={theme.id}
-                  className="flex items-center space-x-3 p-3 border rounded-md hover:bg-gray-50 cursor-pointer"
-                >
-                  <input
-                    type="checkbox"
-                    checked={formData.explorationThemeIds.includes(theme.id)}
-                    onChange={() => handleThemeToggle(theme.id)}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  />
-                  <div>
-                    <span className="text-sm font-medium text-gray-900">
-                      {theme.name}
-                    </span>
-                    <p className="text-xs text-gray-500">{theme.description}</p>
-                  </div>
-                </label>
-              ))}
-            </div>
-          </div>
-
-          {/* 活動内容 */}
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-gray-900">探究・活動</h2>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                活動内容（任意）
-              </label>
-              <textarea
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                rows={4}
-                placeholder="どのような活動をしましたか？"
-                value={formData.activityContent}
-                onChange={(e) =>
-                  setFormData({ ...formData, activityContent: e.target.value })
-                }
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                活動実績（任意）
-              </label>
-              <textarea
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                rows={4}
-                placeholder="活動の成果や実績を教えてください"
-                value={formData.activityResults}
-                onChange={(e) =>
-                  setFormData({ ...formData, activityResults: e.target.value })
-                }
-              />
-            </div>
-          </div>
-
           {/* 実績 */}
           <div className="space-y-4">
             <h2 className="text-xl font-semibold text-gray-900">実績</h2>
@@ -650,6 +466,190 @@ export default function NewStoryPage() {
             </div>
           </div>
 
+          {/* 探究テーマ */}
+          <div className="space-y-4">
+            <h2 className="text-xl font-semibold text-gray-900">
+              探究テーマ（複数選択可）*
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {themes.map((theme) => (
+                <label
+                  key={theme.id}
+                  className="flex items-center space-x-3 p-3 border rounded-md hover:bg-gray-50 cursor-pointer"
+                >
+                  <input
+                    type="checkbox"
+                    checked={formData.explorationThemeIds.includes(theme.id)}
+                    onChange={() => handleThemeToggle(theme.id)}
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  />
+                  <div>
+                    <span className="text-sm font-medium text-gray-900">
+                      {theme.name}
+                    </span>
+                    <p className="text-xs text-gray-500">{theme.description}</p>
+                  </div>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* 探究・活動 */}
+          <div className="space-y-4">
+            <h2 className="text-xl font-semibold text-gray-900">探究・活動</h2>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                活動内容（任意）
+              </label>
+              <textarea
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                rows={4}
+                placeholder="どのような活動をしましたか？"
+                value={formData.activityContent}
+                onChange={(e) =>
+                  setFormData({ ...formData, activityContent: e.target.value })
+                }
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                活動実績（任意）
+              </label>
+              <textarea
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                rows={4}
+                placeholder="活動の成果や実績を教えてください"
+                value={formData.activityResults}
+                onChange={(e) =>
+                  setFormData({ ...formData, activityResults: e.target.value })
+                }
+              />
+            </div>
+          </div>
+
+          {/* 選考情報 */}
+          <div className="space-y-4">
+            <h2 className="text-xl font-semibold text-gray-900">選考情報</h2>
+
+            {/* 選考フロー */}
+            {(formData.admissionType === "春AO" || formData.admissionType === "夏秋AO" || formData.admissionType === "自己推薦入試") && (
+              <div className="space-y-4 border-l-4 border-blue-500 pl-4">
+                <h3 className="text-lg font-medium text-gray-900">選考フロー</h3>
+
+                {(formData.admissionType === "春AO" || formData.admissionType === "夏秋AO") && (
+                  <>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        一次選考（書類選考）の結果 *
+                      </label>
+                      <select
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        required
+                        value={formData.firstRoundResult}
+                        onChange={(e) =>
+                          setFormData({ ...formData, firstRoundResult: e.target.value })
+                        }
+                      >
+                        <option value="">選択してください</option>
+                        <option value="合格">合格</option>
+                        <option value="不合格">不合格</option>
+                      </select>
+                    </div>
+
+                    {formData.firstRoundResult === "合格" && (
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700">
+                          二次選考（面接）の結果 *
+                        </label>
+                        <select
+                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                          required
+                          value={formData.secondRoundResult}
+                          onChange={(e) =>
+                            setFormData({ ...formData, secondRoundResult: e.target.value })
+                          }
+                        >
+                          <option value="">選択してください</option>
+                          <option value="合格">合格</option>
+                          <option value="不合格">不合格</option>
+                        </select>
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {formData.admissionType === "自己推薦入試" && (
+                  <>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        書類提出
+                      </label>
+                      <p className="mt-1 text-sm text-gray-500">
+                        書類を提出しました
+                      </p>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        論述試験の結果 *
+                      </label>
+                      <select
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        required
+                        value={formData.secondRoundResult}
+                        onChange={(e) =>
+                          setFormData({ ...formData, secondRoundResult: e.target.value })
+                        }
+                      >
+                        <option value="">選択してください</option>
+                        <option value="合格">合格</option>
+                        <option value="不合格">不合格</option>
+                      </select>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                面接で聞かれた内容（任意）
+              </label>
+              <textarea
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                rows={4}
+                placeholder="面接での質問内容を教えてください"
+                value={formData.interviewQuestions}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    interviewQuestions: e.target.value,
+                  })
+                }
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                提出書類の大まかなテーマ（任意）
+              </label>
+              <textarea
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                rows={3}
+                placeholder="志望理由書や活動報告書のテーマ"
+                value={formData.documentThemes}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    documentThemes: e.target.value,
+                  })
+                }
+              />
+            </div>
+          </div>
+
           {/* 併願校 */}
           <div className="space-y-4">
             <h2 className="text-xl font-semibold text-gray-900">
@@ -740,22 +740,21 @@ export default function NewStoryPage() {
                 }
               />
             </div>
-          </div>
 
-          {/* 後輩へのアドバイス */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              後輩へのアドバイス（任意）
-            </label>
-            <textarea
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              rows={4}
-              placeholder="後輩に伝えたいことを自由に書いてください"
-              value={formData.adviceToJuniors}
-              onChange={(e) =>
-                setFormData({ ...formData, adviceToJuniors: e.target.value })
-              }
-            />
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                後輩へのアドバイス（任意）
+              </label>
+              <textarea
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                rows={4}
+                placeholder="後輩に伝えたいことを自由に書いてください"
+                value={formData.adviceToJuniors}
+                onChange={(e) =>
+                  setFormData({ ...formData, adviceToJuniors: e.target.value })
+                }
+              />
+            </div>
           </div>
 
           {/* 同意チェックボックス */}
