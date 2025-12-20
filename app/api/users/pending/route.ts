@@ -6,7 +6,7 @@ import { requireRole } from "@/lib/auth"
 export async function GET(request: NextRequest) {
   try {
     // 管理者権限チェック
-    await requireRole(["ADMIN"])
+    await requireRole(["SUPER_ADMIN", "ADMIN", "STAFF"])
 
     // 承認待ちのユーザーを取得
     const pendingUsers = await prisma.user.findMany({
