@@ -25,13 +25,13 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="bg-white shadow-sm">
+    <nav style={{ background: '#1e3a5f', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
-              <Link href="/" className="text-xl font-bold" style={{ color: '#02475f' }}>
-                loohcs志塾 合格者体験談
+              <Link href="/" className="text-xl font-bold" style={{ color: '#f0f4f8' }}>
+                Loohcs志塾 合格者体験談
               </Link>
             </div>
             <div className="hidden sm:ml-8 sm:flex sm:space-x-8">
@@ -39,11 +39,11 @@ export default function Navbar() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                    pathname === item.href
-                      ? "border-blue-500 text-gray-900"
-                      : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                  }`}
+                  className="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                  style={{
+                    borderColor: pathname === item.href ? '#d4af37' : 'transparent',
+                    color: pathname === item.href ? '#d4af37' : '#e8eef5'
+                  }}
                 >
                   {item.name}
                 </Link>
@@ -51,15 +51,16 @@ export default function Navbar() {
             </div>
           </div>
           <div className="flex items-center space-x-4">
-            <div className="text-sm text-gray-600">
+            <div className="text-sm" style={{ color: '#e8eef5' }}>
               <span className="font-medium">{session.user.name}</span>
-              <span className="ml-2 text-xs text-gray-500">
+              <span className="ml-2 text-xs" style={{ color: '#b8c5d0' }}>
                 ({roleLabel[session.user.role]})
               </span>
             </div>
             <button
               onClick={() => signOut()}
-              className="text-sm text-gray-600 hover:text-gray-900"
+              className="text-sm"
+              style={{ color: '#e8eef5' }}
             >
               ログアウト
             </button>

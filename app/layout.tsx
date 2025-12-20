@@ -5,8 +5,8 @@ import Navbar from "@/components/Navbar";
 import AuthGuard from "@/components/AuthGuard";
 
 export const metadata: Metadata = {
-  title: "合格体験談プラットフォーム",
-  description: "合格者の体験談を共有・検索できるプラットフォーム",
+  title: "Loohcs志塾 合格者体験談",
+  description: "志を抱く、場所となる。どんな受験生も、どんな志望校も、人生が変わるほどの成長と合格を掴み取れます。",
 };
 
 export default function RootLayout({
