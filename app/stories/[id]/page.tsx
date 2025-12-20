@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
+import { Heart } from "lucide-react"
 
 interface Story {
   id: string
@@ -48,6 +49,8 @@ export default function StoryDetailPage() {
   const { data: session } = useSession()
   const [story, setStory] = useState<Story | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [isFavorited, setIsFavorited] = useState(false)
+  const [isFavoriteLoading, setIsFavoriteLoading] = useState(false)
 
   useEffect(() => {
     if (params.id) {
@@ -68,6 +71,46 @@ export default function StoryDetailPage() {
       setIsLoading(false)
     }
   }
+
+  const checkFavoriteStatus = async (storyId: string) => {
+    if (!session?.user) return
+    try {
+      const res = await fetch('/api/favorites')
+      if (res.ok) {
+        const favorites = await res.json()
+        const isFav = favorites.some((fav: any) => fav.storyId === storyId)
+        setIsFavorited(isFav)
+      }
+    } catch (error) {
+      console.error("Error checking favorite status:", error)
+    }
+  }
+
+  const toggleFavorite = async () => {
+    if (!story || !session?.user) return
+
+    setIsFavoriteLoading(true)
+    try {
+      const method = isFavorited ? 'DELETE' : 'POST'
+      const res = await fetch(`/api/stories/${story.id}/favorite`, {
+        method,
+      })
+
+      if (res.ok) {
+        setIsFavorited(!isFavorited)
+      }
+    } catch (error) {
+      console.error("Error toggling favorite:", error)
+    } finally {
+      setIsFavoriteLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    if (story && session?.user) {
+      checkFavoriteStatus(story.id)
+    }
+  }, [story, session])
 
   const labels = {
     highSchoolLevel: {
@@ -139,11 +182,29 @@ export default function StoryDetailPage() {
 
         <div className="bg-white rounded-lg shadow-lg p-8 space-y-8">
           {/* ヘッダー */}
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              {story.university} {story.faculty}
-            </h1>
-            <p className="text-gray-600">{story.admissionType}</p>
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                {story.university} {story.faculty}
+              </h1>
+              <p className="text-gray-600">{story.admissionType}</p>
+            </div>
+            {session?.user && (
+              <button
+                onClick={toggleFavorite}
+                disabled={isFavoriteLoading}
+                className={`flex-shrink-0 ml-4 p-3 rounded-full transition-all duration-200 ${
+                  isFavorited
+                    ? 'bg-red-500 hover:bg-red-600 text-white'
+                    : 'bg-gray-100 hover:bg-gray-200 text-gray-600'
+                }`}
+                title={isFavorited ? 'お気に入りから削除' : 'お気に入りに追加'}
+              >
+                <Heart
+                  className={`w-6 h-6 ${isFavorited ? 'fill-current' : ''}`}
+                />
+              </button>
+            )}
           </div>
 
           {/* 基礎属性 */}

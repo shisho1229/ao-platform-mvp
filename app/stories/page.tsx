@@ -4,20 +4,20 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
-import { BookOpen, TrendingUp, Award, Globe, Users, GraduationCap, Filter } from "lucide-react"
+import { BookOpen, Users, GraduationCap, Filter, Award } from "lucide-react"
 
 interface Story {
   id: string
   university: string
   faculty: string
   highSchoolLevel: string
+  highSchoolName?: string
   gradeAverage: string
   admissionType: string
-  englishLevel: string
-  hasStudyAbroad: boolean
-  hasSportsAchievement: boolean
-  hasLeaderExperience: boolean
   year?: number
+  firstRoundResult?: string
+  secondRoundResult?: string
+  authorName?: string
   author: {
     name: string
     campus?: string
@@ -79,36 +79,16 @@ export default function StoriesPage() {
     setCampusFilter("")
   }
 
-  const highSchoolLevelLabel = (level: string) => {
-    const labels: Record<string, string> = {
-      LEVEL_1: "~50",
-      LEVEL_2: "51-60",
-      LEVEL_3: "61-70",
-      LEVEL_4: "71~",
+  const getAdmissionResult = (firstRound?: string, secondRound?: string) => {
+    // 最終選考で合格している場合
+    if (secondRound && ["合格", "AB合格", "A合格", "B合格"].includes(secondRound)) {
+      return { label: "合格", color: "bg-green-500" }
     }
-    return labels[level] || level
-  }
-
-  const gradeAverageLabel = (grade: string) => {
-    const labels: Record<string, string> = {
-      RANGE_1: "~3.0",
-      RANGE_2: "3.1-3.5",
-      RANGE_3: "3.6-4.0",
-      RANGE_4: "4.1-4.5",
-      RANGE_5: "4.6~",
+    // 一次選考のみ合格（最終選考結果がない）
+    if (firstRound && ["合格", "AB合格", "A合格", "B合格"].includes(firstRound)) {
+      return { label: "一次合格", color: "bg-blue-500" }
     }
-    return labels[grade] || grade
-  }
-
-  const englishLevelLabel = (level: string) => {
-    const labels: Record<string, string> = {
-      LV0: "なし",
-      LV1: "基礎",
-      LV2: "標準",
-      LV3: "上位",
-      LV4: "最上位",
-    }
-    return labels[level] || level
+    return null
   }
 
   return (
@@ -281,41 +261,43 @@ export default function StoriesPage() {
                       <div className="inline-block px-3 py-1 bg-orange-500 text-white text-xs font-semibold rounded-full">
                         {story.admissionType}
                       </div>
+                      {story.year && (
+                        <div className="inline-block px-3 py-1 bg-white/20 backdrop-blur-sm text-white text-xs font-semibold rounded-full">
+                          {story.year}年度
+                        </div>
+                      )}
+                      {(() => {
+                        const result = getAdmissionResult(story.firstRoundResult, story.secondRoundResult)
+                        return result ? (
+                          <div className={`inline-block px-3 py-1 ${result.color} text-white text-xs font-semibold rounded-full`}>
+                            {result.label}
+                          </div>
+                        ) : null
+                      })()}
                     </div>
                   </div>
                 </div>
 
                 {/* カードボディ */}
                 <div className="p-6">
-                  {/* スペック情報 */}
-                  <div className="grid grid-cols-2 gap-3 mb-4">
-                    <div className="flex items-center gap-2 p-3 rounded-lg" style={{ backgroundColor: '#f0f4f5' }}>
-                      <TrendingUp className="w-4 h-4 flex-shrink-0" style={{ color: '#044465' }} />
-                      <div className="min-w-0">
-                        <p className="text-xs text-gray-600">偏差値</p>
-                        <p className="text-sm font-bold truncate" style={{ color: '#044465' }}>
-                          {highSchoolLevelLabel(story.highSchoolLevel)}
+                  {/* 投稿者情報 */}
+                  <div className="mb-4 p-4 rounded-lg" style={{ backgroundColor: '#f0f4f5' }}>
+                    {story.highSchoolName && (
+                      <div className="flex items-center gap-2 mb-2">
+                        <GraduationCap className="w-4 h-4 flex-shrink-0" style={{ color: '#044465' }} />
+                        <p className="text-sm font-semibold" style={{ color: '#044465' }}>
+                          {story.highSchoolName}
                         </p>
                       </div>
-                    </div>
-                    <div className="flex items-center gap-2 p-3 rounded-lg" style={{ backgroundColor: '#f0f4f5' }}>
-                      <Award className="w-4 h-4 flex-shrink-0" style={{ color: '#055a7a' }} />
-                      <div className="min-w-0">
-                        <p className="text-xs text-gray-600">評定</p>
-                        <p className="text-sm font-bold truncate" style={{ color: '#044465' }}>
-                          {gradeAverageLabel(story.gradeAverage)}
+                    )}
+                    {story.authorName && (
+                      <div className="flex items-center gap-2">
+                        <Users className="w-4 h-4 flex-shrink-0" style={{ color: '#055a7a' }} />
+                        <p className="text-sm" style={{ color: '#044465' }}>
+                          {story.authorName}
                         </p>
                       </div>
-                    </div>
-                    <div className="flex items-center gap-2 p-3 rounded-lg col-span-2" style={{ backgroundColor: '#f0f4f5' }}>
-                      <Globe className="w-4 h-4 flex-shrink-0" style={{ color: '#055a7a' }} />
-                      <div className="min-w-0">
-                        <p className="text-xs text-gray-600">英語レベル</p>
-                        <p className="text-sm font-bold truncate" style={{ color: '#044465' }}>
-                          {englishLevelLabel(story.englishLevel)}
-                        </p>
-                      </div>
-                    </div>
+                    )}
                   </div>
 
                   {/* 探究テーマタグ */}
@@ -338,30 +320,6 @@ export default function StoriesPage() {
                           </span>
                         )}
                       </div>
-                    </div>
-                  )}
-
-                  {/* 特徴バッジ */}
-                  {(story.hasSportsAchievement || story.hasStudyAbroad || story.hasLeaderExperience) && (
-                    <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-100">
-                      {story.hasSportsAchievement && (
-                        <span className="inline-flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-orange-50 to-orange-100 text-orange-700 text-xs font-semibold rounded-full border border-orange-200">
-                          <Award className="w-3 h-3" />
-                          スポーツ
-                        </span>
-                      )}
-                      {story.hasStudyAbroad && (
-                        <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-full border" style={{ background: 'linear-gradient(to right, #f0f4f5, #bac9d0)', color: '#044465', borderColor: '#bac9d0' }}>
-                          <Globe className="w-3 h-3" />
-                          留学
-                        </span>
-                      )}
-                      {story.hasLeaderExperience && (
-                        <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-full border" style={{ background: 'linear-gradient(to right, #f0f4f5, #bac9d0)', color: '#044465', borderColor: '#bac9d0' }}>
-                          <Users className="w-3 h-3" />
-                          リーダー
-                        </span>
-                      )}
                     </div>
                   )}
 
