@@ -31,8 +31,11 @@ export default function Navbar() {
         <div className="flex justify-between h-16">
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
-              <Link href="/" className="text-xl font-bold" style={{ color: '#f0f4f8' }}>
-                Loohcs志塾 合格者体験談
+              <Link href="/" className="flex items-center space-x-3">
+                <img src="/loohcs-logo.svg" alt="Loohcs志塾" className="h-10 w-10" />
+                <span className="text-xl font-bold" style={{ color: '#f0f4f8' }}>
+                  Loohcs志塾 合格者体験談
+                </span>
               </Link>
             </div>
             <div className="hidden sm:ml-8 sm:flex sm:space-x-8">

@@ -35,6 +35,10 @@ export default function NewStoryPage() {
     leaderExperience: "",
     interviewQuestions: "",
     documentThemes: "",
+    // 選考フロー
+    selectionFlowType: "",
+    firstRoundResult: "",
+    secondRoundResult: "",
     preparationMethod: "",
     materials: "",
     adviceToJuniors: "",
@@ -201,52 +205,183 @@ export default function NewStoryPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                入試方式 *
-              </label>
-              <input
-                type="text"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                placeholder="例：総合型選抜、学校推薦型選抜"
-                required
-                value={formData.admissionType}
-                onChange={(e) =>
-                  setFormData({ ...formData, admissionType: e.target.value })
-                }
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
                 志望大学 *
               </label>
-              <input
-                type="text"
+              <select
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                placeholder="例：早稲田大学"
                 required
                 value={formData.university}
                 onChange={(e) =>
-                  setFormData({ ...formData, university: e.target.value })
+                  setFormData({ ...formData, university: e.target.value, faculty: "", admissionType: "" })
                 }
-              />
+              >
+                <option value="">選択してください</option>
+                <option value="慶應義塾大学">慶應義塾大学</option>
+                <option value="その他">その他</option>
+              </select>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                学部 *
-              </label>
-              <input
-                type="text"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                placeholder="例：政治経済学部"
-                required
-                value={formData.faculty}
-                onChange={(e) =>
-                  setFormData({ ...formData, faculty: e.target.value })
-                }
-              />
-            </div>
+            {formData.university === "慶應義塾大学" && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  学部 *
+                </label>
+                <select
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  required
+                  value={formData.faculty}
+                  onChange={(e) =>
+                    setFormData({ ...formData, faculty: e.target.value })
+                  }
+                >
+                  <option value="">選択してください</option>
+                  <option value="法学部政治学科">法学部政治学科</option>
+                  <option value="法学部法律学科">法学部法律学科</option>
+                  <option value="総合政策学部">総合政策学部</option>
+                  <option value="環境情報学部">環境情報学部</option>
+                  <option value="文学部">文学部</option>
+                </select>
+              </div>
+            )}
+
+            {formData.university === "その他" && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  学部 *
+                </label>
+                <input
+                  type="text"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  placeholder="例：政治経済学部"
+                  required
+                  value={formData.faculty}
+                  onChange={(e) =>
+                    setFormData({ ...formData, faculty: e.target.value })
+                  }
+                />
+              </div>
+            )}
+
+            {formData.university === "慶應義塾大学" && formData.faculty && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  入試方式 *
+                </label>
+                <select
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  required
+                  value={formData.admissionType}
+                  onChange={(e) =>
+                    setFormData({ ...formData, admissionType: e.target.value, selectionFlowType: e.target.value })
+                  }
+                >
+                  <option value="">選択してください</option>
+                  <option value="FIT入試">FIT入試</option>
+                  <option value="春AO">春AO</option>
+                  <option value="夏秋AO">夏秋AO</option>
+                  <option value="自己推薦入試">自己推薦入試</option>
+                </select>
+              </div>
+            )}
+
+            {formData.university === "その他" && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  入試方式 *
+                </label>
+                <input
+                  type="text"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  placeholder="例：総合型選抜、学校推薦型選抜"
+                  required
+                  value={formData.admissionType}
+                  onChange={(e) =>
+                    setFormData({ ...formData, admissionType: e.target.value })
+                  }
+                />
+              </div>
+            )}
           </div>
+
+          {/* 選考フロー */}
+          {(formData.admissionType === "春AO" || formData.admissionType === "夏秋AO" || formData.admissionType === "自己推薦入試") && (
+            <div className="space-y-4">
+              <h2 className="text-xl font-semibold text-gray-900">選考フロー</h2>
+
+              {(formData.admissionType === "春AO" || formData.admissionType === "夏秋AO") && (
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      一次選考（書類選考）の結果 *
+                    </label>
+                    <select
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                      required
+                      value={formData.firstRoundResult}
+                      onChange={(e) =>
+                        setFormData({ ...formData, firstRoundResult: e.target.value })
+                      }
+                    >
+                      <option value="">選択してください</option>
+                      <option value="合格">合格</option>
+                      <option value="不合格">不合格</option>
+                    </select>
+                  </div>
+
+                  {formData.firstRoundResult === "合格" && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        二次選考（面接）の結果 *
+                      </label>
+                      <select
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        required
+                        value={formData.secondRoundResult}
+                        onChange={(e) =>
+                          setFormData({ ...formData, secondRoundResult: e.target.value })
+                        }
+                      >
+                        <option value="">選択してください</option>
+                        <option value="合格">合格</option>
+                        <option value="不合格">不合格</option>
+                      </select>
+                    </div>
+                  )}
+                </>
+              )}
+
+              {formData.admissionType === "自己推薦入試" && (
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      書類提出
+                    </label>
+                    <p className="mt-1 text-sm text-gray-500">
+                      書類を提出しました
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      論述試験の結果 *
+                    </label>
+                    <select
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                      required
+                      value={formData.secondRoundResult}
+                      onChange={(e) =>
+                        setFormData({ ...formData, secondRoundResult: e.target.value })
+                      }
+                    >
+                      <option value="">選択してください</option>
+                      <option value="合格">合格</option>
+                      <option value="不合格">不合格</option>
+                    </select>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
 
           {/* 選考情報 */}
           <div className="space-y-4">
