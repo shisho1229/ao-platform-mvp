@@ -36,14 +36,9 @@ export async function isStaff() {
   return user?.role === "STAFF" || user?.role === "ADMIN"
 }
 
-export async function isGraduate() {
+export async function isUser() {
   const user = await getCurrentUser()
-  return user?.role === "GRADUATE"
-}
-
-export async function isStudent() {
-  const user = await getCurrentUser()
-  return user?.role === "STUDENT"
+  return user?.role === "USER"
 }
 
 export function canViewDocuments(userRole: UserRole) {
@@ -51,7 +46,7 @@ export function canViewDocuments(userRole: UserRole) {
 }
 
 export function canCreateStory(userRole: UserRole) {
-  return userRole === "GRADUATE"
+  return userRole === "USER"
 }
 
 export function canUploadDocument(userRole: UserRole) {

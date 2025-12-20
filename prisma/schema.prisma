@@ -28,8 +28,7 @@ model User {
 enum UserRole {
   ADMIN
   STAFF
-  GRADUATE
-  STUDENT
+  USER
 }
 
 // 合格体験談（生徒も閲覧可能）

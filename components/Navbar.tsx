@@ -21,8 +21,7 @@ export default function Navbar() {
   const roleLabel = {
     ADMIN: "管理者",
     STAFF: "スタッフ",
-    GRADUATE: "合格者",
-    STUDENT: "生徒",
+    USER: "ユーザー",
   }
 
   return (
@@ -31,8 +30,8 @@ export default function Navbar() {
         <div className="flex justify-between h-16">
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
-              <Link href="/" className="text-xl font-bold text-blue-600">
-                合格体験談プラットフォーム
+              <Link href="/" className="text-xl font-bold" style={{ color: '#02475f' }}>
+                loohcs志塾 合格者体験談
               </Link>
             </div>
             <div className="hidden sm:ml-8 sm:flex sm:space-x-8">

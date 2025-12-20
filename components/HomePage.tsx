@@ -60,7 +60,7 @@ export default function HomePage() {
             </p>
           </Link>
 
-          {session?.user?.role === 'GRADUATE' && (
+          {session?.user?.role === 'USER' && (
             <Link href="/stories/new" className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
               <Award className="w-12 h-12 text-blue-600 mb-4" />
               <h3 className="text-xl font-bold text-gray-900 mb-2">体験談投稿</h3>

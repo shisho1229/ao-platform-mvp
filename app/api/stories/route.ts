@@ -63,10 +63,10 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/stories - 合格体験談投稿（Graduate専用）
+// POST /api/stories - 合格体験談投稿（ユーザー専用）
 export async function POST(request: NextRequest) {
   try {
-    const user = await requireRole(["GRADUATE"])
+    const user = await requireRole(["USER"])
     const body = await request.json()
 
     const {

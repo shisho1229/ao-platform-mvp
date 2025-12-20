@@ -106,12 +106,12 @@ export default function StoriesPage() {
             <GraduationCap className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-4xl font-bold mb-3" style={{ color: '#02475f' }}>
-            合格体験談
+            loohcs志塾 合格者体験談
           </h1>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto mb-6">
-            先輩たちの合格への道のりを参考に、あなたも夢を実現しよう
+            先輩の体験から学び、自分だけの合格ストーリーを描こう
           </p>
-          {session?.user?.role === "GRADUATE" && (
+          {session?.user?.role === "USER" && (
             <Link
               href="/stories/new"
               className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl hover:from-orange-600 hover:to-orange-700 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"

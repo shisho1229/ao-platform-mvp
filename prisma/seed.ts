@@ -57,32 +57,32 @@ async function main() {
     },
   });
 
-  // Graduate
-  const graduate1 = await prisma.user.create({
+  // User (旧Graduate)
+  const user1 = await prisma.user.create({
     data: {
-      email: 'graduate1@example.com',
+      email: 'user1@example.com',
       name: '佐藤花子',
       password: hashedPassword,
-      role: 'GRADUATE',
+      role: 'USER',
     },
   });
 
-  const graduate2 = await prisma.user.create({
+  const user2 = await prisma.user.create({
     data: {
-      email: 'graduate2@example.com',
+      email: 'user2@example.com',
       name: '鈴木一郎',
       password: hashedPassword,
-      role: 'GRADUATE',
+      role: 'USER',
     },
   });
 
-  // Student
-  const student = await prisma.user.create({
+  // User (旧Student)
+  const user3 = await prisma.user.create({
     data: {
-      email: 'student@example.com',
+      email: 'user3@example.com',
       name: '田中次郎',
       password: hashedPassword,
-      role: 'STUDENT',
+      role: 'USER',
     },
   });
 
@@ -94,7 +94,7 @@ async function main() {
   // 体験談1: 早稲田大学 政治経済学部
   const story1 = await prisma.graduateStory.create({
     data: {
-      authorId: graduate1.id,
+      authorId: user1.id,
       gender: 'FEMALE',
       highSchoolLevel: 'LEVEL_3',
       gradeAverage: 'RANGE_4',
@@ -141,7 +141,7 @@ async function main() {
   // 体験談2: 慶應義塾大学 SFC
   const story2 = await prisma.graduateStory.create({
     data: {
-      authorId: graduate2.id,
+      authorId: user2.id,
       gender: 'MALE',
       highSchoolLevel: 'LEVEL_4',
       gradeAverage: 'RANGE_5',
@@ -190,9 +190,9 @@ async function main() {
   console.log('\n📋 作成されたユーザー:');
   console.log('  - Admin: admin@example.com / password123');
   console.log('  - Staff: staff@example.com / password123');
-  console.log('  - Graduate1: graduate1@example.com / password123');
-  console.log('  - Graduate2: graduate2@example.com / password123');
-  console.log('  - Student: student@example.com / password123');
+  console.log('  - User1: user1@example.com / password123');
+  console.log('  - User2: user2@example.com / password123');
+  console.log('  - User3: user3@example.com / password123');
 }
 
 main()
