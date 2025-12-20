@@ -102,8 +102,12 @@ async function main() {
       university: '早稲田大学',
       faculty: '政治経済学部',
       activityContent: '地元の商店街活性化プロジェクトにボランティアとして参加。高校2年生から約1年間、毎週末活動し、地域経済の現状を学びました。',
-      activityResults: '商店街のインスタグラムアカウントを立ち上げ、フォロワー3,000人超を獲得。来客数が前年比30%増加という成果を出しました。',
+      researchTheme: '地域経済の活性化とデータに基づいた政策立案',
+      researchMotivation: '地元商店街の衰退を目の当たりにし、経済学の知見を活用して地域課題を解決したいと考えました。',
+      researchMethod: 'アンケート調査とSNS分析を組み合わせたデータ収集を実施し、統計的手法で分析しました。',
+      targetProfessor: '計量経済学を専門とする教授のもとで、実証研究の手法を学びたいです。',
       hasSportsAchievement: false,
+      contestAchievement: '地域活性化コンテストで優秀賞を受賞',
       englishLevel: 'LV2',
       englishDetail: '英検2級（高2取得）、TOEIC L&R 750点（高3取得）',
       hasStudyAbroad: false,
@@ -114,7 +118,6 @@ async function main() {
 - 入学後にやりたいことは具体的に何ですか?
 - なぜ慶應ではなく早稲田なのですか?
 - 卒業後はどのような進路を考えていますか?`,
-      documentThemes: '地域経済の活性化、データに基づいた政策立案、計量経済学への関心',
       preparationMethod: `志望理由書は夏休みから準備を始め、4回の添削を受けました。特に第2段落のエピソードの書き方を変えたことで、説得力が格段に上がりました。
 面接対策は予想質問を50個作り、すべてに対する回答を準備しました。塾の先生と週1回模擬面接を実施。`,
       materials: '参考書：「総合型選抜の教科書」「政治経済入門」\n添削：塾での4回の添削指導',
@@ -149,8 +152,12 @@ async function main() {
       university: '慶應義塾大学',
       faculty: '総合政策学部',
       activityContent: '高校1年生からプログラミングを独学し、地域の課題解決アプリを開発。地元の観光情報を多言語で提供するWebアプリを制作しました。',
-      activityResults: 'アプリは1,500ダウンロードを達成。市の観光協会にも採用され、実際に観光客に利用されています。',
+      researchTheme: 'データサイエンスを活用した地域課題解決',
+      researchMotivation: '観光客の動向をデータで可視化し、地域活性化につなげたいと考えました。',
+      researchMethod: 'アプリの利用データを分析し、観光客の行動パターンを研究しました。',
+      targetProfessor: 'データサイエンスとソーシャルイノベーションを専門とする教授のゼミに入りたいです。',
       hasSportsAchievement: true,
+      contestAchievement: 'U-22プログラミングコンテストでファイナリスト',
       sportsAchievement: 'サッカー部（県大会ベスト16）',
       englishLevel: 'LV3',
       englishDetail: '英検準1級（高2取得）、TOEFL iBT 85点（高3取得）',
@@ -162,7 +169,6 @@ async function main() {
 - SFCで何を学びたいですか?
 - 先行研究は調べましたか?
 - 技術的な課題はどう解決しましたか?`,
-      documentThemes: 'データサイエンス、地域活性化、テクノロジーを活用した社会課題解決',
       preparationMethod: `プレゼン資料の作成に2週間かけました。何度も練習して、5分ぴったりに収まるように調整。
 研究計画書は3ヶ月かけて作成し、10回以上のブラッシュアップを重ねました。`,
       materials: '参考書：「データサイエンス入門」「AO入試完全ガイド」\nオンライン講座：Coursera「Machine Learning」',

@@ -27,16 +27,19 @@ export default function NewStoryPage() {
     year: "",
     explorationThemeIds: [] as number[],
     activityContent: "",
-    activityResults: "",
+    researchTheme: "",
+    researchMotivation: "",
+    researchMethod: "",
+    targetProfessor: "",
     hasSportsAchievement: false,
     sportsAchievement: "",
+    contestAchievement: "",
     englishLevel: "LV0",
     englishDetail: "",
     hasStudyAbroad: false,
     hasLeaderExperience: false,
     leaderExperience: "",
     interviewQuestions: "",
-    documentThemes: "",
     // 選考フロー
     selectionFlowType: "",
     firstRoundResult: "",
@@ -483,6 +486,24 @@ export default function NewStoryPage() {
                 />
               )}
             </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                コンテスト実績（任意）
+              </label>
+              <textarea
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                rows={3}
+                placeholder="コンテストでの受賞歴や実績があれば記入してください"
+                value={formData.contestAchievement}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    contestAchievement: e.target.value,
+                  })
+                }
+              />
+            </div>
           </div>
 
           {/* 探究テーマ */}
@@ -534,15 +555,60 @@ export default function NewStoryPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                活動実績（任意）
+                探究テーマ（任意）
               </label>
               <textarea
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                rows={4}
-                placeholder="活動の成果や実績を教えてください"
-                value={formData.activityResults}
+                rows={3}
+                placeholder="研究や探究活動のテーマを教えてください"
+                value={formData.researchTheme}
                 onChange={(e) =>
-                  setFormData({ ...formData, activityResults: e.target.value })
+                  setFormData({ ...formData, researchTheme: e.target.value })
+                }
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                きっかけ（任意）
+              </label>
+              <textarea
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                rows={3}
+                placeholder="そのテーマに興味を持ったきっかけを教えてください"
+                value={formData.researchMotivation}
+                onChange={(e) =>
+                  setFormData({ ...formData, researchMotivation: e.target.value })
+                }
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                探究活動方法（任意）
+              </label>
+              <textarea
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                rows={3}
+                placeholder="どのような方法で探究活動を行いましたか？"
+                value={formData.researchMethod}
+                onChange={(e) =>
+                  setFormData({ ...formData, researchMethod: e.target.value })
+                }
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                大学で学びたい教授（任意）
+              </label>
+              <textarea
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                rows={2}
+                placeholder="大学でどの教授のもとで学びたいかを教えてください"
+                value={formData.targetProfessor}
+                onChange={(e) =>
+                  setFormData({ ...formData, targetProfessor: e.target.value })
                 }
               />
             </div>
@@ -645,24 +711,6 @@ export default function NewStoryPage() {
                   setFormData({
                     ...formData,
                     interviewQuestions: e.target.value,
-                  })
-                }
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                提出書類の大まかなテーマ（任意）
-              </label>
-              <textarea
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                rows={3}
-                placeholder="志望理由書や活動報告書のテーマ"
-                value={formData.documentThemes}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    documentThemes: e.target.value,
                   })
                 }
               />
