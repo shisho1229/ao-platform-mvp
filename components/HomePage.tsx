@@ -32,7 +32,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #003366 0%, #004080 40%, #0066cc 100%)' }}>
+    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #044465 0%, #055a7a 40%, #0891b2 100%)' }}>
       <section className="max-w-7xl mx-auto px-4 py-16 text-center">
         <h2 className="text-5xl font-bold mb-4" style={{ color: '#f0f4f8' }}>
           Loohcs志塾 合格者体験談
@@ -49,16 +49,16 @@ export default function HomePage() {
       <section className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           <Link href="/stories" className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
-            <BookOpen className="w-12 h-12 mb-4" style={{ color: '#1e3a5f' }} />
-            <h3 className="text-xl font-bold mb-2" style={{ color: '#1e3a5f' }}>体験談一覧</h3>
+            <BookOpen className="w-12 h-12 mb-4" style={{ color: '#044465' }} />
+            <h3 className="text-xl font-bold mb-2" style={{ color: '#044465' }}>体験談一覧</h3>
             <p className="text-gray-600">
               合格者の体験談を閲覧できます
             </p>
           </Link>
 
           <Link href="/search" className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
-            <Search className="w-12 h-12 mb-4" style={{ color: '#1e3a5f' }} />
-            <h3 className="text-xl font-bold mb-2" style={{ color: '#1e3a5f' }}>類似検索</h3>
+            <Search className="w-12 h-12 mb-4" style={{ color: '#044465' }} />
+            <h3 className="text-xl font-bold mb-2" style={{ color: '#044465' }}>類似検索</h3>
             <p className="text-gray-600">
               あなたに近い合格者を探せます
             </p>
@@ -66,8 +66,8 @@ export default function HomePage() {
 
           {session?.user?.role === 'USER' && (
             <Link href="/stories/new" className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
-              <Award className="w-12 h-12 mb-4" style={{ color: '#1e3a5f' }} />
-              <h3 className="text-xl font-bold mb-2" style={{ color: '#1e3a5f' }}>体験談投稿</h3>
+              <Award className="w-12 h-12 mb-4" style={{ color: '#044465' }} />
+              <h3 className="text-xl font-bold mb-2" style={{ color: '#044465' }}>体験談投稿</h3>
               <p className="text-gray-600">
                 あなたの体験談を投稿できます
               </p>
@@ -76,7 +76,7 @@ export default function HomePage() {
         </div>
 
         <div className="bg-white rounded-xl shadow p-8">
-          <h3 className="text-2xl font-bold mb-6" style={{ color: '#1e3a5f' }}>最新の体験談</h3>
+          <h3 className="text-2xl font-bold mb-6" style={{ color: '#044465' }}>最新の体験談</h3>
           {loading ? (
             <div className="text-center py-12">読み込み中...</div>
           ) : stories.length === 0 ? (
@@ -88,7 +88,7 @@ export default function HomePage() {
               {stories.map((story) => (
                 <Link key={story.id} href={`/stories/${story.id}`}>
                   <div className="p-4 border rounded-lg hover:bg-gray-50 transition">
-                    <h4 className="text-lg font-semibold" style={{ color: '#1e3a5f' }}>
+                    <h4 className="text-lg font-semibold" style={{ color: '#044465' }}>
                       {story.university} {story.faculty}
                     </h4>
                     <p className="text-sm text-gray-600">{story.admissionType}</p>

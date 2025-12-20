@@ -31,7 +31,7 @@ export default function Navbar() {
   }
 
   return (
-    <nav style={{ background: '#1e3a5f', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+    <nav style={{ background: '#044465', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex">

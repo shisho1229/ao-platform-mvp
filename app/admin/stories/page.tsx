@@ -193,7 +193,7 @@ export default function AdminStoriesPage() {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold" style={{ color: '#02475f' }}>
+        <h1 className="text-3xl font-bold" style={{ color: '#044465' }}>
           投稿管理
         </h1>
 

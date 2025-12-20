@@ -151,7 +151,7 @@ export default function AdminUsersPage() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-6" style={{ color: '#02475f' }}>
+      <h1 className="text-3xl font-bold mb-6" style={{ color: '#044465' }}>
         ユーザー管理
       </h1>
 

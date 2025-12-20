@@ -1,10 +1,10 @@
 <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
   <!-- ネイビー背景 -->
-  <rect width="120" height="120" fill="#1e3a5f" rx="8"/>
+  <rect width="120" height="120" fill="#044465" rx="8"/>
 
   <!-- 白い枠 -->
   <rect x="12" y="12" width="96" height="96" fill="white" rx="4"/>
 
   <!-- ペン/鉛筆のシンボル（ネイビー色） -->
-  <path d="M 35 85 L 35 35 L 85 85 Z" fill="#1e3a5f"/>
+  <path d="M 35 85 L 35 35 L 85 85 Z" fill="#044465"/>
 </svg>

@@ -38,10 +38,10 @@ export default function SignInPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8" style={{ background: 'linear-gradient(135deg, #1e3a5f 0%, #34495e 50%, #e8eef5 100%)' }}>
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8" style={{ background: 'linear-gradient(135deg, #044465 0%, #34495e 50%, #e8eef5 100%)' }}>
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-lg">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-bold" style={{ color: '#1e3a5f' }}>
+          <h2 className="mt-6 text-center text-3xl font-bold" style={{ color: '#044465' }}>
             Loohcs志塾 合格者体験談
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
@@ -96,7 +96,7 @@ export default function SignInPage() {
               type="submit"
               disabled={isLoading}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{ background: '#1e3a5f' }}
+              style={{ background: '#044465' }}
             >
               {isLoading ? "ログイン中..." : "ログイン"}
             </button>
@@ -104,7 +104,7 @@ export default function SignInPage() {
 
           <div className="text-center text-sm">
             <span className="text-gray-600">アカウントをお持ちでない方は</span>
-            <Link href="/auth/signup" className="font-medium ml-1" style={{ color: '#1e3a5f' }}>
+            <Link href="/auth/signup" className="font-medium ml-1" style={{ color: '#044465' }}>
               新規登録
             </Link>
           </div>

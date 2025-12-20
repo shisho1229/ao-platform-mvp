@@ -26,7 +26,7 @@ export default async function AdminLayout({
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(to bottom, #ffffff, #f0f4f8)' }}>
       {/* Header */}
-      <header className="shadow-md" style={{ background: 'linear-gradient(to right, #02475f, #024b5b)' }}>
+      <header className="shadow-md" style={{ background: 'linear-gradient(to right, #044465, #055a7a)' }}>
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <Link href="/admin/users" className="flex items-center gap-3">
