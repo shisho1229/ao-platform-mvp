@@ -98,7 +98,6 @@ export default function SignUpPage() {
                 type="text"
                 required
                 className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:border-transparent sm:text-sm"
-                style={{ focusRingColor: '#1e3a5f' }}
                 placeholder="山田太郎"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
