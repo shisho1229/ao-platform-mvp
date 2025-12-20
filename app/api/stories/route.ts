@@ -15,12 +15,13 @@ export async function GET(request: NextRequest) {
 
     const where: any = {}
 
-    // キーワード検索（大学名、学部、入試方式、活動内容、名前などで検索）
+    // キーワード検索（大学名、学部、入試方式、高校名、活動内容、名前などで検索）
     if (keyword) {
       where.OR = [
         { university: { contains: keyword, mode: 'insensitive' } },
         { faculty: { contains: keyword, mode: 'insensitive' } },
         { admissionType: { contains: keyword, mode: 'insensitive' } },
+        { highSchoolName: { contains: keyword, mode: 'insensitive' } },
         { activityContent: { contains: keyword, mode: 'insensitive' } },
         { activityResults: { contains: keyword, mode: 'insensitive' } },
         { preparationMethod: { contains: keyword, mode: 'insensitive' } },
@@ -95,6 +96,7 @@ export async function POST(request: NextRequest) {
     const {
       gender,
       highSchoolLevel,
+      highSchoolName,
       gradeAverage,
       admissionType,
       university,
@@ -127,6 +129,7 @@ export async function POST(request: NextRequest) {
         authorId: user.id,
         gender: gender || null,
         highSchoolLevel,
+        highSchoolName: highSchoolName || null,
         gradeAverage,
         admissionType,
         university,

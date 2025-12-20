@@ -19,6 +19,7 @@ export default function NewStoryPage() {
   const [formData, setFormData] = useState({
     gender: "",
     highSchoolLevel: "LEVEL_2",
+    highSchoolName: "",
     gradeAverage: "RANGE_3",
     admissionType: "",
     university: "",
@@ -48,6 +49,8 @@ export default function NewStoryPage() {
   const [concurrentApplications, setConcurrentApplications] = useState<
     Array<{ university: string; faculty: string; result: string }>
   >([])
+
+  const [agreedToTerms, setAgreedToTerms] = useState(false)
 
   useEffect(() => {
     fetchThemes()
@@ -182,6 +185,21 @@ export default function NewStoryPage() {
                 <option value="LEVEL_3">61-70</option>
                 <option value="LEVEL_4">71~</option>
               </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                高校名（任意）
+              </label>
+              <input
+                type="text"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                placeholder="例：〇〇高等学校"
+                value={formData.highSchoolName}
+                onChange={(e) =>
+                  setFormData({ ...formData, highSchoolName: e.target.value })
+                }
+              />
             </div>
 
             <div>
@@ -740,6 +758,29 @@ export default function NewStoryPage() {
             />
           </div>
 
+          {/* 同意チェックボックス */}
+          <div className="border-t pt-6">
+            <div className="flex items-start">
+              <div className="flex items-center h-5">
+                <input
+                  id="agree-terms"
+                  type="checkbox"
+                  checked={agreedToTerms}
+                  onChange={(e) => setAgreedToTerms(e.target.checked)}
+                  className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300"
+                />
+              </div>
+              <div className="ml-3 text-sm">
+                <label htmlFor="agree-terms" className="font-medium text-gray-700">
+                  投稿内容の公開に同意します *
+                </label>
+                <p className="text-gray-500 mt-1">
+                  この体験談は他のユーザーに公開されます。個人を特定できる情報（氏名、連絡先など）は含めないでください。
+                </p>
+              </div>
+            </div>
+          </div>
+
           <div className="flex justify-end space-x-4">
             <button
               type="button"
@@ -750,7 +791,7 @@ export default function NewStoryPage() {
             </button>
             <button
               type="submit"
-              disabled={isLoading || formData.explorationThemeIds.length === 0}
+              disabled={isLoading || formData.explorationThemeIds.length === 0 || !agreedToTerms}
               className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? "投稿中..." : "投稿する"}
