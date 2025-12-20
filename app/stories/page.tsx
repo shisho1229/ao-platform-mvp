@@ -156,7 +156,7 @@ export default function StoriesPage() {
                 <input
                   type="text"
                   className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                  placeholder="大学名、学部、入試方式、活動内容などで検索"
+                  placeholder="大学名、学部、入試方式、名前、活動内容などで検索"
                   value={keywordFilter}
                   onChange={(e) => setKeywordFilter(e.target.value)}
                 />

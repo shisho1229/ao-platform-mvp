@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
 
     const where: any = {}
 
-    // キーワード検索（大学名、学部、入試方式、活動内容などで検索）
+    // キーワード検索（大学名、学部、入試方式、活動内容、名前などで検索）
     if (keyword) {
       where.OR = [
         { university: { contains: keyword, mode: 'insensitive' } },
@@ -25,6 +25,7 @@ export async function GET(request: NextRequest) {
         { activityResults: { contains: keyword, mode: 'insensitive' } },
         { preparationMethod: { contains: keyword, mode: 'insensitive' } },
         { adviceToJuniors: { contains: keyword, mode: 'insensitive' } },
+        { author: { name: { contains: keyword, mode: 'insensitive' } } },
       ]
     }
 
