@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
+import { BookOpen, TrendingUp, Award, Globe, Users, GraduationCap, Filter } from "lucide-react"
 
 interface Story {
   id: string
@@ -32,18 +33,17 @@ export default function StoriesPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [universityFilter, setUniversityFilter] = useState("")
   const [facultyFilter, setFacultyFilter] = useState("")
-  const [yearFilter, setYearFilter] = useState("")
+  const [showFilters, setShowFilters] = useState(false)
 
   useEffect(() => {
     fetchStories()
-  }, [universityFilter, facultyFilter, yearFilter])
+  }, [universityFilter, facultyFilter])
 
   const fetchStories = async () => {
     try {
       const params = new URLSearchParams()
       if (universityFilter) params.append("university", universityFilter)
       if (facultyFilter) params.append("faculty", facultyFilter)
-      if (yearFilter) params.append("year", yearFilter)
 
       const queryString = params.toString()
       const url = queryString ? `/api/stories?${queryString}` : "/api/stories"
@@ -63,7 +63,6 @@ export default function StoriesPage() {
   const clearFilters = () => {
     setUniversityFilter("")
     setFacultyFilter("")
-    setYearFilter("")
   }
 
   const highSchoolLevelLabel = (level: string) => {
@@ -99,153 +98,224 @@ export default function StoriesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">合格体験談</h1>
+    <div className="min-h-screen" style={{ background: 'linear-gradient(to bottom right, #bac9d0, white, #bac9d0)' }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* ヘッダーセクション */}
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4 shadow-lg" style={{ background: 'linear-gradient(to bottom right, #02475f, #024b5b)' }}>
+            <GraduationCap className="w-8 h-8 text-white" />
+          </div>
+          <h1 className="text-4xl font-bold mb-3" style={{ color: '#02475f' }}>
+            合格体験談
+          </h1>
+          <p className="text-gray-600 text-lg max-w-2xl mx-auto mb-6">
+            先輩たちの合格への道のりを参考に、あなたも夢を実現しよう
+          </p>
           {session?.user?.role === "GRADUATE" && (
             <Link
               href="/stories/new"
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
+              className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl hover:from-orange-600 hover:to-orange-700 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
             >
-              体験談を投稿
+              <Award className="w-5 h-5" />
+              体験談を投稿する
             </Link>
           )}
         </div>
 
-        {/* フィルター */}
-        <div className="bg-white rounded-lg shadow p-6 mb-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">フィルター</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                大学名
-              </label>
-              <input
-                type="text"
-                className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                placeholder="例：早稲田大学"
-                value={universityFilter}
-                onChange={(e) => setUniversityFilter(e.target.value)}
-              />
+        {/* フィルターセクション */}
+        <div className="mb-8">
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
+            style={{ background: 'linear-gradient(to right, #02475f, #024b5b)', color: 'white' }}
+          >
+            <Filter className="w-5 h-5" />
+            {showFilters ? 'フィルターを閉じる' : '絞り込み検索'}
+          </button>
+
+          {showFilters && (
+            <div className="mt-4 bg-white rounded-2xl shadow-lg p-6 border" style={{ borderColor: '#bac9d0' }}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label className="block text-sm font-semibold mb-2" style={{ color: '#02475f' }}>
+                    大学名
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    placeholder="例：早稲田大学"
+                    value={universityFilter}
+                    onChange={(e) => setUniversityFilter(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold mb-2" style={{ color: '#02475f' }}>
+                    学部学科名
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    placeholder="例：政治経済学部"
+                    value={facultyFilter}
+                    onChange={(e) => setFacultyFilter(e.target.value)}
+                  />
+                </div>
+              </div>
+              {(universityFilter || facultyFilter) && (
+                <div className="flex justify-end">
+                  <button
+                    onClick={clearFilters}
+                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                  >
+                    フィルターをクリア
+                  </button>
+                </div>
+              )}
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                学部名
-              </label>
-              <input
-                type="text"
-                className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                placeholder="例：政治経済学部"
-                value={facultyFilter}
-                onChange={(e) => setFacultyFilter(e.target.value)}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                年度
-              </label>
-              <input
-                type="number"
-                className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                placeholder="例：2024"
-                value={yearFilter}
-                onChange={(e) => setYearFilter(e.target.value)}
-              />
-            </div>
-          </div>
-          <div className="mt-4">
-            <button
-              onClick={clearFilters}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
-            >
-              フィルターをクリア
-            </button>
-          </div>
+          )}
         </div>
 
         {isLoading ? (
-          <div className="text-center py-12">
-            <p className="text-gray-500">読み込み中...</p>
+          <div className="text-center py-20">
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-t-transparent" style={{ borderColor: '#02475f', borderTopColor: 'transparent' }}></div>
+            <p className="text-gray-600 mt-4">読み込み中...</p>
           </div>
         ) : stories.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-gray-500">
-              まだ体験談が投稿されていません
+          <div className="text-center py-20">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-gray-100 rounded-full mb-4">
+              <BookOpen className="w-10 h-10 text-gray-400" />
+            </div>
+            <p className="text-gray-600 text-lg">
+              {universityFilter || facultyFilter ? "条件に一致する体験談が見つかりませんでした" : "まだ体験談が投稿されていません"}
+            </p>
+            <p className="text-gray-500 text-sm mt-2">
+              {universityFilter || facultyFilter ? "フィルターを変更してみてください" : "最初の体験談を投稿してみませんか？"}
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {stories.map((story) => (
               <Link
                 key={story.id}
                 href={`/stories/${story.id}`}
-                className="block bg-white rounded-lg shadow hover:shadow-lg transition-shadow p-6"
+                className="group block bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 transform hover:-translate-y-2"
+                style={{ borderColor: '' }}
+                onMouseEnter={(e) => e.currentTarget.style.borderColor = '#bac9d0'}
+                onMouseLeave={(e) => e.currentTarget.style.borderColor = '#e5e7eb'}
               >
-                <div className="mb-4">
-                  <h2 className="text-xl font-semibold text-gray-900 mb-1">
-                    {story.university}
-                  </h2>
-                  <p className="text-gray-600">{story.faculty}</p>
-                </div>
-
-                <div className="space-y-2 text-sm text-gray-600">
-                  <div className="flex justify-between">
-                    <span>入試方式:</span>
-                    <span className="font-medium">{story.admissionType}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>高校偏差値:</span>
-                    <span className="font-medium">
-                      {highSchoolLevelLabel(story.highSchoolLevel)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>評定平均:</span>
-                    <span className="font-medium">
-                      {gradeAverageLabel(story.gradeAverage)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>英語レベル:</span>
-                    <span className="font-medium">
-                      {englishLevelLabel(story.englishLevel)}
-                    </span>
+                {/* カードヘッダー - グラデーション背景 */}
+                <div className="p-6 relative overflow-hidden" style={{ background: 'linear-gradient(to bottom right, #02475f, #024b5b)' }}>
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16"></div>
+                  <div className="absolute bottom-0 left-0 w-24 h-24 bg-white opacity-10 rounded-full -ml-12 -mb-12"></div>
+                  <div className="relative">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1">
+                        <h2 className="text-xl font-bold text-white mb-1 group-hover:scale-105 transition-transform">
+                          {story.university}
+                        </h2>
+                        <p className="text-sm font-medium" style={{ color: '#bac9d0' }}>{story.faculty}</p>
+                      </div>
+                      <div className="flex-shrink-0 ml-3">
+                        <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+                          <GraduationCap className="w-6 h-6 text-white" />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <div className="inline-block px-3 py-1 bg-orange-500 text-white text-xs font-semibold rounded-full">
+                        {story.admissionType}
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                {story.explorationThemes.length > 0 && (
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {story.explorationThemes.slice(0, 3).map((et) => (
-                      <span
-                        key={et.theme.id}
-                        className="inline-block px-2 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded"
-                      >
-                        {et.theme.name}
-                      </span>
-                    ))}
-                    {story.explorationThemes.length > 3 && (
-                      <span className="inline-block px-2 py-1 text-xs font-medium text-gray-600">
-                        +{story.explorationThemes.length - 3}
-                      </span>
-                    )}
+                {/* カードボディ */}
+                <div className="p-6">
+                  {/* スペック情報 */}
+                  <div className="grid grid-cols-2 gap-3 mb-4">
+                    <div className="flex items-center gap-2 p-3 rounded-lg" style={{ backgroundColor: '#f0f4f5' }}>
+                      <TrendingUp className="w-4 h-4 flex-shrink-0" style={{ color: '#02475f' }} />
+                      <div className="min-w-0">
+                        <p className="text-xs text-gray-600">偏差値</p>
+                        <p className="text-sm font-bold truncate" style={{ color: '#02475f' }}>
+                          {highSchoolLevelLabel(story.highSchoolLevel)}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 p-3 rounded-lg" style={{ backgroundColor: '#f0f4f5' }}>
+                      <Award className="w-4 h-4 flex-shrink-0" style={{ color: '#024b5b' }} />
+                      <div className="min-w-0">
+                        <p className="text-xs text-gray-600">評定</p>
+                        <p className="text-sm font-bold truncate" style={{ color: '#02475f' }}>
+                          {gradeAverageLabel(story.gradeAverage)}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 p-3 rounded-lg col-span-2" style={{ backgroundColor: '#f0f4f5' }}>
+                      <Globe className="w-4 h-4 flex-shrink-0" style={{ color: '#024b5b' }} />
+                      <div className="min-w-0">
+                        <p className="text-xs text-gray-600">英語レベル</p>
+                        <p className="text-sm font-bold truncate" style={{ color: '#02475f' }}>
+                          {englishLevelLabel(story.englishLevel)}
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                )}
 
-                <div className="mt-4 flex gap-2 text-xs text-gray-500">
-                  {story.hasSportsAchievement && (
-                    <span className="px-2 py-1 bg-gray-100 rounded">
-                      スポーツ
-                    </span>
+                  {/* 探究テーマタグ */}
+                  {story.explorationThemes.length > 0 && (
+                    <div className="mb-4">
+                      <p className="text-xs text-gray-500 font-medium mb-2">探究テーマ</p>
+                      <div className="flex flex-wrap gap-2">
+                        {story.explorationThemes.slice(0, 3).map((et) => (
+                          <span
+                            key={et.theme.id}
+                            className="inline-block px-3 py-1 text-xs font-semibold rounded-full border"
+                            style={{ color: '#02475f', backgroundColor: '#f0f4f5', borderColor: '#bac9d0' }}
+                          >
+                            {et.theme.name}
+                          </span>
+                        ))}
+                        {story.explorationThemes.length > 3 && (
+                          <span className="inline-block px-3 py-1 text-xs font-semibold text-gray-600 bg-gray-100 rounded-full">
+                            +{story.explorationThemes.length - 3}
+                          </span>
+                        )}
+                      </div>
+                    </div>
                   )}
-                  {story.hasStudyAbroad && (
-                    <span className="px-2 py-1 bg-gray-100 rounded">留学</span>
+
+                  {/* 特徴バッジ */}
+                  {(story.hasSportsAchievement || story.hasStudyAbroad || story.hasLeaderExperience) && (
+                    <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-100">
+                      {story.hasSportsAchievement && (
+                        <span className="inline-flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-orange-50 to-orange-100 text-orange-700 text-xs font-semibold rounded-full border border-orange-200">
+                          <Award className="w-3 h-3" />
+                          スポーツ
+                        </span>
+                      )}
+                      {story.hasStudyAbroad && (
+                        <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-full border" style={{ background: 'linear-gradient(to right, #f0f4f5, #bac9d0)', color: '#02475f', borderColor: '#bac9d0' }}>
+                          <Globe className="w-3 h-3" />
+                          留学
+                        </span>
+                      )}
+                      {story.hasLeaderExperience && (
+                        <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-full border" style={{ background: 'linear-gradient(to right, #f0f4f5, #bac9d0)', color: '#02475f', borderColor: '#bac9d0' }}>
+                          <Users className="w-3 h-3" />
+                          リーダー
+                        </span>
+                      )}
+                    </div>
                   )}
-                  {story.hasLeaderExperience && (
-                    <span className="px-2 py-1 bg-gray-100 rounded">
-                      リーダー
-                    </span>
-                  )}
+
+                  {/* 詳細を見るボタン */}
+                  <div className="mt-5 flex items-center justify-between font-semibold text-sm" style={{ color: '#02475f' }}>
+                    <span>詳しく見る</span>
+                    <svg className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
                 </div>
               </Link>
             ))}
