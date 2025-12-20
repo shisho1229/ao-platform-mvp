@@ -1,3 +1,6 @@
+-- 失敗したマイグレーションレコードを削除（クリーンアップ）
+DELETE FROM "_prisma_migrations" WHERE migration_name = '20251220150000_unify_user_roles';
+
 -- 新しいUserRole enumを作成
 CREATE TYPE "UserRole_new" AS ENUM ('ADMIN', 'STAFF', 'USER');
 
