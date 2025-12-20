@@ -5,13 +5,13 @@ import { requireRole } from "@/lib/auth"
 // ユーザー拒否（削除）API（管理者のみ）
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // 管理者権限チェック
     await requireRole(["ADMIN"])
 
-    const userId = params.id
+    const { id: userId } = await params
 
     // ユーザーを削除
     await prisma.user.delete({

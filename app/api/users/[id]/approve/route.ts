@@ -5,13 +5,13 @@ import { requireRole } from "@/lib/auth"
 // ユーザー承認API（管理者のみ）
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // 管理者権限チェック
     await requireRole(["ADMIN"])
 
-    const userId = params.id
+    const { id: userId } = await params
 
     // ユーザーを承認
     const user = await prisma.user.update({
