@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import bcrypt from "bcryptjs"
+import { isSuperAdminEmail } from "@/lib/auth"
 
 export async function POST(request: NextRequest) {
   try {
@@ -29,25 +30,33 @@ export async function POST(request: NextRequest) {
     // パスワードのハッシュ化
     const hashedPassword = await bcrypt.hash(password, 10)
 
-    // ユーザー作成（デフォルトでUSERロール、approved=false）
+    // ロールと承認ステータスを決定
+    const isSuperAdmin = isSuperAdminEmail(email)
+    const userRole = isSuperAdmin ? "SUPER_ADMIN" : "USER"
+    const isApproved = isSuperAdmin // 最高管理者は自動承認
+
+    // ユーザー作成
     const user = await prisma.user.create({
       data: {
         email,
         password: hashedPassword,
         name,
         campus,
-        role: "USER",
-        approved: false, // 管理者の承認待ち
+        role: userRole,
+        approved: isApproved,
       },
     })
 
     return NextResponse.json(
       {
-        message: "アカウント登録が完了しました。管理者の承認をお待ちください。",
+        message: isSuperAdmin
+          ? "最高管理者アカウントが作成されました。すぐにログインできます。"
+          : "アカウント登録が完了しました。管理者の承認をお待ちください。",
         user: {
           id: user.id,
           email: user.email,
           name: user.name,
+          role: user.role,
         },
       },
       { status: 201 }

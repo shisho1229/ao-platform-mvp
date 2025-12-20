@@ -28,9 +28,10 @@ model User {
 }
 
 enum UserRole {
-  ADMIN
-  STAFF
-  USER
+  SUPER_ADMIN  // 最高管理者（@loohcs.co.jpのみ）
+  ADMIN        // 管理者（非推奨、既存データ互換用）
+  STAFF        // スタッフ（最高管理者が権限付与）
+  USER         // 一般ユーザー
 }
 
 // 合格体験談（生徒も閲覧可能）
@@ -81,6 +82,10 @@ model GraduateStory {
 
   // 併願校
   concurrentApplications ConcurrentApplication[]
+
+  // 管理者専用フィールド
+  published         Boolean   @default(true)   // 公開/非公開
+  documentsUrl      String?   // 合格書類URL（管理者/スタッフのみ閲覧可能）
 
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt

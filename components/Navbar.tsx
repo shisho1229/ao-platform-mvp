@@ -12,14 +12,19 @@ export default function Navbar() {
     return null
   }
 
+  const isStaffOrAdmin = session?.user?.role === "SUPER_ADMIN" ||
+                         session?.user?.role === "ADMIN" ||
+                         session?.user?.role === "STAFF"
+
   const navigation = [
     { name: "ホーム", href: "/" },
     { name: "体験談一覧", href: "/stories" },
     { name: "類似検索", href: "/search" },
-    ...(session?.user?.role === "ADMIN" ? [{ name: "ユーザー承認", href: "/admin/users" }] : []),
+    ...(isStaffOrAdmin ? [{ name: "管理画面", href: "/admin/users" }] : []),
   ]
 
   const roleLabel = {
+    SUPER_ADMIN: "最高管理者",
     ADMIN: "管理者",
     STAFF: "スタッフ",
     USER: "ユーザー",

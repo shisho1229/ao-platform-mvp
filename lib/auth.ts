@@ -26,14 +26,19 @@ export async function requireRole(allowedRoles: UserRole[]) {
   return user
 }
 
+export async function isSuperAdmin() {
+  const user = await getCurrentUser()
+  return user?.role === "SUPER_ADMIN"
+}
+
 export async function isAdmin() {
   const user = await getCurrentUser()
-  return user?.role === "ADMIN"
+  return user?.role === "ADMIN" || user?.role === "SUPER_ADMIN"
 }
 
 export async function isStaff() {
   const user = await getCurrentUser()
-  return user?.role === "STAFF" || user?.role === "ADMIN"
+  return user?.role === "STAFF" || user?.role === "ADMIN" || user?.role === "SUPER_ADMIN"
 }
 
 export async function isUser() {
@@ -42,7 +47,7 @@ export async function isUser() {
 }
 
 export function canViewDocuments(userRole: UserRole) {
-  return userRole === "ADMIN" || userRole === "STAFF"
+  return userRole === "ADMIN" || userRole === "STAFF" || userRole === "SUPER_ADMIN"
 }
 
 export function canCreateStory(userRole: UserRole) {
@@ -50,5 +55,17 @@ export function canCreateStory(userRole: UserRole) {
 }
 
 export function canUploadDocument(userRole: UserRole) {
-  return userRole === "ADMIN" || userRole === "STAFF"
+  return userRole === "ADMIN" || userRole === "STAFF" || userRole === "SUPER_ADMIN"
+}
+
+export function canManageStaff(userRole: UserRole) {
+  return userRole === "SUPER_ADMIN"
+}
+
+export function canManageStories(userRole: UserRole) {
+  return userRole === "ADMIN" || userRole === "STAFF" || userRole === "SUPER_ADMIN"
+}
+
+export function isSuperAdminEmail(email: string) {
+  return email.endsWith("@loohcs.co.jp") || email.endsWith("@juku.loohcs.co.jp")
 }

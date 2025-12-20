@@ -13,7 +13,9 @@ export async function GET(request: NextRequest) {
     const campus = searchParams.get("campus")
     const themeIds = searchParams.get("themeIds")?.split(",").map(Number)
 
-    const where: any = {}
+    const where: any = {
+      published: true, // 公開されている体験談のみ
+    }
 
     // キーワード検索（大学名、学部、入試方式、高校名、活動内容、名前などで検索）
     if (keyword) {
