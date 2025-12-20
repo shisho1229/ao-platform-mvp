@@ -53,11 +53,15 @@ model GraduateStory {
   // 探究・活動（多対多）
   explorationThemes StoryExplorationTheme[]
   activityContent String?   @db.Text
-  activityResults String?   @db.Text
+  researchTheme   String?   @db.Text  // 探究テーマ
+  researchMotivation String? @db.Text  // きっかけ
+  researchMethod  String?   @db.Text  // 探究活動方法
+  targetProfessor String?   @db.Text  // 大学で学びたい教授
 
   // 実績
   hasSportsAchievement Boolean @default(false)
   sportsAchievement String?   @db.Text
+  contestAchievement String?  @db.Text  // コンテスト実績
   englishLevel      EnglishLevel
   englishDetail     String?   // 資格種類・スコア・取得時期
   hasStudyAbroad    Boolean   @default(false)
@@ -66,7 +70,6 @@ model GraduateStory {
 
   // 選考情報
   interviewQuestions String?  @db.Text
-  documentThemes    String?   @db.Text  // 提出書類の大まかなテーマ
 
   // 選考フロー（入試方式により異なる）
   firstRoundResult   String?   // 一次選考結果（合格/不合格）
