@@ -32,11 +32,8 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #1e3a5f 0%, #34495e 50%, #e8eef5 100%)' }}>
+    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #003366 0%, #004080 40%, #0066cc 100%)' }}>
       <section className="max-w-7xl mx-auto px-4 py-16 text-center">
-        <div className="flex justify-center mb-6">
-          <img src="/loohcs-logo.svg" alt="Loohcs志塾" className="h-24 w-24" />
-        </div>
         <h2 className="text-5xl font-bold mb-4" style={{ color: '#f0f4f8' }}>
           Loohcs志塾 合格者体験談
         </h2>

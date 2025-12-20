@@ -125,6 +125,14 @@ export async function POST(request: NextRequest) {
       concurrentApplications,
     } = body
 
+    // バリデーション
+    if (!explorationThemeIds || !Array.isArray(explorationThemeIds) || explorationThemeIds.length === 0) {
+      return NextResponse.json(
+        { error: "探究テーマを少なくとも1つ選択してください" },
+        { status: 400 }
+      )
+    }
+
     // 体験談を作成
     const story = await prisma.graduateStory.create({
       data: {

@@ -105,6 +105,19 @@ export default function NewStoryPage() {
     setError("")
     setIsLoading(true)
 
+    // バリデーション
+    if (!agreedToTerms) {
+      setError("投稿内容の公開に同意してください")
+      setIsLoading(false)
+      return
+    }
+
+    if (formData.explorationThemeIds.length === 0) {
+      setError("探究テーマを少なくとも1つ選択してください")
+      setIsLoading(false)
+      return
+    }
+
     try {
       const res = await fetch("/api/stories", {
         method: "POST",
