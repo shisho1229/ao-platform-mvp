@@ -16,6 +16,7 @@ export default function Navbar() {
     { name: "ホーム", href: "/" },
     { name: "体験談一覧", href: "/stories" },
     { name: "類似検索", href: "/search" },
+    ...(session?.user?.role === "ADMIN" ? [{ name: "ユーザー承認", href: "/admin/users" }] : []),
   ]
 
   const roleLabel = {

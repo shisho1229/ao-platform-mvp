@@ -15,6 +15,7 @@ model User {
   password      String
   name          String
   role          UserRole
+  approved      Boolean   @default(false) // 管理者による承認フラグ
 
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt

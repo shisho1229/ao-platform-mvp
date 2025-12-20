@@ -3,6 +3,7 @@
 import { signIn } from "next-auth/react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 
 export default function SignInPage() {
   const router = useRouter()
@@ -37,11 +38,11 @@ export default function SignInPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8" style={{ background: 'linear-gradient(135deg, #1e3a5f 0%, #34495e 50%, #e8eef5 100%)' }}>
+      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-lg">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
-            合格体験談プラットフォーム
+          <h2 className="mt-6 text-center text-3xl font-bold" style={{ color: '#1e3a5f' }}>
+            Loohcs志塾 合格者体験談
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
             ログインしてください
@@ -94,10 +95,18 @@ export default function SignInPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ background: '#1e3a5f' }}
             >
               {isLoading ? "ログイン中..." : "ログイン"}
             </button>
+          </div>
+
+          <div className="text-center text-sm">
+            <span className="text-gray-600">アカウントをお持ちでない方は</span>
+            <Link href="/auth/signup" className="font-medium ml-1" style={{ color: '#1e3a5f' }}>
+              新規登録
+            </Link>
           </div>
         </form>
 
@@ -105,8 +114,7 @@ export default function SignInPage() {
           <p>テストアカウント:</p>
           <p>Admin: admin@example.com / password123</p>
           <p>Staff: staff@example.com / password123</p>
-          <p>Graduate: graduate1@example.com / password123</p>
-          <p>Student: student@example.com / password123</p>
+          <p>User: user1@example.com / password123</p>
         </div>
       </div>
     </div>

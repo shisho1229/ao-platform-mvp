@@ -40,6 +40,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return null
         }
 
+        // 承認されていないユーザーはログインできない
+        if (!user.approved) {
+          throw new Error("アカウントが管理者によって承認されていません。承認をお待ちください。")
+        }
+
         return {
           id: user.id,
           email: user.email,
