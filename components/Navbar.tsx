@@ -20,6 +20,8 @@ export default function Navbar() {
     { name: "ホーム", href: "/" },
     { name: "体験談一覧", href: "/stories" },
     { name: "類似検索", href: "/search" },
+    { name: "マイ投稿", href: "/my-stories" },
+    { name: "お気に入り", href: "/favorites" },
     ...(isStaffOrAdmin ? [{ name: "管理画面", href: "/admin/users" }] : []),
   ]
 
