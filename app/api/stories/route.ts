@@ -56,13 +56,9 @@ export async function GET(request: NextRequest) {
       andConditions.push({ year: parseInt(year) })
     }
 
-    // 校舎フィルター
+    // 校舎フィルター（投稿時に入力された校舎でフィルタリング）
     if (campus) {
-      andConditions.push({
-        author: {
-          campus: campus
-        }
-      })
+      andConditions.push({ campus: campus })
     }
 
     // 探究テーマフィルター

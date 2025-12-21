@@ -252,15 +252,25 @@ export default function StoriesPage() {
                 </div>
               </div>
 
+              {/* 検索ボタン */}
+              <div className="mt-6 pt-6 border-t" style={{ borderColor: '#bac9d0' }}>
+                <button
+                  onClick={fetchStories}
+                  className="w-full px-4 py-2.5 text-sm font-medium text-white rounded-lg transition-colors shadow-md hover:shadow-lg"
+                  style={{ background: 'linear-gradient(to right, #044465, #055a7a)' }}
+                >
+                  検索
+                </button>
+              </div>
+
               {/* フィルタークリアボタン */}
               {(keywordFilter || universityFilter || facultyFilter || yearFilter || campusFilter) && (
-                <div className="mt-6 pt-6 border-t" style={{ borderColor: '#bac9d0' }}>
+                <div className="mt-3">
                   <button
                     onClick={clearFilters}
-                    className="w-full px-4 py-2.5 text-sm font-medium text-white rounded-lg transition-colors shadow-md hover:shadow-lg"
-                    style={{ background: 'linear-gradient(to right, #044465, #055a7a)' }}
+                    className="w-full px-4 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
                   >
-                    フィルターをクリア
+                    クリア
                   </button>
                 </div>
               )}
