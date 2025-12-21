@@ -118,7 +118,7 @@ export default function StoriesPage() {
     <div className="min-h-screen" style={{ background: 'linear-gradient(to bottom right, #bac9d0, white, #bac9d0)' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* ヘッダーセクション */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-6">
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-3 shadow-lg" style={{ background: 'linear-gradient(to bottom right, #044465, #055a7a)' }}>
             <GraduationCap className="w-7 h-7 text-white" />
           </div>
@@ -139,6 +139,22 @@ export default function StoriesPage() {
           )}
         </div>
 
+        {/* キーワード検索セクション */}
+        <div className="mb-6 max-w-2xl mx-auto">
+          <div className="bg-white rounded-xl shadow-md p-4 border" style={{ borderColor: '#bac9d0' }}>
+            <label className="block text-sm font-semibold mb-2" style={{ color: '#044465' }}>
+              キーワード検索
+            </label>
+            <input
+              type="text"
+              className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              placeholder="学部、入試方式、高校名、探究テーマなどで検索"
+              value={keywordFilter}
+              onChange={(e) => setKeywordFilter(e.target.value)}
+            />
+          </div>
+        </div>
+
         {/* 2カラムレイアウト: 左側フィルター、右側結果 */}
         <div className="flex gap-6">
           {/* 左側: 検索・絞り込みサイドバー */}
@@ -151,21 +167,7 @@ export default function StoriesPage() {
                 </h2>
               </div>
 
-              <div className="space-y-5">
-                {/* キーワード検索 */}
-                <div>
-                  <label className="block text-sm font-semibold mb-2" style={{ color: '#044465' }}>
-                    キーワード検索
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
-                    placeholder="学部、入試方式、高校名など"
-                    value={keywordFilter}
-                    onChange={(e) => setKeywordFilter(e.target.value)}
-                  />
-                </div>
-
+              <div className="space-y-4">
                 {/* 大学名（選択式） */}
                 <div>
                   <label className="block text-sm font-semibold mb-2" style={{ color: '#044465' }}>
@@ -273,7 +275,7 @@ export default function StoriesPage() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             {stories.map((story) => (
               <Link
                 key={story.id}
@@ -284,36 +286,36 @@ export default function StoriesPage() {
                 onMouseLeave={(e) => e.currentTarget.style.borderColor = '#e5e7eb'}
               >
                 {/* カードヘッダー - グラデーション背景 */}
-                <div className="p-6 relative overflow-hidden" style={{ background: 'linear-gradient(to bottom right, #044465, #055a7a)' }}>
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16"></div>
-                  <div className="absolute bottom-0 left-0 w-24 h-24 bg-white opacity-10 rounded-full -ml-12 -mb-12"></div>
+                <div className="p-4 relative overflow-hidden" style={{ background: 'linear-gradient(to bottom right, #044465, #055a7a)' }}>
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-white opacity-10 rounded-full -mr-12 -mt-12"></div>
+                  <div className="absolute bottom-0 left-0 w-20 h-20 bg-white opacity-10 rounded-full -ml-10 -mb-10"></div>
                   <div className="relative">
-                    <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-start justify-between mb-2">
                       <div className="flex-1">
-                        <h2 className="text-xl font-bold text-white mb-1 group-hover:scale-105 transition-transform">
+                        <h2 className="text-base font-bold text-white mb-1 group-hover:scale-105 transition-transform leading-tight">
                           {story.university}
                         </h2>
-                        <p className="text-sm font-medium" style={{ color: '#bac9d0' }}>{story.faculty}</p>
+                        <p className="text-xs font-medium leading-tight" style={{ color: '#bac9d0' }}>{story.faculty}</p>
                       </div>
-                      <div className="flex-shrink-0 ml-3">
-                        <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
-                          <GraduationCap className="w-6 h-6 text-white" />
+                      <div className="flex-shrink-0 ml-2">
+                        <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+                          <GraduationCap className="w-5 h-5 text-white" />
                         </div>
                       </div>
                     </div>
-                    <div className="flex flex-wrap gap-2">
-                      <div className="inline-block px-3 py-1 bg-orange-500 text-white text-xs font-semibold rounded-full">
+                    <div className="flex flex-wrap gap-1.5">
+                      <div className="inline-block px-2 py-0.5 bg-orange-500 text-white text-xs font-semibold rounded-full">
                         {story.admissionType}
                       </div>
                       {story.year && (
-                        <div className="inline-block px-3 py-1 bg-white/20 backdrop-blur-sm text-white text-xs font-semibold rounded-full">
+                        <div className="inline-block px-2 py-0.5 bg-white/20 backdrop-blur-sm text-white text-xs font-semibold rounded-full">
                           {story.year}年度
                         </div>
                       )}
                       {(() => {
                         const result = getAdmissionResult(story.admissionType, story.firstRoundResult, story.secondRoundResult)
                         return result ? (
-                          <div className={`inline-block px-3 py-1 ${result.color} text-white text-xs font-semibold rounded-full`}>
+                          <div className={`inline-block px-2 py-0.5 ${result.color} text-white text-xs font-semibold rounded-full`}>
                             {result.label}
                           </div>
                         ) : null
@@ -323,29 +325,29 @@ export default function StoriesPage() {
                 </div>
 
                 {/* カードボディ */}
-                <div className="p-6">
+                <div className="p-4">
                   {/* 投稿者情報 */}
-                  <div className="mb-4 p-4 rounded-lg" style={{ backgroundColor: '#f0f4f5' }}>
+                  <div className="mb-3 p-3 rounded-lg" style={{ backgroundColor: '#f0f4f5' }}>
                     {story.highSchoolName && (
-                      <div className="flex items-center gap-2 mb-2">
-                        <GraduationCap className="w-4 h-4 flex-shrink-0" style={{ color: '#044465' }} />
-                        <p className="text-sm font-semibold" style={{ color: '#044465' }}>
+                      <div className="flex items-center gap-1.5 mb-1.5">
+                        <GraduationCap className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#044465' }} />
+                        <p className="text-xs font-semibold leading-tight" style={{ color: '#044465' }}>
                           {story.highSchoolName}
                         </p>
                       </div>
                     )}
                     {story.campus && (
-                      <div className="flex items-center gap-2 mb-2">
-                        <BookOpen className="w-4 h-4 flex-shrink-0" style={{ color: '#044465' }} />
-                        <p className="text-sm" style={{ color: '#044465' }}>
+                      <div className="flex items-center gap-1.5 mb-1.5">
+                        <BookOpen className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#044465' }} />
+                        <p className="text-xs leading-tight" style={{ color: '#044465' }}>
                           {story.campus}
                         </p>
                       </div>
                     )}
                     {story.authorName && (
-                      <div className="flex items-center gap-2">
-                        <Users className="w-4 h-4 flex-shrink-0" style={{ color: '#055a7a' }} />
-                        <p className="text-sm" style={{ color: '#044465' }}>
+                      <div className="flex items-center gap-1.5">
+                        <Users className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#055a7a' }} />
+                        <p className="text-xs leading-tight" style={{ color: '#044465' }}>
                           {story.authorName}
                         </p>
                       </div>
@@ -354,9 +356,9 @@ export default function StoriesPage() {
 
                   {/* 志 */}
                   {story.researchTheme && (
-                    <div className="mb-4">
-                      <p className="text-xs text-gray-500 font-medium mb-2">志</p>
-                      <p className="text-sm text-gray-700 line-clamp-3">
+                    <div className="mb-3">
+                      <p className="text-xs text-gray-500 font-medium mb-1">志</p>
+                      <p className="text-xs text-gray-700 line-clamp-2 leading-tight">
                         {story.researchTheme}
                       </p>
                     </div>
@@ -364,21 +366,21 @@ export default function StoriesPage() {
 
                   {/* 探究テーマタグ */}
                   {story.explorationThemes.length > 0 && (
-                    <div className="mb-4">
-                      <p className="text-xs text-gray-500 font-medium mb-2">探究テーマ</p>
-                      <div className="flex flex-wrap gap-2">
-                        {story.explorationThemes.slice(0, 3).map((et) => (
+                    <div className="mb-3">
+                      <p className="text-xs text-gray-500 font-medium mb-1">探究テーマ</p>
+                      <div className="flex flex-wrap gap-1">
+                        {story.explorationThemes.slice(0, 2).map((et) => (
                           <span
                             key={et.theme.id}
-                            className="inline-block px-3 py-1 text-xs font-semibold rounded-full border"
+                            className="inline-block px-2 py-0.5 text-xs font-semibold rounded-full border"
                             style={{ color: '#044465', backgroundColor: '#f0f4f5', borderColor: '#bac9d0' }}
                           >
                             {et.theme.name}
                           </span>
                         ))}
-                        {story.explorationThemes.length > 3 && (
-                          <span className="inline-block px-3 py-1 text-xs font-semibold text-gray-600 bg-gray-100 rounded-full">
-                            +{story.explorationThemes.length - 3}
+                        {story.explorationThemes.length > 2 && (
+                          <span className="inline-block px-2 py-0.5 text-xs font-semibold text-gray-600 bg-gray-100 rounded-full">
+                            +{story.explorationThemes.length - 2}
                           </span>
                         )}
                       </div>
@@ -386,9 +388,9 @@ export default function StoriesPage() {
                   )}
 
                   {/* 詳細を見るボタン */}
-                  <div className="mt-5 flex items-center justify-between font-semibold text-sm" style={{ color: '#044465' }}>
+                  <div className="mt-3 flex items-center justify-between font-semibold text-xs" style={{ color: '#044465' }}>
                     <span>詳しく見る</span>
-                    <svg className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                   </div>

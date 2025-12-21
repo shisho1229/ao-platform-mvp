@@ -21,17 +21,15 @@ interface Story {
 }
 
 const statusLabels = {
-  DRAFT: "下書き",
   PENDING_REVIEW: "承認待ち",
   NEEDS_REVISION: "修正依頼中",
-  PUBLISHED: "公開中",
+  PUBLISHED: "承認済み",
 }
 
 const statusColors = {
-  DRAFT: "bg-gray-500",
   PENDING_REVIEW: "bg-yellow-500",
   NEEDS_REVISION: "bg-orange-500",
-  PUBLISHED: "bg-green-500",
+  PUBLISHED: "bg-blue-500",
 }
 
 export default function MyStoriesPage() {
@@ -163,7 +161,7 @@ export default function MyStoriesPage() {
                 >
                   <div className="p-6">
                     {/* ステータスバッジ */}
-                    <div className="flex justify-between items-start mb-3">
+                    <div className="flex flex-wrap gap-2 mb-3">
                       <span
                         className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold text-white ${
                           statusColors[story.status as keyof typeof statusColors]
@@ -171,6 +169,11 @@ export default function MyStoriesPage() {
                       >
                         {statusLabels[story.status as keyof typeof statusLabels]}
                       </span>
+                      {story.published && (
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold text-white bg-green-500">
+                          公開中
+                        </span>
+                      )}
                       {result && (
                         <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold text-white ${result.color}`}>
                           {result.label}
