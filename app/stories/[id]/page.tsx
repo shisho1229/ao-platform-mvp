@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
-import { Heart, ArrowLeft, GraduationCap, Award, Globe, Users, BookOpen, FileText, Target, ExternalLink } from "lucide-react"
+import { Heart, ArrowLeft, GraduationCap, Award, Globe, Users, BookOpen, FileText, Target, ExternalLink, Edit } from "lucide-react"
 
 interface Story {
   id: string
@@ -223,100 +223,95 @@ export default function StoryDetailPage() {
 
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
           {/* ヘッダー */}
-          <div className="p-8 relative overflow-hidden" style={{ background: 'linear-gradient(to bottom right, #044465, #055a7a)' }}>
+          <div className="p-6 relative overflow-hidden" style={{ background: 'linear-gradient(to bottom right, #044465, #055a7a)' }}>
             <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full -mr-32 -mt-32"></div>
-            <div className="relative flex items-start justify-between">
-              <div className="flex-1">
-                <h1 className="text-3xl font-bold text-white mb-2">
-                  {story.university}
-                </h1>
-                <p className="text-xl font-medium mb-4" style={{ color: '#bac9d0' }}>
-                  {story.faculty}
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  <span className="px-4 py-2 bg-orange-500 text-white text-sm font-semibold rounded-full">
-                    {story.admissionType}
-                  </span>
-                  {story.year && (
-                    <span className="px-4 py-2 bg-white/20 backdrop-blur-sm text-white text-sm font-semibold rounded-full">
-                      {story.year}年度
-                    </span>
-                  )}
+            <div className="relative flex items-center justify-between gap-4">
+              <div className="flex-1 min-w-0">
+                <h1 className="text-2xl font-bold text-white leading-tight">
+                  {story.university}{story.faculty}{story.admissionType}
+                  {story.year && `${story.year}年度`}
                   {(() => {
                     const result = getAdmissionResult(story.firstRoundResult, story.secondRoundResult)
-                    return result ? (
-                      <span className={`px-4 py-2 ${result.color} text-white text-sm font-semibold rounded-full`}>
-                        {result.label}
-                      </span>
-                    ) : null
+                    return result ? result.label : ''
                   })()}
-                </div>
+                </h1>
               </div>
               {session?.user && (
-                <button
-                  onClick={toggleFavorite}
-                  disabled={isFavoriteLoading}
-                  className={`flex-shrink-0 ml-4 p-4 rounded-full transition-all duration-200 shadow-lg ${
-                    isFavorited
-                      ? 'bg-red-500 hover:bg-red-600 text-white'
-                      : 'bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white'
-                  }`}
-                  title={isFavorited ? 'お気に入りから削除' : 'お気に入りに追加'}
-                >
-                  <Heart
-                    className={`w-7 h-7 ${isFavorited ? 'fill-current' : ''}`}
-                  />
-                </button>
+                <div className="flex gap-2 flex-shrink-0">
+                  {(session.user.role === "SUPER_ADMIN" ||
+                    session.user.role === "ADMIN" ||
+                    session.user.role === "STAFF") && (
+                    <button
+                      onClick={() => router.push(`/admin/stories/${story.id}/edit`)}
+                      className="p-3 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white transition-all duration-200 shadow-lg"
+                      title="編集する"
+                    >
+                      <Edit className="w-6 h-6" />
+                    </button>
+                  )}
+                  <button
+                    onClick={toggleFavorite}
+                    disabled={isFavoriteLoading}
+                    className={`p-3 rounded-full transition-all duration-200 shadow-lg ${
+                      isFavorited
+                        ? 'bg-red-500 hover:bg-red-600 text-white'
+                        : 'bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white'
+                    }`}
+                    title={isFavorited ? 'お気に入りから削除' : 'お気に入りに追加'}
+                  >
+                    <Heart
+                      className={`w-6 h-6 ${isFavorited ? 'fill-current' : ''}`}
+                    />
+                  </button>
+                </div>
               )}
             </div>
           </div>
 
           <div className="p-8 space-y-8">
-            {/* 管理者用: 合格書類URL */}
-            {(session?.user?.role === "SUPER_ADMIN" ||
-              session?.user?.role === "ADMIN" ||
-              session?.user?.role === "STAFF") &&
-              story.documentsUrl && (
-              <div className="p-6 rounded-xl border-2 border-orange-500 bg-orange-50">
-                <h2 className="text-lg font-bold mb-3 flex items-center gap-2 text-orange-700">
-                  <FileText className="w-5 h-5" />
-                  合格書類（管理者のみ表示）
-                </h2>
-                <a
-                  href={story.documentsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
-                >
-                  <ExternalLink className="w-4 h-4" />
-                  書類を開く
-                </a>
-              </div>
-            )}
-
             {/* 投稿者情報 */}
-            {(story.authorName || story.highSchoolName) && (
+            {(story.authorName || story.highSchoolName || story.campus ||
+              ((session?.user?.role === "SUPER_ADMIN" || session?.user?.role === "ADMIN" || session?.user?.role === "STAFF") && story.documentsUrl)) && (
               <div className="p-6 rounded-xl" style={{ backgroundColor: '#f0f4f5' }}>
                 <h2 className="text-lg font-bold mb-4" style={{ color: '#044465' }}>
                   投稿者情報
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {story.highSchoolName && (
-                    <div className="flex items-center gap-3">
-                      <GraduationCap className="w-5 h-5" style={{ color: '#044465' }} />
-                      <div>
-                        <p className="text-xs text-gray-600">出身高校</p>
-                        <p className="font-semibold" style={{ color: '#044465' }}>{story.highSchoolName}</p>
+                <div className="space-y-3">
+                  <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+                    {story.highSchoolName && (
+                      <div className="flex items-center gap-2">
+                        <GraduationCap className="w-5 h-5" style={{ color: '#044465' }} />
+                        <span className="font-semibold" style={{ color: '#044465' }}>{story.highSchoolName}</span>
                       </div>
-                    </div>
-                  )}
-                  {story.authorName && (
-                    <div className="flex items-center gap-3">
-                      <Users className="w-5 h-5" style={{ color: '#055a7a' }} />
-                      <div>
-                        <p className="text-xs text-gray-600">名前</p>
-                        <p className="font-semibold" style={{ color: '#044465' }}>{story.authorName}</p>
+                    )}
+                    {story.campus && (
+                      <div className="flex items-center gap-2">
+                        <BookOpen className="w-5 h-5" style={{ color: '#044465' }} />
+                        <span className="font-semibold" style={{ color: '#044465' }}>{story.campus}</span>
                       </div>
+                    )}
+                    {story.authorName && (
+                      <div className="flex items-center gap-2">
+                        <Users className="w-5 h-5" style={{ color: '#055a7a' }} />
+                        <span className="font-semibold" style={{ color: '#044465' }}>{story.authorName}</span>
+                      </div>
+                    )}
+                  </div>
+                  {/* 管理者用: 合格書類URL */}
+                  {(session?.user?.role === "SUPER_ADMIN" ||
+                    session?.user?.role === "ADMIN" ||
+                    session?.user?.role === "STAFF") &&
+                    story.documentsUrl && (
+                    <div className="pt-3 border-t" style={{ borderColor: '#bac9d0' }}>
+                      <a
+                        href={story.documentsUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors text-sm font-semibold"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                        合格書類を開く（管理者のみ）
+                      </a>
                     </div>
                   )}
                 </div>
@@ -347,14 +342,6 @@ export default function StoryDetailPage() {
                     {labels.gradeAverage[story.gradeAverage as keyof typeof labels.gradeAverage]}
                   </p>
                 </div>
-                {story.campus && (
-                  <div className="p-4 rounded-lg" style={{ backgroundColor: '#f0f4f5' }}>
-                    <p className="text-xs text-gray-600 mb-1">所属校舎</p>
-                    <p className="font-semibold" style={{ color: '#044465' }}>
-                      {story.campus}
-                    </p>
-                  </div>
-                )}
               </div>
             </div>
 
