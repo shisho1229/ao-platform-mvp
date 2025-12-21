@@ -147,49 +147,51 @@ export default function HomePage() {
           {/* 右側: タイトル・キャッチコピー + 最新体験記 */}
           <div className="flex-1">
             {/* 上部: タイトル・キャッチコピーと合格実績 */}
-            <section className="mb-12 relative">
-              {/* 合格実績（右上） */}
-              <div className="absolute top-0 right-0 rounded-xl p-6 shadow-xl max-w-xl" style={{ background: 'linear-gradient(135deg, #044465 0%, #055a7a 50%, #0891b2 100%)' }}>
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-amber-500 rounded-lg flex items-center justify-center shadow-md">
-                    <Award className="w-6 h-6 text-white" />
-                  </div>
-                  <h3 className="text-lg font-bold text-white">合格実績</h3>
+            <section className="mb-12">
+              <div className="flex gap-6 items-start">
+                {/* タイトル・キャッチコピー（左側） */}
+                <div className="flex-1">
+                  <h2 className="text-5xl font-bold mb-4" style={{ color: '#f0f4f8' }}>
+                    Loohcs志塾 合格者体験記
+                  </h2>
+                  <p className="text-2xl mb-3" style={{ color: '#d4af37' }}>
+                    志を抱く、場所となる。
+                  </p>
+                  <p className="text-lg" style={{ color: '#e8eef5' }}>
+                    どんな受験生も、どんな志望校も、<br />
+                    人生が変わるほどの成長と合格を掴み取れます。
+                  </p>
                 </div>
-                <div className="space-y-3">
-                  <div className="bg-white/95 backdrop-blur-sm rounded-lg p-4 shadow-md">
-                    <p className="text-sm font-bold mb-2" style={{ color: '#044465' }}>14年連続</p>
-                    <p className="text-sm font-bold" style={{ color: '#044465' }}>
-                      慶應義塾大学合格者<br />
-                      <span className="text-3xl font-extrabold" style={{ color: '#044465' }}>100名</span>超え
-                    </p>
+
+                {/* 合格実績（右側） */}
+                <div className="rounded-xl p-6 shadow-xl w-80 flex-shrink-0" style={{ background: 'linear-gradient(135deg, #044465 0%, #055a7a 50%, #0891b2 100%)' }}>
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-amber-500 rounded-lg flex items-center justify-center shadow-md">
+                      <Award className="w-6 h-6 text-white" />
+                    </div>
+                    <h3 className="text-lg font-bold text-white">合格実績</h3>
                   </div>
-                  <div className="bg-white/95 backdrop-blur-sm rounded-lg p-4 shadow-md">
-                    <p className="text-sm font-bold mb-2" style={{ color: '#044465' }}>2026年度</p>
-                    <div className="space-y-1.5">
+                  <div className="space-y-3">
+                    <div className="bg-white/95 backdrop-blur-sm rounded-lg p-4 shadow-md">
+                      <p className="text-sm font-bold mb-2" style={{ color: '#044465' }}>14年連続</p>
                       <p className="text-sm font-bold" style={{ color: '#044465' }}>
-                        法学部：<span className="text-2xl font-extrabold" style={{ color: '#044465' }}>64名</span>
+                        慶應義塾大学合格者<br />
+                        <span className="text-3xl font-extrabold" style={{ color: '#044465' }}>100名</span>超え
                       </p>
-                      <p className="text-sm font-bold" style={{ color: '#044465' }}>
-                        SFC：<span className="text-2xl font-extrabold" style={{ color: '#044465' }}>46名</span>
-                      </p>
+                    </div>
+                    <div className="bg-white/95 backdrop-blur-sm rounded-lg p-4 shadow-md">
+                      <p className="text-sm font-bold mb-2" style={{ color: '#044465' }}>2026年度</p>
+                      <div className="space-y-1.5">
+                        <p className="text-sm font-bold" style={{ color: '#044465' }}>
+                          法学部：<span className="text-2xl font-extrabold" style={{ color: '#044465' }}>64名</span>
+                        </p>
+                        <p className="text-sm font-bold" style={{ color: '#044465' }}>
+                          SFC：<span className="text-2xl font-extrabold" style={{ color: '#044465' }}>46名</span>
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-
-              {/* タイトル・キャッチコピー（中央） */}
-              <div className="pr-80">
-                <h2 className="text-5xl font-bold mb-4" style={{ color: '#f0f4f8' }}>
-                  Loohcs志塾 合格者体験記
-                </h2>
-                <p className="text-2xl mb-3" style={{ color: '#d4af37' }}>
-                  志を抱く、場所となる。
-                </p>
-                <p className="text-lg" style={{ color: '#e8eef5' }}>
-                  どんな受験生も、どんな志望校も、<br />
-                  人生が変わるほどの成長と合格を掴み取れます。
-                </p>
               </div>
             </section>
 
