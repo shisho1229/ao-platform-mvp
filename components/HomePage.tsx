@@ -188,48 +188,48 @@ export default function HomePage() {
                     <Link
                       key={story.id}
                       href={`/stories/${story.id}`}
-                      className="group block bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 transform hover:-translate-y-2"
+                      className="group block bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 transform hover:-translate-y-1"
                       style={{ borderColor: '#e5e7eb' }}
                       onMouseEnter={(e) => e.currentTarget.style.borderColor = '#bac9d0'}
                       onMouseLeave={(e) => e.currentTarget.style.borderColor = '#e5e7eb'}
                     >
                       {/* カードヘッダー - グラデーション背景 */}
-                      <div className="p-4 relative overflow-hidden" style={{ background: 'linear-gradient(to bottom right, #044465, #055a7a)' }}>
-                        <div className="absolute top-0 right-0 w-24 h-24 bg-white opacity-10 rounded-full -mr-12 -mt-12"></div>
-                        <div className="absolute bottom-0 left-0 w-20 h-20 bg-white opacity-10 rounded-full -ml-10 -mb-10"></div>
+                      <div className="p-3 relative overflow-hidden" style={{ background: 'linear-gradient(to bottom right, #044465, #055a7a)' }}>
+                        <div className="absolute top-0 right-0 w-20 h-20 bg-white opacity-10 rounded-full -mr-10 -mt-10"></div>
+                        <div className="absolute bottom-0 left-0 w-16 h-16 bg-white opacity-10 rounded-full -ml-8 -mb-8"></div>
                         <div className="relative">
                           {/* 公開通知 */}
                           {story.authorName && (
-                            <div className="mb-2 text-xs text-green-200 font-medium">
+                            <div className="mb-1.5 text-xs text-green-200 font-medium">
                               {story.authorName}さんの体験談が公開されました
                             </div>
                           )}
-                          <div className="flex items-start justify-between mb-2">
+                          <div className="flex items-start justify-between mb-1.5">
                             <div className="flex-1">
-                              <h2 className="text-base font-bold text-white mb-1 group-hover:scale-105 transition-transform leading-tight">
+                              <h2 className="text-sm font-bold text-white mb-0.5 group-hover:scale-105 transition-transform leading-tight">
                                 {story.university}
                               </h2>
                               <p className="text-xs font-medium leading-tight" style={{ color: '#bac9d0' }}>{story.faculty}</p>
                             </div>
                             <div className="flex-shrink-0 ml-2">
-                              <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
-                                <GraduationCap className="w-5 h-5 text-white" />
+                              <div className="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center">
+                                <GraduationCap className="w-4 h-4 text-white" />
                               </div>
                             </div>
                           </div>
-                          <div className="flex flex-wrap gap-1.5">
-                            <div className="inline-block px-2 py-0.5 bg-orange-500 text-white text-xs font-semibold rounded-full">
+                          <div className="flex flex-wrap gap-1">
+                            <div className="inline-block px-1.5 py-0.5 bg-orange-500 text-white text-xs font-semibold rounded-full">
                               {story.admissionType}
                             </div>
                             {story.year && (
-                              <div className="inline-block px-2 py-0.5 bg-white/20 backdrop-blur-sm text-white text-xs font-semibold rounded-full">
+                              <div className="inline-block px-1.5 py-0.5 bg-white/20 backdrop-blur-sm text-white text-xs font-semibold rounded-full">
                                 {story.year}年度
                               </div>
                             )}
                             {(() => {
                               const result = getAdmissionResult(story.admissionType, story.firstRoundResult, story.secondRoundResult);
                               return result ? (
-                                <div className={`inline-block px-2 py-0.5 ${result.color} text-white text-xs font-semibold rounded-full`}>
+                                <div className={`inline-block px-1.5 py-0.5 ${result.color} text-white text-xs font-semibold rounded-full`}>
                                   {result.label}
                                 </div>
                               ) : null;
@@ -239,20 +239,20 @@ export default function HomePage() {
                       </div>
 
                       {/* カードボディ */}
-                      <div className="p-4">
+                      <div className="p-3">
                         {/* 投稿者情報 */}
-                        <div className="mb-3 p-3 rounded-lg" style={{ backgroundColor: '#f0f4f5' }}>
+                        <div className="mb-2 p-2 rounded-lg" style={{ backgroundColor: '#f0f4f5' }}>
                           {story.highSchoolName && (
-                            <div className="flex items-center gap-1.5 mb-1.5">
-                              <GraduationCap className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#044465' }} />
+                            <div className="flex items-center gap-1 mb-1">
+                              <GraduationCap className="w-3 h-3 flex-shrink-0" style={{ color: '#044465' }} />
                               <p className="text-xs font-semibold leading-tight" style={{ color: '#044465' }}>
                                 {story.highSchoolName}
                               </p>
                             </div>
                           )}
                           {story.campus && (
-                            <div className="flex items-center gap-1.5">
-                              <BookOpen className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#044465' }} />
+                            <div className="flex items-center gap-1">
+                              <BookOpen className="w-3 h-3 flex-shrink-0" style={{ color: '#044465' }} />
                               <p className="text-xs leading-tight" style={{ color: '#044465' }}>
                                 {story.campus}
                               </p>
@@ -260,36 +260,13 @@ export default function HomePage() {
                           )}
                         </div>
 
-                        {/* 志 */}
+                        {/* 志 - 大きく目立たせる */}
                         {story.researchTheme && (
-                          <div className="mb-3">
-                            <p className="text-xs text-gray-500 font-medium mb-1">志</p>
-                            <p className="text-xs text-gray-700 line-clamp-2 leading-tight">
+                          <div>
+                            <p className="text-xs text-gray-500 font-semibold mb-1.5">志</p>
+                            <p className="text-sm font-bold text-gray-800 line-clamp-3 leading-relaxed">
                               {story.researchTheme}
                             </p>
-                          </div>
-                        )}
-
-                        {/* 探究テーマタグ */}
-                        {story.explorationThemes.length > 0 && (
-                          <div>
-                            <p className="text-xs text-gray-500 font-medium mb-1">探究テーマ</p>
-                            <div className="flex flex-wrap gap-1">
-                              {story.explorationThemes.slice(0, 2).map((et) => (
-                                <span
-                                  key={et.theme.id}
-                                  className="inline-block px-2 py-0.5 text-xs font-semibold rounded-full border"
-                                  style={{ color: '#044465', borderColor: '#bac9d0' }}
-                                >
-                                  {et.theme.name}
-                                </span>
-                              ))}
-                              {story.explorationThemes.length > 2 && (
-                                <span className="inline-block px-2 py-0.5 text-xs font-semibold text-gray-500">
-                                  +{story.explorationThemes.length - 2}
-                                </span>
-                              )}
-                            </div>
                           </div>
                         )}
                       </div>
