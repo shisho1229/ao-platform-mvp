@@ -81,15 +81,37 @@ export default function StoriesPage() {
     setCampusFilter("")
   }
 
-  const getAdmissionResult = (firstRound?: string, secondRound?: string) => {
-    // 最終選考で合格している場合
+  const getAdmissionResult = (admissionType: string, firstRound?: string, secondRound?: string) => {
+    const isFIT = admissionType.includes("FIT")
+
+    // 二次合格の場合
     if (secondRound && ["合格", "AB合格", "A合格", "B合格"].includes(secondRound)) {
-      return { label: "合格", color: "bg-green-500" }
+      if (isFIT) {
+        // FIT入試の場合：最終A合格、最終B合格、最終AB合格
+        if (firstRound === "AB合格") return { label: "最終AB合格", color: "bg-green-500" }
+        if (firstRound === "A合格") return { label: "最終A合格", color: "bg-green-500" }
+        if (firstRound === "B合格") return { label: "最終B合格", color: "bg-green-500" }
+        return { label: "最終合格", color: "bg-green-500" }
+      } else {
+        // FIT入試以外の場合：最終合格
+        return { label: "最終合格", color: "bg-green-500" }
+      }
     }
-    // 一次選考のみ合格（最終選考結果がない）
+
+    // 一次合格だけど二次不合格の場合
     if (firstRound && ["合格", "AB合格", "A合格", "B合格"].includes(firstRound)) {
-      return { label: "一次合格", color: "bg-blue-500" }
+      if (isFIT) {
+        // FIT入試の場合：書類A合格、書類B合格、書類AB合格
+        if (firstRound === "AB合格") return { label: "書類AB合格", color: "bg-blue-500" }
+        if (firstRound === "A合格") return { label: "書類A合格", color: "bg-blue-500" }
+        if (firstRound === "B合格") return { label: "書類B合格", color: "bg-blue-500" }
+        return { label: "書類合格", color: "bg-blue-500" }
+      } else {
+        // FIT入試以外の場合：書類合格
+        return { label: "書類合格", color: "bg-blue-500" }
+      }
     }
+
     return null
   }
 
@@ -269,7 +291,7 @@ export default function StoriesPage() {
                         </div>
                       )}
                       {(() => {
-                        const result = getAdmissionResult(story.firstRoundResult, story.secondRoundResult)
+                        const result = getAdmissionResult(story.admissionType, story.firstRoundResult, story.secondRoundResult)
                         return result ? (
                           <div className={`inline-block px-3 py-1 ${result.color} text-white text-xs font-semibold rounded-full`}>
                             {result.label}
