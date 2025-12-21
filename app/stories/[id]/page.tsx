@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
-import { Heart, ArrowLeft, GraduationCap, Award, Globe, Users, BookOpen, FileText, Target } from "lucide-react"
+import { Heart, ArrowLeft, GraduationCap, Award, Globe, Users, BookOpen, FileText, Target, ExternalLink } from "lucide-react"
 
 interface Story {
   id: string
@@ -17,6 +17,7 @@ interface Story {
   gradeAverage: string
   admissionType: string
   year?: number
+  documentsUrl?: string
 
   // 探究・活動
   researchTheme?: string
@@ -270,6 +271,28 @@ export default function StoryDetailPage() {
           </div>
 
           <div className="p-8 space-y-8">
+            {/* 管理者用: 合格書類URL */}
+            {(session?.user?.role === "SUPER_ADMIN" ||
+              session?.user?.role === "ADMIN" ||
+              session?.user?.role === "STAFF") &&
+              story.documentsUrl && (
+              <div className="p-6 rounded-xl border-2 border-orange-500 bg-orange-50">
+                <h2 className="text-lg font-bold mb-3 flex items-center gap-2 text-orange-700">
+                  <FileText className="w-5 h-5" />
+                  合格書類（管理者のみ表示）
+                </h2>
+                <a
+                  href={story.documentsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  書類を開く
+                </a>
+              </div>
+            )}
+
             {/* 投稿者情報 */}
             {(story.authorName || story.highSchoolName) && (
               <div className="p-6 rounded-xl" style={{ backgroundColor: '#f0f4f5' }}>

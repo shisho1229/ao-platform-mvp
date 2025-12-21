@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
-import { Eye, EyeOff, Trash2, Link as LinkIcon, Mail, ExternalLink } from "lucide-react"
+import { Eye, EyeOff, Trash2, Link as LinkIcon, Mail, ExternalLink, Edit } from "lucide-react"
 
 interface Story {
   id: string
@@ -11,6 +11,8 @@ interface Story {
   faculty: string
   admissionType: string
   year?: number
+  firstRoundResult?: string
+  secondRoundResult?: string
   published: boolean
   documentsUrl?: string
   createdAt: string
@@ -250,6 +252,9 @@ export default function AdminStoriesPage() {
                   入試方式
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  最終結果
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   投稿者
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -275,6 +280,28 @@ export default function AdminStoriesPage() {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">{story.admissionType}</div>
                   </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {(() => {
+                      const getResult = (firstRound?: string, secondRound?: string) => {
+                        if (secondRound && ["合格", "AB合格", "A合格", "B合格"].includes(secondRound)) {
+                          return { label: "合格", color: "bg-green-500 text-white" }
+                        }
+                        if (firstRound && ["合格", "AB合格", "A合格", "B合格"].includes(firstRound)) {
+                          return { label: "一次合格", color: "bg-blue-500 text-white" }
+                        }
+                        if (secondRound && ["不合格"].includes(secondRound)) {
+                          return { label: "不合格", color: "bg-gray-500 text-white" }
+                        }
+                        return { label: "未記入", color: "bg-gray-200 text-gray-600" }
+                      }
+                      const result = getResult(story.firstRoundResult, story.secondRoundResult)
+                      return (
+                        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${result.color}`}>
+                          {result.label}
+                        </span>
+                      )
+                    })()}
+                  </td>
                   <td className="px-6 py-4">
                     <div className="text-sm font-medium text-gray-900">
                       {story.author.name}
@@ -295,6 +322,14 @@ export default function AdminStoriesPage() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
                     <div className="flex flex-wrap gap-2">
+                      <button
+                        onClick={() => router.push(`/admin/stories/${story.id}/edit`)}
+                        className="inline-flex items-center px-2 py-1 bg-indigo-600 text-white rounded text-xs hover:bg-indigo-700"
+                        title="編集"
+                      >
+                        <Edit className="w-3 h-3" />
+                      </button>
+
                       <button
                         onClick={() => handleTogglePublish(story.id, story.published)}
                         disabled={processing === story.id}
