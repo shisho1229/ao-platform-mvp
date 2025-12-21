@@ -118,12 +118,12 @@ export default function EditStoryPage() {
         // 併願校データを設定
         setConcurrentApplications(story.concurrentApplications || [])
       } else if (res.status === 403 || res.status === 404) {
-        setError("体験談が見つからないか、編集権限がありません")
+        setError("体験記が見つからないか、編集権限がありません")
         setTimeout(() => router.push("/my-stories"), 2000)
       }
     } catch (error) {
       console.error("Error fetching story:", error)
-      setError("体験談の読み込みに失敗しました")
+      setError("体験記の読み込みに失敗しました")
     } finally {
       setIsLoadingStory(false)
     }
@@ -279,7 +279,7 @@ export default function EditStoryPage() {
       })
 
       if (res.ok) {
-        // 更新成功時は体験談詳細ページにリダイレクト
+        // 更新成功時は体験記詳細ページにリダイレクト
         router.push(`/stories/${storyId}`)
       } else {
         const data = await res.json()
@@ -311,7 +311,7 @@ export default function EditStoryPage() {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">
-          合格体験談を編集
+          合格体験記を編集
         </h1>
 
         {error && (

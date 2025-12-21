@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { requireRole } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 
-// PATCH /api/admin/stories/[id] - 体験談編集
+// PATCH /api/admin/stories/[id] - 体験記編集
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -46,7 +46,7 @@ export async function PATCH(
       adviceToJuniors,
     } = body
 
-    // 体験談を更新
+    // 体験記を更新
     const story = await prisma.graduateStory.update({
       where: { id: storyId },
       data: {
@@ -113,19 +113,19 @@ export async function PATCH(
 
     if (error.code === "P2025") {
       return NextResponse.json(
-        { error: "体験談が見つかりません" },
+        { error: "体験記が見つかりません" },
         { status: 404 }
       )
     }
 
     return NextResponse.json(
-      { error: "体験談の更新に失敗しました" },
+      { error: "体験記の更新に失敗しました" },
       { status: 500 }
     )
   }
 }
 
-// DELETE /api/admin/stories/[id] - 体験談削除
+// DELETE /api/admin/stories/[id] - 体験記削除
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -134,12 +134,12 @@ export async function DELETE(
     await requireRole(["SUPER_ADMIN", "ADMIN", "STAFF"])
     const { id: storyId } = await params
 
-    // 体験談を削除
+    // 体験記を削除
     await prisma.graduateStory.delete({
       where: { id: storyId },
     })
 
-    return NextResponse.json({ message: "体験談を削除しました" })
+    return NextResponse.json({ message: "体験記を削除しました" })
   } catch (error: any) {
     console.error("Error deleting story:", error)
 
@@ -152,13 +152,13 @@ export async function DELETE(
 
     if (error.code === "P2025") {
       return NextResponse.json(
-        { error: "体験談が見つかりません" },
+        { error: "体験記が見つかりません" },
         { status: 404 }
       )
     }
 
     return NextResponse.json(
-      { error: "体験談の削除に失敗しました" },
+      { error: "体験記の削除に失敗しました" },
       { status: 500 }
     )
   }

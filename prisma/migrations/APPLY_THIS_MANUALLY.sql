@@ -190,7 +190,7 @@ BEGIN
         ALTER TABLE "graduate_stories" ADD COLUMN "highSchoolName" TEXT;
     END IF;
 
-    -- campus を追加（体験談テーブル）
+    -- campus を追加（体験記テーブル）
     IF NOT EXISTS (
         SELECT 1 FROM information_schema.columns
         WHERE table_name = 'graduate_stories' AND column_name = 'campus'

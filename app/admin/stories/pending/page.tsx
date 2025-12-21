@@ -60,14 +60,14 @@ export default function AdminPendingStoriesPage() {
         setStories(data)
       }
     } catch (error) {
-      console.error("承認待ち体験談取得エラー:", error)
+      console.error("承認待ち体験記取得エラー:", error)
     } finally {
       setLoading(false)
     }
   }
 
   const handleApprove = async (storyId: string) => {
-    if (!confirm("この体験談を承認して公開しますか？")) return
+    if (!confirm("この体験記を承認して公開しますか？")) return
 
     setProcessing(storyId)
     try {
@@ -78,7 +78,7 @@ export default function AdminPendingStoriesPage() {
       })
 
       if (response.ok) {
-        alert("体験談を承認しました")
+        alert("体験記を承認しました")
         fetchPendingStories()
       } else {
         const data = await response.json()
@@ -147,13 +147,13 @@ export default function AdminPendingStoriesPage() {
             className="inline-flex items-center text-sm text-blue-600 hover:text-blue-800 mb-4"
           >
             <ArrowLeft className="w-4 h-4 mr-1" />
-            体験談管理に戻る
+            体験記管理に戻る
           </Link>
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">承認待ち体験談</h1>
+              <h1 className="text-3xl font-bold text-gray-900">承認待ち体験記</h1>
               <p className="mt-2 text-sm text-gray-600">
-                投稿された体験談を確認し、承認または修正を依頼してください
+                投稿された体験記を確認し、承認または修正を依頼してください
               </p>
             </div>
             <div className="flex items-center gap-2 px-4 py-2 bg-orange-100 text-orange-800 rounded-lg">
@@ -163,11 +163,11 @@ export default function AdminPendingStoriesPage() {
           </div>
         </div>
 
-        {/* 体験談リスト */}
+        {/* 体験記リスト */}
         {stories.length === 0 ? (
           <div className="text-center py-12 bg-white rounded-lg shadow">
             <Clock className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-600">承認待ちの体験談はありません</p>
+            <p className="text-gray-600">承認待ちの体験記はありません</p>
           </div>
         ) : (
           <div className="space-y-6">
@@ -198,7 +198,7 @@ export default function AdminPendingStoriesPage() {
                       href={`/stories/${story.id}`}
                       target="_blank"
                       className="flex-shrink-0 ml-4 p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                      title="体験談を見る"
+                      title="体験記を見る"
                     >
                       <ExternalLink className="w-5 h-5" />
                     </Link>

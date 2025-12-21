@@ -63,7 +63,7 @@ export async function POST(
 
     if (error.code === "P2025") {
       return NextResponse.json(
-        { error: "体験談が見つかりません" },
+        { error: "体験記が見つかりません" },
         { status: 404 }
       )
     }
@@ -108,7 +108,7 @@ export async function DELETE(
 
     if (error.code === "P2025") {
       return NextResponse.json(
-        { error: "体験談が見つかりません" },
+        { error: "体験記が見つかりません" },
         { status: 404 }
       )
     }

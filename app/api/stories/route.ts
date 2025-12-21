@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { requireRole } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 
-// GET /api/stories - 合格体験談一覧取得
+// GET /api/stories - 合格体験記一覧取得
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams
@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
 
     // AND条件を格納する配列
     const andConditions: any[] = [
-      { published: true } // 公開されている体験談のみ
+      { published: true } // 公開されている体験記のみ
     ]
 
     // キーワード検索（OR条件）
@@ -101,13 +101,13 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error("Error fetching stories:", error)
     return NextResponse.json(
-      { error: "体験談の取得に失敗しました" },
+      { error: "体験記の取得に失敗しました" },
       { status: 500 }
     )
   }
 }
 
-// POST /api/stories - 合格体験談投稿（ユーザー専用）
+// POST /api/stories - 合格体験記投稿（ユーザー専用）
 export async function POST(request: NextRequest) {
   try {
     const user = await requireRole(["USER"])
@@ -165,7 +165,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // 体験談を作成（最初は非公開、添削待ち状態）
+    // 体験記を作成（最初は非公開、添削待ち状態）
     const story = await prisma.graduateStory.create({
       data: {
         authorId: user.id,
@@ -237,18 +237,18 @@ export async function POST(request: NextRequest) {
 
     if (error.message === "権限がありません") {
       return NextResponse.json(
-        { error: "合格者のみ体験談を投稿できます" },
+        { error: "合格者のみ体験記を投稿できます" },
         { status: 403 }
       )
     }
 
     // Prismaエラーの詳細を返す（開発環境用）
-    const errorMessage = error.message || "体験談の投稿に失敗しました"
+    const errorMessage = error.message || "体験記の投稿に失敗しました"
     const errorDetails = error.code ? ` (Code: ${error.code})` : ""
 
     return NextResponse.json(
       {
-        error: `体験談の投稿に失敗しました: ${errorMessage}${errorDetails}`,
+        error: `体験記の投稿に失敗しました: ${errorMessage}${errorDetails}`,
         details: process.env.NODE_ENV === 'development' ? error.message : undefined
       },
       { status: 500 }

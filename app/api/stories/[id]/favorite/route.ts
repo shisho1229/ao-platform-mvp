@@ -18,14 +18,14 @@ export async function POST(
 
     const { id: storyId } = await params
 
-    // 体験談が存在するか確認
+    // 体験記が存在するか確認
     const story = await prisma.graduateStory.findUnique({
       where: { id: storyId },
     })
 
     if (!story) {
       return NextResponse.json(
-        { error: "体験談が見つかりません" },
+        { error: "体験記が見つかりません" },
         { status: 404 }
       )
     }

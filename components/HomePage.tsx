@@ -83,9 +83,9 @@ export default function HomePage() {
           <div className="w-80 flex-shrink-0 space-y-4">
             <Link href="/stories" className="block bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
               <BookOpen className="w-12 h-12 mb-4" style={{ color: '#044465' }} />
-              <h3 className="text-xl font-bold mb-2" style={{ color: '#044465' }}>体験談一覧</h3>
+              <h3 className="text-xl font-bold mb-2" style={{ color: '#044465' }}>体験記一覧</h3>
               <p className="text-gray-600">
-                合格者の体験談を閲覧できます
+                合格者の体験記を閲覧できます
               </p>
             </Link>
 
@@ -101,7 +101,7 @@ export default function HomePage() {
               <Heart className="w-12 h-12 mb-4" style={{ color: '#044465' }} />
               <h3 className="text-xl font-bold mb-2" style={{ color: '#044465' }}>お気に入り</h3>
               <p className="text-gray-600">
-                お気に入りの体験談を管理できます
+                お気に入りの体験記を管理できます
               </p>
             </Link>
 
@@ -114,15 +114,15 @@ export default function HomePage() {
                 }}
               >
                 <Award className="w-12 h-12 mb-4 text-white" />
-                <h3 className="text-xl font-bold mb-2 text-white">体験談を投稿する</h3>
+                <h3 className="text-xl font-bold mb-2 text-white">体験記を投稿する</h3>
                 <p className="text-green-50">
-                  合格体験談を後輩に共有しましょう
+                  合格体験記を後輩に共有しましょう
                 </p>
               </Link>
             )}
           </div>
 
-          {/* 右側: タイトル・キャッチコピー + 最新体験談 */}
+          {/* 右側: タイトル・キャッチコピー + 最新体験記 */}
           <div className="flex-1">
             {/* 上部: タイトル・キャッチコピーと合格実績 */}
             <section className="mb-8 relative">
@@ -159,7 +159,7 @@ export default function HomePage() {
               {/* タイトル・キャッチコピー（中央） */}
               <div className="pr-80">
                 <h2 className="text-5xl font-bold mb-4" style={{ color: '#f0f4f8' }}>
-                  Loohcs志塾 合格者体験談
+                  Loohcs志塾 合格者体験記
                 </h2>
                 <p className="text-2xl mb-3" style={{ color: '#d4af37' }}>
                   志を抱く、場所となる。
@@ -171,9 +171,9 @@ export default function HomePage() {
               </div>
             </section>
 
-            {/* 下部: 最新の体験談一覧 */}
+            {/* 下部: 最新の体験記一覧 */}
             <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-6">
-              <h3 className="text-2xl font-bold mb-6" style={{ color: '#044465' }}>最新の体験談</h3>
+              <h3 className="text-2xl font-bold mb-6" style={{ color: '#044465' }}>最新の体験記</h3>
               {loading ? (
                 <div className="text-center py-12">
                   <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-t-transparent" style={{ borderColor: '#044465', borderTopColor: 'transparent' }}></div>
@@ -181,7 +181,7 @@ export default function HomePage() {
                 </div>
               ) : stories.length === 0 ? (
                 <div className="text-center py-12 text-gray-500">
-                  まだ体験談が投稿されていません
+                  まだ体験記が投稿されていません
                 </div>
               ) : (
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -202,7 +202,7 @@ export default function HomePage() {
                           {/* 公開通知 */}
                           {story.authorName && (
                             <div className="mb-1 text-xs text-green-200 font-medium">
-                              {story.authorName}さんの体験談が公開されました
+                              {story.authorName}さんの体験記が公開されました
                             </div>
                           )}
                           {/* 大学名と学部を縦に並べる */}

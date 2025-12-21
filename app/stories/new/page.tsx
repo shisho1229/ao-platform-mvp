@@ -266,7 +266,7 @@ export default function NewStoryPage() {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">
-          合格体験談を投稿
+          合格体験記を投稿
         </h1>
 
         {error && (
@@ -1204,10 +1204,10 @@ export default function NewStoryPage() {
               </div>
               <div className="ml-3 text-sm">
                 <label htmlFor="agree-terms" className="font-medium text-gray-700">
-                  体験談の提供および広報活用に関する同意 *
+                  体験記の提供および広報活用に関する同意 *
                 </label>
                 <p className="text-gray-500 mt-1">
-                  私は、私が提供する体験談・コメント・受験を通じた感想等について、loohcs志塾のWebサイト、SNS、パンフレット等の広報活動に活用されることに同意します。<br />
+                  私は、私が提供する体験記・コメント・受験を通じた感想等について、loohcs志塾のWebサイト、SNS、パンフレット等の広報活動に活用されることに同意します。<br />
                   なお、広報において氏名・出身校・進学先・学年等の個人情報を使用する場合には、事前に本人の同意を得た上で、同意された範囲内でのみ使用されることを確認しています。<br />
                   本フォームを通じて提供される情報は、上記目的の範囲内で適切に管理されます。
                 </p>

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { requireRole } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 
-// GET /api/admin/stories/pending - 承認待ち体験談一覧取得
+// GET /api/admin/stories/pending - 承認待ち体験記一覧取得
 export async function GET(request: NextRequest) {
   try {
     await requireRole(["SUPER_ADMIN", "ADMIN", "STAFF"])
@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json(
-      { error: "承認待ち体験談の取得に失敗しました" },
+      { error: "承認待ち体験記の取得に失敗しました" },
       { status: 500 }
     )
   }

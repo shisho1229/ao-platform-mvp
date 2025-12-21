@@ -259,14 +259,14 @@ export default function StoryDetailPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center py-20">
             <BookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-600 text-lg mb-4">体験談が見つかりません</p>
+            <p className="text-gray-600 text-lg mb-4">体験記が見つかりません</p>
             <Link
               href="/stories"
               className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-white rounded-xl shadow-lg transition-all"
               style={{ background: 'linear-gradient(to right, #044465, #055a7a)' }}
             >
               <ArrowLeft className="w-4 h-4" />
-              体験談一覧に戻る
+              体験記一覧に戻る
             </Link>
           </div>
         </div>
@@ -286,7 +286,7 @@ export default function StoryDetailPage() {
           onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
-          体験談一覧に戻る
+          体験記一覧に戻る
         </Link>
 
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">

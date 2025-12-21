@@ -35,7 +35,7 @@ enum UserRole {
   USER         // 一般ユーザー
 }
 
-// 合格体験談（生徒も閲覧可能）
+// 合格体験記（生徒も閲覧可能）
 model GraduateStory {
   id              String    @id @default(uuid())
   authorId        String
@@ -140,7 +140,7 @@ model ExplorationTheme {
   @@map("exploration_themes")
 }
 
-// 中間テーブル（合格体験談 ⟷ 探究テーマ）
+// 中間テーブル（合格体験記 ⟷ 探究テーマ）
 model StoryExplorationTheme {
   storyId   String
   themeId   Int
@@ -171,7 +171,7 @@ enum ApplicationResult {
   PENDING
 }
 
-// 体験談ステータス
+// 体験記ステータス
 enum StoryStatus {
   DRAFT           // 下書き（未使用）
   PENDING_REVIEW  // 承認待ち
@@ -179,7 +179,7 @@ enum StoryStatus {
   PUBLISHED       // 公開中
 }
 
-// お気に入り（ユーザー ⟷ 体験談）
+// お気に入り（ユーザー ⟷ 体験記）
 model Favorite {
   id        String   @id @default(uuid())
   userId    String

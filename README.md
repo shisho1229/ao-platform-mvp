@@ -1,8 +1,8 @@
-# 合格体験談プラットフォーム（AO Platform MVP）
+# 合格体験記プラットフォーム（AO Platform MVP）
 
 ## 概要
 
-塾内利用を前提とした合格体験談の蓄積・検索システムです。
+塾内利用を前提とした合格体験記の蓄積・検索システムです。
 生徒が「自分に近い合格者」を探せることを主目的としています。
 
 ## 主な機能
@@ -10,26 +10,26 @@
 ### ユーザーロール
 - **Admin（管理者）**
 - **Staff（講師・スタッフ）**
-- **Graduate（合格者）**: 体験談投稿が可能
-- **Student（在籍生徒）**: 体験談閲覧・検索が可能
+- **Graduate（合格者）**: 体験記投稿が可能
+- **Student（在籍生徒）**: 体験記閲覧・検索が可能
 
 ### 機能一覧
-1. **体験談投稿**（Graduate専用）
+1. **体験記投稿**（Graduate専用）
    - 基礎属性（性別、高校偏差値帯、評定平均、入試方式など）
    - 探究テーマ（12分類から複数選択）
    - 活動内容・実績
    - 選考情報・対策方法
    - 後輩へのアドバイス
 
-2. **体験談閲覧**（全ユーザー）
-   - 体験談一覧表示
+2. **体験記閲覧**（全ユーザー）
+   - 体験記一覧表示
    - 詳細ページでの全情報閲覧
    - 探究テーマによるフィルタリング
 
 3. **類似合格者検索**（全ユーザー）
    - 高校偏差値帯、評定平均、探究テーマなどで検索
    - スコアリングアルゴリズムによる類似度計算
-   - 類似度順に体験談を表示
+   - 類似度順に体験記を表示
 
 4. **合格書類管理**（Admin/Staff専用）
    - PDF書類のアップロード・閲覧
@@ -106,9 +106,9 @@ npm run dev
 
 ### 主要モデル
 - `User`: ユーザー（Admin, Staff, Graduate, Student）
-- `GraduateStory`: 合格体験談
+- `GraduateStory`: 合格体験記
 - `ExplorationTheme`: 探究テーマ（固定12分類）
-- `StoryExplorationTheme`: 体験談と探究テーマの中間テーブル
+- `StoryExplorationTheme`: 体験記と探究テーマの中間テーブル
 - `ConcurrentApplication`: 併願校情報
 - `AdmissionDocument`: 合格書類（PDF）
 
@@ -135,13 +135,13 @@ app/
 ├── auth/
 │   └── signin/page.tsx          # ログインページ
 ├── stories/
-│   ├── page.tsx                 # 体験談一覧
-│   ├── [id]/page.tsx            # 体験談詳細
-│   └── new/page.tsx             # 体験談投稿（Graduate専用）
+│   ├── page.tsx                 # 体験記一覧
+│   ├── [id]/page.tsx            # 体験記詳細
+│   └── new/page.tsx             # 体験記投稿（Graduate専用）
 ├── search/page.tsx              # 類似合格者検索
 └── api/
     ├── auth/[...nextauth]/      # NextAuth API
-    ├── stories/                 # 体験談API
+    ├── stories/                 # 体験記API
     ├── stories/search/          # 検索API
     └── themes/                  # 探究テーマAPI
 

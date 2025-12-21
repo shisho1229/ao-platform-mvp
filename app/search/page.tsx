@@ -343,13 +343,13 @@ export default function SearchPage() {
             ) : results.length === 0 ? (
               <div className="bg-white rounded-lg shadow p-12 text-center">
                 <p className="text-gray-500">
-                  条件に合う体験談が見つかりませんでした
+                  条件に合う体験記が見つかりませんでした
                 </p>
               </div>
             ) : (
               <div className="space-y-4">
                 <p className="text-sm text-gray-600">
-                  {results.length}件の体験談が見つかりました
+                  {results.length}件の体験記が見つかりました
                 </p>
                 {results.map(({ story, score, matchPercentage }) => (
                   <Link

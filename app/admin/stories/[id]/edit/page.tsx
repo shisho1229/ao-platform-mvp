@@ -105,11 +105,11 @@ export default function EditStoryPage() {
           adviceToJuniors: story.adviceToJuniors || "",
         })
       } else {
-        setError("体験談の取得に失敗しました")
+        setError("体験記の取得に失敗しました")
       }
     } catch (error) {
       console.error("Error fetching story:", error)
-      setError("体験談の取得に失敗しました")
+      setError("体験記の取得に失敗しました")
     } finally {
       setIsLoading(false)
     }
@@ -135,7 +135,7 @@ export default function EditStoryPage() {
       })
 
       if (response.ok) {
-        alert("体験談を更新しました")
+        alert("体験記を更新しました")
         router.push("/admin/stories")
       } else {
         const data = await response.json()
@@ -175,7 +175,7 @@ export default function EditStoryPage() {
           投稿管理に戻る
         </Link>
 
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">体験談を編集</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-8">体験記を編集</h1>
 
         {error && (
           <div className="mb-4 rounded-md bg-red-50 p-4">

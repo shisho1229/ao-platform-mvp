@@ -112,7 +112,7 @@ export default function MyStoriesPage() {
               マイ投稿
             </h1>
             <p className="text-gray-600">
-              あなたが投稿した体験談の一覧です
+              あなたが投稿した体験記の一覧です
             </p>
           </div>
           <Link
@@ -136,7 +136,7 @@ export default function MyStoriesPage() {
               style={{ background: 'linear-gradient(to right, #044465, #055a7a)' }}
             >
               <Plus className="w-5 h-5" />
-              体験談を投稿する
+              体験記を投稿する
             </Link>
           </div>
         ) : (

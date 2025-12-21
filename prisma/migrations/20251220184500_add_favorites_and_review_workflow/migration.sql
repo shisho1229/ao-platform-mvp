@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS "favorites" (
     CONSTRAINT "favorites_pkey" PRIMARY KEY ("id")
 );
 
--- ユニーク制約を追加（同じユーザーが同じ体験談を複数回お気に入りできないようにする）
+-- ユニーク制約を追加（同じユーザーが同じ体験記を複数回お気に入りできないようにする）
 DO $$
 BEGIN
     IF NOT EXISTS (

@@ -88,10 +88,10 @@ async function main() {
 
   console.log('✅ ユーザー5件を作成しました');
 
-  // 合格体験談を作成
-  console.log('📝 合格体験談を作成中...');
+  // 合格体験記を作成
+  console.log('📝 合格体験記を作成中...');
 
-  // 体験談1: 早稲田大学 政治経済学部
+  // 体験記1: 早稲田大学 政治経済学部
   const story1 = await prisma.graduateStory.create({
     data: {
       authorId: user1.id,
@@ -141,7 +141,7 @@ async function main() {
     ],
   });
 
-  // 体験談2: 慶應義塾大学 SFC
+  // 体験記2: 慶應義塾大学 SFC
   const story2 = await prisma.graduateStory.create({
     data: {
       authorId: user2.id,
@@ -193,7 +193,7 @@ async function main() {
     ],
   });
 
-  console.log('✅ 合格体験談2件を作成しました');
+  console.log('✅ 合格体験記2件を作成しました');
   console.log('🎉 シードデータの投入が完了しました!');
   console.log('\n📋 作成されたユーザー:');
   console.log('  - Admin: admin@example.com / password123');

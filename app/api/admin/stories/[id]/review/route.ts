@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { requireRole } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 
-// PATCH /api/admin/stories/[id]/review - 体験談のステータス変更（承認、修正依頼）
+// PATCH /api/admin/stories/[id]/review - 体験記のステータス変更（承認、修正依頼）
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -64,7 +64,7 @@ export async function PATCH(
     })
 
     return NextResponse.json({
-      message: action === "approve" ? "体験談を承認しました" : "修正を依頼しました",
+      message: action === "approve" ? "体験記を承認しました" : "修正を依頼しました",
       story,
     })
   } catch (error: any) {
@@ -79,7 +79,7 @@ export async function PATCH(
 
     if (error.code === "P2025") {
       return NextResponse.json(
-        { error: "体験談が見つかりません" },
+        { error: "体験記が見つかりません" },
         { status: 404 }
       )
     }

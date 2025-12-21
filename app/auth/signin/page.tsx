@@ -42,7 +42,7 @@ export default function SignInPage() {
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-lg">
         <div>
           <h2 className="mt-6 text-center text-3xl font-bold" style={{ color: '#044465' }}>
-            Loohcs志塾 合格者体験談
+            Loohcs志塾 合格者体験記
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
             ログインしてください

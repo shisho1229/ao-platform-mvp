@@ -14,7 +14,7 @@ export default function Navbar() {
                          session?.user?.role === "ADMIN" ||
                          session?.user?.role === "STAFF"
 
-  // 管理者の場合、未公開体験談の件数を取得
+  // 管理者の場合、未公開体験記の件数を取得
   useEffect(() => {
     if (!isStaffOrAdmin) return
 
@@ -42,7 +42,7 @@ export default function Navbar() {
 
   const navigation = [
     { name: "ホーム", href: "/" },
-    { name: "体験談一覧", href: "/stories" },
+    { name: "体験記一覧", href: "/stories" },
     { name: "類似検索", href: "/search" },
     { name: "マイ投稿", href: "/my-stories" },
     { name: "お気に入り", href: "/favorites" },
@@ -65,7 +65,7 @@ export default function Navbar() {
               <Link href="/" className="flex items-center space-x-3">
                 <img src="/loohcs-logo.svg" alt="Loohcs志塾" className="h-10 w-10" />
                 <span className="text-xl font-bold" style={{ color: '#f0f4f8' }}>
-                  Loohcs志塾 合格者体験談
+                  Loohcs志塾 合格者体験記
                 </span>
               </Link>
             </div>

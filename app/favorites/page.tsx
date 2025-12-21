@@ -129,7 +129,7 @@ export default function FavoritesPage() {
             お気に入り
           </h1>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto mb-6">
-            後でじっくり読みたい体験談を保存しています
+            後でじっくり読みたい体験記を保存しています
           </p>
           <Link
             href="/stories"
@@ -137,7 +137,7 @@ export default function FavoritesPage() {
             style={{ background: 'linear-gradient(to right, #044465, #055a7a)' }}
           >
             <BookOpen className="w-5 h-5" />
-            体験談一覧に戻る
+            体験記一覧に戻る
           </Link>
         </div>
 
@@ -147,10 +147,10 @@ export default function FavoritesPage() {
               <Heart className="w-10 h-10 text-gray-400" />
             </div>
             <p className="text-gray-600 text-lg">
-              お気に入りに登録された体験談はありません
+              お気に入りに登録された体験記はありません
             </p>
             <p className="text-gray-500 text-sm mt-2">
-              気になる体験談を見つけたら、ハートマークをクリックして保存しましょう
+              気になる体験記を見つけたら、ハートマークをクリックして保存しましょう
             </p>
           </div>
         ) : (

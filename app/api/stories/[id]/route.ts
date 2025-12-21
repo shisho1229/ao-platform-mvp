@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
 
-// GET /api/stories/[id] - 体験談詳細取得
+// GET /api/stories/[id] - 体験記詳細取得
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -31,17 +31,17 @@ export async function GET(
 
     if (!story) {
       return NextResponse.json(
-        { error: "体験談が見つかりません" },
+        { error: "体験記が見つかりません" },
         { status: 404 }
       )
     }
 
-    // 公開されていない体験談は、投稿者本人と管理者のみ閲覧可能
+    // 公開されていない体験記は、投稿者本人と管理者のみ閲覧可能
     if (!story.published) {
       const session = await auth()
       if (!session?.user) {
         return NextResponse.json(
-          { error: "この体験談は非公開です" },
+          { error: "この体験記は非公開です" },
           { status: 403 }
         )
       }
@@ -51,7 +51,7 @@ export async function GET(
 
       if (!isAdmin && !isAuthor) {
         return NextResponse.json(
-          { error: "この体験談は非公開です" },
+          { error: "この体験記は非公開です" },
           { status: 403 }
         )
       }
@@ -61,13 +61,13 @@ export async function GET(
   } catch (error) {
     console.error("Error fetching story:", error)
     return NextResponse.json(
-      { error: "体験談の取得に失敗しました" },
+      { error: "体験記の取得に失敗しました" },
       { status: 500 }
     )
   }
 }
 
-// PATCH /api/stories/[id] - 体験談更新（投稿者本人と管理者のみ）
+// PATCH /api/stories/[id] - 体験記更新（投稿者本人と管理者のみ）
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -84,7 +84,7 @@ export async function PATCH(
 
     const { id: storyId } = await params
 
-    // 体験談の存在確認と権限チェック
+    // 体験記の存在確認と権限チェック
     const story = await prisma.graduateStory.findUnique({
       where: { id: storyId },
       select: { id: true, authorId: true },
@@ -92,7 +92,7 @@ export async function PATCH(
 
     if (!story) {
       return NextResponse.json(
-        { error: "体験談が見つかりません" },
+        { error: "体験記が見つかりません" },
         { status: 404 }
       )
     }
@@ -184,7 +184,7 @@ export async function PATCH(
       updateData.status = "PENDING_REVIEW"
     }
 
-    // 体験談を更新
+    // 体験記を更新
     const updatedStory = await prisma.graduateStory.update({
       where: { id: storyId },
       data: {
@@ -244,12 +244,12 @@ export async function PATCH(
     })
 
     // Prismaエラーの詳細を返す（開発環境用）
-    const errorMessage = error.message || "体験談の更新に失敗しました"
+    const errorMessage = error.message || "体験記の更新に失敗しました"
     const errorDetails = error.code ? ` (Code: ${error.code})` : ""
 
     return NextResponse.json(
       {
-        error: `体験談の更新に失敗しました: ${errorMessage}${errorDetails}`,
+        error: `体験記の更新に失敗しました: ${errorMessage}${errorDetails}`,
         details: process.env.NODE_ENV === 'development' ? error.message : undefined
       },
       { status: 500 }

@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error("Error fetching my stories:", error)
     return NextResponse.json(
-      { error: "体験談の取得に失敗しました" },
+      { error: "体験記の取得に失敗しました" },
       { status: 500 }
     )
   }

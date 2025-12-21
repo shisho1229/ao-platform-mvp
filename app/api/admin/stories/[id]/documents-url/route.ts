@@ -23,14 +23,14 @@ export async function PATCH(
       )
     }
 
-    // 体験談の存在確認
+    // 体験記の存在確認
     const story = await prisma.graduateStory.findUnique({
       where: { id: storyId },
     })
 
     if (!story) {
       return NextResponse.json(
-        { error: "体験談が見つかりません" },
+        { error: "体験記が見つかりません" },
         { status: 404 }
       )
     }

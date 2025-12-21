@@ -130,7 +130,7 @@ export default function StoriesPage() {
             <GraduationCap className="w-7 h-7 text-white" />
           </div>
           <h1 className="text-3xl font-bold mb-2" style={{ color: '#044465' }}>
-            loohcs志塾 合格者体験談
+            loohcs志塾 合格者体験記
           </h1>
           <p className="text-gray-600 text-base max-w-2xl mx-auto">
             先輩の体験から学び、自分だけの合格ストーリーを描こう
@@ -282,10 +282,10 @@ export default function StoriesPage() {
               <BookOpen className="w-10 h-10 text-gray-400" />
             </div>
             <p className="text-gray-600 text-lg">
-              {keywordFilter || universityFilter || facultyFilter || yearFilter || campusFilter ? "条件に一致する体験談が見つかりませんでした" : "まだ体験談が投稿されていません"}
+              {keywordFilter || universityFilter || facultyFilter || yearFilter || campusFilter ? "条件に一致する体験記が見つかりませんでした" : "まだ体験記が投稿されていません"}
             </p>
             <p className="text-gray-500 text-sm mt-2">
-              {keywordFilter || universityFilter || facultyFilter || yearFilter || campusFilter ? "フィルターを変更してみてください" : "最初の体験談を投稿してみませんか？"}
+              {keywordFilter || universityFilter || facultyFilter || yearFilter || campusFilter ? "フィルターを変更してみてください" : "最初の体験記を投稿してみませんか？"}
             </p>
           </div>
         ) : (

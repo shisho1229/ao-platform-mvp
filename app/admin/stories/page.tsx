@@ -70,14 +70,14 @@ export default function AdminStoriesPage() {
         setStories(data)
       }
     } catch (error) {
-      console.error("体験談取得エラー:", error)
+      console.error("体験記取得エラー:", error)
     } finally {
       setLoading(false)
     }
   }
 
   const handleTogglePublish = async (storyId: string, currentStatus: boolean) => {
-    if (!confirm(`この体験談を${currentStatus ? "非公開" : "公開"}にしますか？`)) return
+    if (!confirm(`この体験記を${currentStatus ? "非公開" : "公開"}にしますか？`)) return
 
     setProcessing(storyId)
     try {
@@ -86,7 +86,7 @@ export default function AdminStoriesPage() {
       })
 
       if (response.ok) {
-        alert(`体験談を${currentStatus ? "非公開" : "公開"}にしました`)
+        alert(`体験記を${currentStatus ? "非公開" : "公開"}にしました`)
         fetchStories()
       } else {
         alert("公開状態の切り替えに失敗しました")
@@ -100,7 +100,7 @@ export default function AdminStoriesPage() {
   }
 
   const handleDelete = async (storyId: string) => {
-    if (!confirm("この体験談を削除しますか？この操作は取り消せません。")) return
+    if (!confirm("この体験記を削除しますか？この操作は取り消せません。")) return
 
     setProcessing(storyId)
     try {
@@ -109,7 +109,7 @@ export default function AdminStoriesPage() {
       })
 
       if (response.ok) {
-        alert("体験談を削除しました")
+        alert("体験記を削除しました")
         fetchStories()
       } else {
         alert("削除に失敗しました")
@@ -264,7 +264,7 @@ export default function AdminStoriesPage() {
         <div className="text-center py-12 text-gray-500">読み込み中...</div>
       ) : filteredStories.length === 0 ? (
         <div className="bg-white rounded-lg shadow p-8 text-center text-gray-500">
-          体験談がありません
+          体験記がありません
         </div>
       ) : (
         <div className="bg-white rounded-lg shadow overflow-hidden">

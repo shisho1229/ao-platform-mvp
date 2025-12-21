@@ -19,7 +19,7 @@ export async function POST(
 
     if (!story) {
       return NextResponse.json(
-        { error: "体験談が見つかりません" },
+        { error: "体験記が見つかりません" },
         { status: 404 }
       )
     }
@@ -48,7 +48,7 @@ export async function POST(
     })
 
     return NextResponse.json({
-      message: updatedStory.published ? "体験談を公開しました" : "体験談を非公開にしました",
+      message: updatedStory.published ? "体験記を公開しました" : "体験記を非公開にしました",
       story: updatedStory,
     })
   } catch (error: any) {
