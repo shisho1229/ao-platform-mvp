@@ -116,7 +116,7 @@ export default function HomePage() {
                 <Award className="w-12 h-12 mb-4 text-white" />
                 <h3 className="text-xl font-bold mb-2 text-white">体験談を投稿する</h3>
                 <p className="text-green-50">
-                  あなたの合格体験を後輩に共有しましょう
+                  合格体験談を後輩に共有しましょう
                 </p>
               </Link>
             )}
@@ -124,8 +124,40 @@ export default function HomePage() {
 
           {/* 右側: タイトル・キャッチコピー + 最新体験談 */}
           <div className="flex-1">
-            {/* 上部: タイトル・キャッチコピー */}
+            {/* 上部: 合格実績とタイトル・キャッチコピー */}
             <section className="mb-8">
+              {/* 合格実績（右上） */}
+              <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl p-6 mb-6 border-2 border-amber-200 shadow-lg">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center">
+                    <Award className="w-7 h-7 text-white" />
+                  </div>
+                  <h3 className="text-2xl font-bold" style={{ color: '#044465' }}>合格実績</h3>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="bg-white rounded-xl p-4 shadow-md">
+                    <p className="text-sm font-semibold text-amber-600 mb-2">継続的な実績</p>
+                    <p className="text-lg font-bold" style={{ color: '#044465' }}>
+                      14年連続<br />
+                      慶應義塾大学合格者<br />
+                      <span className="text-3xl text-amber-600">100名</span>超え
+                    </p>
+                  </div>
+                  <div className="bg-white rounded-xl p-4 shadow-md">
+                    <p className="text-sm font-semibold text-orange-600 mb-2">2026年度合格者</p>
+                    <div className="space-y-1">
+                      <p className="text-base font-bold" style={{ color: '#044465' }}>
+                        慶應法学部：<span className="text-2xl text-orange-600">64名</span>
+                      </p>
+                      <p className="text-base font-bold" style={{ color: '#044465' }}>
+                        SFC：<span className="text-2xl text-orange-600">46名</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* タイトル・キャッチコピー */}
               <h2 className="text-5xl font-bold mb-4" style={{ color: '#f0f4f8' }}>
                 Loohcs志塾 合格者体験談
               </h2>
