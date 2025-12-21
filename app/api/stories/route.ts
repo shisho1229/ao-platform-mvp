@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
       { published: true } // 公開されている体験記のみ
     ]
 
-    // キーワード検索（OR条件）
+    // キーワード検索（OR条件）- 体験記の全ての内容を検索対象に
     if (keyword) {
       andConditions.push({
         OR: [
@@ -27,7 +27,18 @@ export async function GET(request: NextRequest) {
           { admissionType: { contains: keyword, mode: 'insensitive' } },
           { highSchoolName: { contains: keyword, mode: 'insensitive' } },
           { researchTheme: { contains: keyword, mode: 'insensitive' } },
+          { researchMotivation: { contains: keyword, mode: 'insensitive' } },
           { researchDetails: { contains: keyword, mode: 'insensitive' } },
+          { targetProfessor: { contains: keyword, mode: 'insensitive' } },
+          { sportsDetails: { contains: keyword, mode: 'insensitive' } },
+          { englishQualification: { contains: keyword, mode: 'insensitive' } },
+          { studyAbroadDetails: { contains: keyword, mode: 'insensitive' } },
+          { leaderExperienceDetails: { contains: keyword, mode: 'insensitive' } },
+          { contestAchievementDetails: { contains: keyword, mode: 'insensitive' } },
+          { interviewQuestions: { contains: keyword, mode: 'insensitive' } },
+          { documentPreparation: { contains: keyword, mode: 'insensitive' } },
+          { secondRoundPreparation: { contains: keyword, mode: 'insensitive' } },
+          { materials: { contains: keyword, mode: 'insensitive' } },
           { authorName: { contains: keyword, mode: 'insensitive' } },
           { adviceToJuniors: { contains: keyword, mode: 'insensitive' } },
           { explorationThemes: {
