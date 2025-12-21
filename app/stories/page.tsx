@@ -38,6 +38,7 @@ export default function StoriesPage() {
   const { data: session } = useSession()
   const [stories, setStories] = useState<Story[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [keywordInput, setKeywordInput] = useState("")
   const [keywordFilter, setKeywordFilter] = useState("")
   const [universityFilter, setUniversityFilter] = useState("")
   const [facultyFilter, setFacultyFilter] = useState("")
@@ -47,6 +48,11 @@ export default function StoriesPage() {
   useEffect(() => {
     fetchStories()
   }, [keywordFilter, universityFilter, facultyFilter, yearFilter, campusFilter])
+
+  const handleKeywordSearch = (e?: React.FormEvent) => {
+    if (e) e.preventDefault()
+    setKeywordFilter(keywordInput)
+  }
 
   const fetchStories = async () => {
     try {
@@ -73,6 +79,7 @@ export default function StoriesPage() {
   }
 
   const clearFilters = () => {
+    setKeywordInput("")
     setKeywordFilter("")
     setUniversityFilter("")
     setFacultyFilter("")
@@ -128,7 +135,7 @@ export default function StoriesPage() {
           <p className="text-gray-600 text-base max-w-2xl mx-auto mb-4">
             先輩の体験から学び、自分だけの合格ストーリーを描こう
           </p>
-          {session?.user?.role === "USER" && (
+          {session?.user && (
             <Link
               href="/stories/new"
               className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl hover:from-orange-600 hover:to-orange-700 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
@@ -145,13 +152,22 @@ export default function StoriesPage() {
             <label className="block text-sm font-semibold mb-2" style={{ color: '#044465' }}>
               キーワード検索
             </label>
-            <input
-              type="text"
-              className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              placeholder="学部、入試方式、高校名、探究テーマなどで検索"
-              value={keywordFilter}
-              onChange={(e) => setKeywordFilter(e.target.value)}
-            />
+            <form onSubmit={handleKeywordSearch} className="flex gap-2">
+              <input
+                type="text"
+                className="flex-1 rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                placeholder="学部、入試方式、高校名、探究テーマなどで検索"
+                value={keywordInput}
+                onChange={(e) => setKeywordInput(e.target.value)}
+              />
+              <button
+                type="submit"
+                className="px-6 py-2 text-sm font-semibold text-white rounded-lg shadow-md hover:shadow-lg transition-all"
+                style={{ background: 'linear-gradient(to right, #044465, #055a7a)' }}
+              >
+                検索
+              </button>
+            </form>
           </div>
         </div>
 
