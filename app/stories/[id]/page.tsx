@@ -168,13 +168,37 @@ export default function StoryDetailPage() {
     }
   }
 
-  const getAdmissionResult = (firstRound?: string, secondRound?: string) => {
+  const getAdmissionResult = (admissionType: string, firstRound?: string, secondRound?: string) => {
+    const isFIT = admissionType.includes("FIT")
+
+    // 二次合格の場合
     if (secondRound && ["合格", "AB合格", "A合格", "B合格"].includes(secondRound)) {
-      return { label: "合格", color: "bg-green-500" }
+      if (isFIT) {
+        // FIT入試の場合：最終A合格、最終B合格、最終AB合格
+        if (firstRound === "AB合格") return { label: "最終AB合格", color: "bg-green-500" }
+        if (firstRound === "A合格") return { label: "最終A合格", color: "bg-green-500" }
+        if (firstRound === "B合格") return { label: "最終B合格", color: "bg-green-500" }
+        return { label: "最終合格", color: "bg-green-500" }
+      } else {
+        // FIT入試以外の場合：最終合格
+        return { label: "最終合格", color: "bg-green-500" }
+      }
     }
+
+    // 一次合格だけど二次不合格の場合
     if (firstRound && ["合格", "AB合格", "A合格", "B合格"].includes(firstRound)) {
-      return { label: "一次合格", color: "bg-blue-500" }
+      if (isFIT) {
+        // FIT入試の場合：書類A合格、書類B合格、書類AB合格
+        if (firstRound === "AB合格") return { label: "書類AB合格", color: "bg-blue-500" }
+        if (firstRound === "A合格") return { label: "書類A合格", color: "bg-blue-500" }
+        if (firstRound === "B合格") return { label: "書類B合格", color: "bg-blue-500" }
+        return { label: "書類合格", color: "bg-blue-500" }
+      } else {
+        // FIT入試以外の場合：書類合格
+        return { label: "書類合格", color: "bg-blue-500" }
+      }
     }
+
     return null
   }
 
@@ -245,9 +269,9 @@ export default function StoryDetailPage() {
                     </span>
                   )}
                   {(() => {
-                    const result = getAdmissionResult(story.firstRoundResult, story.secondRoundResult)
+                    const result = getAdmissionResult(story.admissionType, story.firstRoundResult, story.secondRoundResult)
                     return result ? (
-                      <span className="inline-flex items-center px-3 py-1 bg-green-500 text-white text-sm font-semibold rounded-full">
+                      <span className={`inline-flex items-center px-3 py-1 ${result.color} text-white text-sm font-semibold rounded-full`}>
                         {result.label}
                       </span>
                     ) : null
@@ -298,7 +322,7 @@ export default function StoryDetailPage() {
 
           <div className="p-8 space-y-8">
             {/* 投稿者情報 */}
-            {(story.authorName || story.highSchoolName || story.campus ||
+            {(story.authorName || story.highSchoolName || story.campus || story.concurrentApplications.length > 0 ||
               ((session?.user?.role === "SUPER_ADMIN" || session?.user?.role === "ADMIN" || session?.user?.role === "STAFF") && story.documentsUrl)) && (
               <div className="p-6 rounded-xl" style={{ backgroundColor: '#f0f4f5' }}>
                 <h2 className="text-lg font-bold mb-4" style={{ color: '#044465' }}>
@@ -340,6 +364,32 @@ export default function StoryDetailPage() {
                         <ExternalLink className="w-4 h-4" />
                         合格書類を開く（管理者のみ）
                       </a>
+                    </div>
+                  )}
+                  {/* 併願校 */}
+                  {story.concurrentApplications.length > 0 && (
+                    <div className="pt-3 border-t" style={{ borderColor: '#bac9d0' }}>
+                      <h3 className="text-sm font-bold mb-2" style={{ color: '#044465' }}>併願校</h3>
+                      <div className="space-y-2">
+                        {story.concurrentApplications.map((app, index) => (
+                          <div key={index} className="flex justify-between items-center p-2 rounded-lg bg-white">
+                            <span className="text-sm text-gray-700 font-medium">
+                              {app.university} {app.faculty}
+                            </span>
+                            <span
+                              className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                                app.result === "ACCEPTED"
+                                  ? "bg-green-500 text-white"
+                                  : app.result === "REJECTED"
+                                  ? "bg-red-500 text-white"
+                                  : "bg-gray-400 text-white"
+                              }`}
+                            >
+                              {labels.result[app.result as keyof typeof labels.result]}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -521,33 +571,6 @@ export default function StoryDetailPage() {
                   <p className="text-gray-700 whitespace-pre-wrap bg-gray-50 p-4 rounded-lg">
                     {story.interviewQuestions}
                   </p>
-                </div>
-              </div>
-            )}
-
-            {/* 併願校 */}
-            {story.concurrentApplications.length > 0 && (
-              <div className="border-t pt-6" style={{ borderColor: '#bac9d0' }}>
-                <h2 className="text-xl font-bold mb-4" style={{ color: '#044465' }}>併願校</h2>
-                <div className="space-y-2">
-                  {story.concurrentApplications.map((app, index) => (
-                    <div key={index} className="flex justify-between items-center p-3 rounded-lg" style={{ backgroundColor: '#f0f4f5' }}>
-                      <span className="text-gray-700 font-medium">
-                        {app.university} {app.faculty}
-                      </span>
-                      <span
-                        className={`px-3 py-1 text-xs font-semibold rounded-full ${
-                          app.result === "ACCEPTED"
-                            ? "bg-green-500 text-white"
-                            : app.result === "REJECTED"
-                            ? "bg-red-500 text-white"
-                            : "bg-gray-400 text-white"
-                        }`}
-                      >
-                        {labels.result[app.result as keyof typeof labels.result]}
-                      </span>
-                    </div>
-                  ))}
                 </div>
               </div>
             )}
