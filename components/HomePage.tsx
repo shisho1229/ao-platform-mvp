@@ -151,15 +151,18 @@ export default function HomePage() {
               <div className="flex gap-6 items-start">
                 {/* タイトル・キャッチコピー（左側） */}
                 <div className="flex-1">
-                  <h2 className="text-5xl font-bold mb-4 whitespace-nowrap" style={{ color: '#f0f4f8' }}>
+                  <h2 className="text-4xl font-bold mb-4 whitespace-nowrap" style={{ color: '#f0f4f8' }}>
                     Loohcs志塾 合格者体験記
                   </h2>
                   <p className="text-2xl mb-3" style={{ color: '#d4af37' }}>
                     志を抱く、場所となる。
                   </p>
-                  <p className="text-lg" style={{ color: '#e8eef5' }}>
+                  <p className="text-lg mb-3" style={{ color: '#e8eef5' }}>
                     どんな受験生も、どんな志望校も、<br />
                     人生が変わるほどの成長と合格を掴み取れます。
+                  </p>
+                  <p className="text-base" style={{ color: '#bac9d0' }}>
+                    先輩の体験から学び、自分だけの合格ストーリーを描こう
                   </p>
                 </div>
 
