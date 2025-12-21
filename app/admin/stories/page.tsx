@@ -333,58 +333,64 @@ export default function AdminStoriesPage() {
                     <div className="flex flex-wrap gap-2">
                       <button
                         onClick={() => router.push(`/admin/stories/${story.id}/edit`)}
-                        className="inline-flex items-center px-2 py-1 bg-indigo-600 text-white rounded text-xs hover:bg-indigo-700"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 bg-indigo-600 text-white rounded text-xs hover:bg-indigo-700"
                         title="編集"
                       >
                         <Edit className="w-3 h-3" />
+                        <span>編集</span>
                       </button>
 
                       <button
                         onClick={() => handleTogglePublish(story.id, story.published)}
                         disabled={processing === story.id}
-                        className={`inline-flex items-center px-2 py-1 rounded text-white text-xs disabled:opacity-50 ${
+                        className={`inline-flex items-center gap-1 px-3 py-1.5 rounded text-white text-xs disabled:opacity-50 ${
                           story.published ? "bg-orange-600 hover:bg-orange-700" : "bg-green-600 hover:bg-green-700"
                         }`}
                         title={story.published ? "非公開にする" : "公開する"}
                       >
                         {story.published ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                        <span>{story.published ? "非公開" : "公開"}</span>
                       </button>
 
                       <button
                         onClick={() => openDocumentsModal(story)}
                         disabled={processing === story.id}
-                        className="inline-flex items-center px-2 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700 disabled:opacity-50"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-600 text-white rounded text-xs hover:bg-blue-700 disabled:opacity-50"
                         title="書類URL"
                       >
                         <LinkIcon className="w-3 h-3" />
+                        <span>書類URL</span>
                       </button>
 
                       <button
                         onClick={() => openEditRequestModal(story.id)}
                         disabled={processing === story.id}
-                        className="inline-flex items-center px-2 py-1 bg-purple-600 text-white rounded text-xs hover:bg-purple-700 disabled:opacity-50"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 bg-purple-600 text-white rounded text-xs hover:bg-purple-700 disabled:opacity-50"
                         title="編集依頼"
                       >
                         <Mail className="w-3 h-3" />
+                        <span>編集依頼</span>
                       </button>
 
                       <a
                         href={`/stories/${story.id}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center px-2 py-1 bg-gray-600 text-white rounded text-xs hover:bg-gray-700"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 bg-gray-600 text-white rounded text-xs hover:bg-gray-700"
                         title="詳細を見る"
                       >
                         <ExternalLink className="w-3 h-3" />
+                        <span>詳細</span>
                       </a>
 
                       <button
                         onClick={() => handleDelete(story.id)}
                         disabled={processing === story.id}
-                        className="inline-flex items-center px-2 py-1 bg-red-600 text-white rounded text-xs hover:bg-red-700 disabled:opacity-50"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 bg-red-600 text-white rounded text-xs hover:bg-red-700 disabled:opacity-50"
                         title="削除"
                       >
                         <Trash2 className="w-3 h-3" />
+                        <span>削除</span>
                       </button>
                     </div>
                   </td>
