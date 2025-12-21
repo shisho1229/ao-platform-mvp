@@ -13,11 +13,13 @@ interface Story {
   highSchoolLevel: string
   highSchoolName?: string
   gradeAverage: string
+  campus?: string
   admissionType: string
   year?: number
   firstRoundResult?: string
   secondRoundResult?: string
   authorName?: string
+  researchTheme?: string
   author: {
     name: string
     campus?: string
@@ -290,6 +292,14 @@ export default function StoriesPage() {
                         </p>
                       </div>
                     )}
+                    {story.campus && (
+                      <div className="flex items-center gap-2 mb-2">
+                        <BookOpen className="w-4 h-4 flex-shrink-0" style={{ color: '#044465' }} />
+                        <p className="text-sm" style={{ color: '#044465' }}>
+                          {story.campus}
+                        </p>
+                      </div>
+                    )}
                     {story.authorName && (
                       <div className="flex items-center gap-2">
                         <Users className="w-4 h-4 flex-shrink-0" style={{ color: '#055a7a' }} />
@@ -299,6 +309,16 @@ export default function StoriesPage() {
                       </div>
                     )}
                   </div>
+
+                  {/* 志 */}
+                  {story.researchTheme && (
+                    <div className="mb-4">
+                      <p className="text-xs text-gray-500 font-medium mb-2">志</p>
+                      <p className="text-sm text-gray-700 line-clamp-3">
+                        {story.researchTheme}
+                      </p>
+                    </div>
+                  )}
 
                   {/* 探究テーマタグ */}
                   {story.explorationThemes.length > 0 && (

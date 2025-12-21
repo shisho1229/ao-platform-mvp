@@ -378,7 +378,7 @@ export default function EditStoryPage() {
             <h2 className="text-xl font-semibold text-gray-900">探究・活動</h2>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">探究テーマ</label>
+              <label className="block text-sm font-medium text-gray-700">志</label>
               <textarea
                 value={formData.researchTheme}
                 onChange={(e) => setFormData({ ...formData, researchTheme: e.target.value })}

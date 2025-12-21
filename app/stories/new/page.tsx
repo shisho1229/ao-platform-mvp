@@ -140,7 +140,7 @@ export default function NewStoryPage() {
     }
 
     if (!formData.researchTheme?.trim()) {
-      setError("探究テーマを入力してください")
+      setError("志を入力してください")
       setIsLoading(false)
       return
     }
@@ -865,12 +865,12 @@ export default function NewStoryPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                探究テーマ *
+                志 *
               </label>
               <textarea
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 rows={3}
-                placeholder="研究や探究活動のテーマを教えてください"
+                placeholder="あなたの志を教えてください"
                 required
                 value={formData.researchTheme}
                 onChange={(e) =>

@@ -15,6 +15,7 @@ interface Story {
   highSchoolLevel: string
   highSchoolName?: string
   gradeAverage: string
+  campus?: string
   admissionType: string
   year?: number
   documentsUrl?: string
@@ -346,6 +347,14 @@ export default function StoryDetailPage() {
                     {labels.gradeAverage[story.gradeAverage as keyof typeof labels.gradeAverage]}
                   </p>
                 </div>
+                {story.campus && (
+                  <div className="p-4 rounded-lg" style={{ backgroundColor: '#f0f4f5' }}>
+                    <p className="text-xs text-gray-600 mb-1">所属校舎</p>
+                    <p className="font-semibold" style={{ color: '#044465' }}>
+                      {story.campus}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -379,7 +388,7 @@ export default function StoryDetailPage() {
                 <div className="space-y-4">
                   {story.researchTheme && (
                     <div>
-                      <h3 className="font-semibold mb-2" style={{ color: '#055a7a' }}>探究テーマ</h3>
+                      <h3 className="font-semibold mb-2" style={{ color: '#055a7a' }}>志</h3>
                       <p className="text-gray-700 whitespace-pre-wrap bg-gray-50 p-4 rounded-lg">
                         {story.researchTheme}
                       </p>
