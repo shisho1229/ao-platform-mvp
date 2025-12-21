@@ -151,7 +151,7 @@ export default function HomePage() {
               <div className="flex gap-6 items-start">
                 {/* タイトル・キャッチコピー（左側） */}
                 <div className="flex-1">
-                  <h2 className="text-5xl font-bold mb-4" style={{ color: '#f0f4f8' }}>
+                  <h2 className="text-5xl font-bold mb-4 whitespace-nowrap" style={{ color: '#f0f4f8' }}>
                     Loohcs志塾 合格者体験記
                   </h2>
                   <p className="text-2xl mb-3" style={{ color: '#d4af37' }}>
