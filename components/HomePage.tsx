@@ -164,30 +164,31 @@ export default function HomePage() {
                 </div>
 
                 {/* 合格実績（右側） */}
-                <div className="rounded-xl p-6 shadow-xl w-80 flex-shrink-0" style={{ background: 'linear-gradient(135deg, #044465 0%, #055a7a 50%, #0891b2 100%)' }}>
+                <div className="rounded-xl p-6 shadow-xl w-96 flex-shrink-0" style={{ background: 'linear-gradient(135deg, #044465 0%, #055a7a 50%, #0891b2 100%)' }}>
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-amber-500 rounded-lg flex items-center justify-center shadow-md">
                       <Award className="w-6 h-6 text-white" />
                     </div>
-                    <h3 className="text-lg font-bold text-white">合格実績</h3>
+                    <h3 className="text-lg font-bold text-white">2026年度合格実績</h3>
                   </div>
-                  <div className="space-y-3">
-                    <div className="bg-white/95 backdrop-blur-sm rounded-lg p-4 shadow-md">
-                      <p className="text-sm font-bold mb-2" style={{ color: '#044465' }}>14年連続</p>
-                      <p className="text-sm font-bold" style={{ color: '#044465' }}>
-                        慶應義塾大学合格者<br />
-                        <span className="text-3xl font-extrabold" style={{ color: '#044465' }}>100名</span>超え
-                      </p>
-                    </div>
-                    <div className="bg-white/95 backdrop-blur-sm rounded-lg p-4 shadow-md">
-                      <p className="text-sm font-bold mb-2" style={{ color: '#044465' }}>2026年度</p>
-                      <div className="space-y-1.5">
+                  <div className="bg-white/95 backdrop-blur-sm rounded-lg p-4 shadow-md">
+                    <div className="flex gap-4 items-center">
+                      <div className="flex-1">
+                        <p className="text-xs font-bold mb-1" style={{ color: '#044465' }}>14年連続</p>
                         <p className="text-sm font-bold" style={{ color: '#044465' }}>
-                          法学部：<span className="text-2xl font-extrabold" style={{ color: '#044465' }}>64名</span>
+                          慶應義塾大学合格者<br />
+                          <span className="text-3xl font-extrabold" style={{ color: '#044465' }}>100名</span>超え
                         </p>
-                        <p className="text-sm font-bold" style={{ color: '#044465' }}>
-                          SFC：<span className="text-2xl font-extrabold" style={{ color: '#044465' }}>46名</span>
-                        </p>
+                      </div>
+                      <div className="flex-1">
+                        <div className="space-y-2">
+                          <p className="text-sm font-bold" style={{ color: '#044465' }}>
+                            法学部：<span className="text-2xl font-extrabold" style={{ color: '#044465' }}>64名</span>
+                          </p>
+                          <p className="text-sm font-bold" style={{ color: '#044465' }}>
+                            SFC：<span className="text-2xl font-extrabold" style={{ color: '#044465' }}>46名</span>
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
