@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
-import { BookOpen, Users, GraduationCap, Filter, Award } from "lucide-react"
+import { BookOpen, Users, GraduationCap, Filter } from "lucide-react"
 
 interface Story {
   id: string
@@ -132,18 +132,9 @@ export default function StoriesPage() {
           <h1 className="text-3xl font-bold mb-2" style={{ color: '#044465' }}>
             loohcs志塾 合格者体験談
           </h1>
-          <p className="text-gray-600 text-base max-w-2xl mx-auto mb-4">
+          <p className="text-gray-600 text-base max-w-2xl mx-auto">
             先輩の体験から学び、自分だけの合格ストーリーを描こう
           </p>
-          {session?.user && (
-            <Link
-              href="/stories/new"
-              className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl hover:from-orange-600 hover:to-orange-700 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
-            >
-              <Award className="w-4 h-4" />
-              体験談を投稿する
-            </Link>
-          )}
         </div>
 
         {/* 2カラムレイアウト: 左側フィルター、右側結果 */}

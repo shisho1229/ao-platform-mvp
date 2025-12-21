@@ -65,11 +65,17 @@ export default function HomePage() {
           </Link>
 
           {session?.user && (
-            <Link href="/stories/new" className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
-              <Award className="w-12 h-12 mb-4" style={{ color: '#044465' }} />
-              <h3 className="text-xl font-bold mb-2" style={{ color: '#044465' }}>体験談投稿</h3>
-              <p className="text-gray-600">
-                あなたの体験談を投稿できます
+            <Link
+              href="/stories/new"
+              className="p-6 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+              style={{
+                background: 'linear-gradient(135deg, #064e3b 0%, #047857 50%, #059669 100%)',
+              }}
+            >
+              <Award className="w-12 h-12 mb-4 text-white" />
+              <h3 className="text-xl font-bold mb-2 text-white">体験談を投稿する</h3>
+              <p className="text-green-50">
+                あなたの合格体験を後輩に共有しましょう
               </p>
             </Link>
           )}
