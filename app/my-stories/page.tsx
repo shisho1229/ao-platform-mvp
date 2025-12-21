@@ -20,17 +20,7 @@ interface Story {
   updatedAt: string
 }
 
-const statusLabels = {
-  PENDING_REVIEW: "承認待ち",
-  NEEDS_REVISION: "修正依頼中",
-  PUBLISHED: "承認済み",
-}
-
-const statusColors = {
-  PENDING_REVIEW: "bg-yellow-500",
-  NEEDS_REVISION: "bg-orange-500",
-  PUBLISHED: "bg-blue-500",
-}
+// 公開状態のラベル（シンプルに）
 
 export default function MyStoriesPage() {
   const { data: session, status } = useSession()
@@ -162,16 +152,13 @@ export default function MyStoriesPage() {
                   <div className="p-6">
                     {/* ステータスバッジ */}
                     <div className="flex flex-wrap gap-2 mb-3">
-                      <span
-                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold text-white ${
-                          statusColors[story.status as keyof typeof statusColors]
-                        }`}
-                      >
-                        {statusLabels[story.status as keyof typeof statusLabels]}
-                      </span>
-                      {story.published && (
+                      {story.published ? (
                         <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold text-white bg-green-500">
                           公開中
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold text-white bg-gray-500">
+                          未公開
                         </span>
                       )}
                       {result && (

@@ -3,18 +3,42 @@
 import { useSession, signOut } from "next-auth/react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { useState, useEffect } from "react"
 
 export default function Navbar() {
   const { data: session } = useSession()
   const pathname = usePathname()
-
-  if (!session?.user) {
-    return null
-  }
+  const [unpublishedCount, setUnpublishedCount] = useState(0)
 
   const isStaffOrAdmin = session?.user?.role === "SUPER_ADMIN" ||
                          session?.user?.role === "ADMIN" ||
                          session?.user?.role === "STAFF"
+
+  // 管理者の場合、未公開体験談の件数を取得
+  useEffect(() => {
+    if (!isStaffOrAdmin) return
+
+    const fetchUnpublishedCount = async () => {
+      try {
+        const res = await fetch("/api/admin/stories?published=false")
+        if (res.ok) {
+          const data = await res.json()
+          setUnpublishedCount(Array.isArray(data) ? data.length : 0)
+        }
+      } catch (error) {
+        console.error("未公開件数の取得に失敗:", error)
+      }
+    }
+
+    fetchUnpublishedCount()
+    // 1分ごとに更新
+    const interval = setInterval(fetchUnpublishedCount, 60000)
+    return () => clearInterval(interval)
+  }, [isStaffOrAdmin])
+
+  if (!session?.user) {
+    return null
+  }
 
   const navigation = [
     { name: "ホーム", href: "/" },
@@ -22,7 +46,7 @@ export default function Navbar() {
     { name: "類似検索", href: "/search" },
     { name: "マイ投稿", href: "/my-stories" },
     { name: "お気に入り", href: "/favorites" },
-    ...(isStaffOrAdmin ? [{ name: "管理画面", href: "/admin/users" }] : []),
+    ...(isStaffOrAdmin ? [{ name: "管理画面", href: "/admin/users", badge: unpublishedCount }] : []),
   ]
 
   const roleLabel = {
@@ -50,13 +74,18 @@ export default function Navbar() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                  className="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium relative"
                   style={{
                     borderColor: pathname === item.href ? '#d4af37' : 'transparent',
                     color: pathname === item.href ? '#d4af37' : '#e8eef5'
                   }}
                 >
                   {item.name}
+                  {'badge' in item && item.badge !== undefined && item.badge > 0 && (
+                    <span className="ml-2 inline-flex items-center justify-center px-2 py-0.5 text-xs font-bold leading-none text-white bg-red-600 rounded-full">
+                      {item.badge}
+                    </span>
+                  )}
                 </Link>
               ))}
             </div>

@@ -146,35 +146,32 @@ export default function StoriesPage() {
           )}
         </div>
 
-        {/* キーワード検索セクション */}
-        <div className="mb-6 max-w-2xl mx-auto">
-          <div className="bg-white rounded-xl shadow-md p-4 border" style={{ borderColor: '#bac9d0' }}>
-            <label className="block text-sm font-semibold mb-2" style={{ color: '#044465' }}>
-              キーワード検索
-            </label>
-            <form onSubmit={handleKeywordSearch} className="flex gap-2">
-              <input
-                type="text"
-                className="flex-1 rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                placeholder="学部、入試方式、高校名、探究テーマなどで検索"
-                value={keywordInput}
-                onChange={(e) => setKeywordInput(e.target.value)}
-              />
-              <button
-                type="submit"
-                className="px-6 py-2 text-sm font-semibold text-white rounded-lg shadow-md hover:shadow-lg transition-all"
-                style={{ background: 'linear-gradient(to right, #044465, #055a7a)' }}
-              >
-                検索
-              </button>
-            </form>
-          </div>
-        </div>
-
         {/* 2カラムレイアウト: 左側フィルター、右側結果 */}
         <div className="flex gap-6">
           {/* 左側: 検索・絞り込みサイドバー */}
           <div className="w-80 flex-shrink-0">
+            {/* キーワード検索 */}
+            <div className="bg-white rounded-xl shadow-md p-4 border mb-4" style={{ borderColor: '#bac9d0' }}>
+              <label className="block text-sm font-semibold mb-2" style={{ color: '#044465' }}>
+                キーワード検索
+              </label>
+              <form onSubmit={handleKeywordSearch} className="flex gap-2">
+                <input
+                  type="text"
+                  className="flex-1 rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
+                  placeholder="学部、入試方式、高校名など"
+                  value={keywordInput}
+                  onChange={(e) => setKeywordInput(e.target.value)}
+                />
+                <button
+                  type="submit"
+                  className="px-4 py-2 text-xs font-semibold text-white rounded-lg shadow-md hover:shadow-lg transition-all"
+                  style={{ background: 'linear-gradient(to right, #044465, #055a7a)' }}
+                >
+                  検索
+                </button>
+              </form>
+            </div>
             <div className="bg-white rounded-2xl shadow-lg p-6 border sticky top-6" style={{ borderColor: '#bac9d0' }}>
               <div className="flex items-center gap-2 mb-6">
                 <Filter className="w-5 h-5" style={{ color: '#044465' }} />

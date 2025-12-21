@@ -148,7 +148,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // 体験談を作成
+    // 体験談を作成（最初は非公開）
     const story = await prisma.graduateStory.create({
       data: {
         authorId: user.id,
@@ -162,7 +162,6 @@ export async function POST(request: NextRequest) {
         university,
         faculty,
         year: year ? parseInt(year) : null,
-        status: "PENDING_REVIEW",
         published: false,
         researchTheme,
         researchMotivation,
