@@ -49,6 +49,28 @@ export default function HomePage() {
       });
   }, []);
 
+  const getUniversityColor = (university: string) => {
+    if (university.includes('慶應義塾大学') || university.includes('慶応義塾大学')) {
+      return 'linear-gradient(to bottom right, #044465, #055a7a)';
+    } else if (university.includes('早稲田大学')) {
+      return 'linear-gradient(to bottom right, #8B1C1C, #A02020)';
+    } else if (university.includes('上智大学')) {
+      return 'linear-gradient(to bottom right, #C65D7B, #D4788F)';
+    } else if (university.includes('青山学院大学')) {
+      return 'linear-gradient(to bottom right, #1E6B4E, #228B5E)';
+    } else if (university.includes('明治大学')) {
+      return 'linear-gradient(to bottom right, #6B46C1, #7C3AED)';
+    } else if (university.includes('立教大学')) {
+      return 'linear-gradient(to bottom right, #312E81, #4338CA)';
+    } else if (university.includes('中央大学')) {
+      return 'linear-gradient(to bottom right, #B91C1C, #DC2626)';
+    } else if (university.includes('学習院大学')) {
+      return 'linear-gradient(to bottom right, #1E40AF, #2563EB)';
+    }
+    // デフォルトは慶應の色
+    return 'linear-gradient(to bottom right, #044465, #055a7a)';
+  };
+
   const getAdmissionResult = (admissionType: string, firstRound?: string, secondRound?: string) => {
     const isFIT = admissionType.includes("FIT");
 
@@ -127,7 +149,7 @@ export default function HomePage() {
             {/* 上部: タイトル・キャッチコピーと合格実績 */}
             <section className="mb-8 relative">
               {/* 合格実績（右上） */}
-              <div className="absolute top-0 right-0 rounded-xl p-6 shadow-xl max-w-md" style={{ background: 'linear-gradient(135deg, #044465 0%, #055a7a 50%, #0891b2 100%)' }}>
+              <div className="absolute top-0 right-0 rounded-xl p-6 shadow-xl max-w-xl" style={{ background: 'linear-gradient(135deg, #044465 0%, #055a7a 50%, #0891b2 100%)' }}>
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-amber-500 rounded-lg flex items-center justify-center shadow-md">
                     <Award className="w-6 h-6 text-white" />
@@ -195,7 +217,7 @@ export default function HomePage() {
                       onMouseLeave={(e) => e.currentTarget.style.borderColor = '#e5e7eb'}
                     >
                       {/* カードヘッダー - グラデーション背景 */}
-                      <div className="p-2.5 relative overflow-hidden" style={{ background: 'linear-gradient(to bottom right, #044465, #055a7a)' }}>
+                      <div className="p-2.5 relative overflow-hidden" style={{ background: getUniversityColor(story.university) }}>
                         <div className="absolute top-0 right-0 w-16 h-16 bg-white opacity-10 rounded-full -mr-8 -mt-8"></div>
                         <div className="absolute bottom-0 left-0 w-12 h-12 bg-white opacity-10 rounded-full -ml-6 -mb-6"></div>
                         <div className="relative">

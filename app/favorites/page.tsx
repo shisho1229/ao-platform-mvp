@@ -70,6 +70,28 @@ export default function FavoritesPage() {
     }
   }
 
+  const getUniversityColor = (university: string) => {
+    if (university.includes('慶應義塾大学') || university.includes('慶応義塾大学')) {
+      return 'linear-gradient(to bottom right, #044465, #055a7a)';
+    } else if (university.includes('早稲田大学')) {
+      return 'linear-gradient(to bottom right, #8B1C1C, #A02020)';
+    } else if (university.includes('上智大学')) {
+      return 'linear-gradient(to bottom right, #C65D7B, #D4788F)';
+    } else if (university.includes('青山学院大学')) {
+      return 'linear-gradient(to bottom right, #1E6B4E, #228B5E)';
+    } else if (university.includes('明治大学')) {
+      return 'linear-gradient(to bottom right, #6B46C1, #7C3AED)';
+    } else if (university.includes('立教大学')) {
+      return 'linear-gradient(to bottom right, #312E81, #4338CA)';
+    } else if (university.includes('中央大学')) {
+      return 'linear-gradient(to bottom right, #B91C1C, #DC2626)';
+    } else if (university.includes('学習院大学')) {
+      return 'linear-gradient(to bottom right, #1E40AF, #2563EB)';
+    }
+    // デフォルトは慶應の色
+    return 'linear-gradient(to bottom right, #044465, #055a7a)';
+  };
+
   const getAdmissionResult = (admissionType: string, firstRound?: string, secondRound?: string) => {
     const isFIT = admissionType.includes("FIT")
 
@@ -164,7 +186,7 @@ export default function FavoritesPage() {
                 onMouseLeave={(e: React.MouseEvent<HTMLDivElement>) => (e.currentTarget.style.borderColor = '#e5e7eb')}
               >
                 {/* カードヘッダー */}
-                <div className="p-6 relative overflow-hidden" style={{ background: 'linear-gradient(to bottom right, #044465, #055a7a)' }}>
+                <div className="p-6 relative overflow-hidden" style={{ background: getUniversityColor(favorite.story.university) }}>
                   <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16"></div>
                   <div className="absolute bottom-0 left-0 w-24 h-24 bg-white opacity-10 rounded-full -ml-12 -mb-12"></div>
                   <div className="relative">

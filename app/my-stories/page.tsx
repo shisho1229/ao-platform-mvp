@@ -159,16 +159,12 @@ export default function MyStoriesPage() {
                       )}
                       {story.status === "NEEDS_REVISION" && (
                         <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold text-white bg-orange-500">
-                          修正依頼中
+                          修正のお願い
                         </span>
                       )}
-                      {story.published ? (
+                      {story.published && story.status === "PUBLISHED" && (
                         <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold text-white bg-green-500">
                           公開中
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold text-white bg-gray-500">
-                          未公開
                         </span>
                       )}
                       {result && (
