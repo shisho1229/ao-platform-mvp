@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react"
 import { useRouter, useParams } from "next/navigation"
-import { useSession } from "next-auth/react"
 
 interface ExplorationTheme {
   id: number
@@ -13,7 +12,7 @@ interface ExplorationTheme {
 export default function EditStoryPage() {
   const router = useRouter()
   const params = useParams()
-  const { data: session, status } = useSession()
+  const storyId = params.id as string
   const [themes, setThemes] = useState<ExplorationTheme[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingStory, setIsLoadingStory] = useState(true)
@@ -62,62 +61,23 @@ export default function EditStoryPage() {
     Array<{ university: string; faculty: string; result: string }>
   >([])
 
-  const [agreedToTerms, setAgreedToTerms] = useState(false)
-  const STORAGE_KEY = `story_edit_draft_${params.id}`
+  const [agreedToTerms, setAgreedToTerms] = useState(true) // 編集時は同意済み
 
   useEffect(() => {
     fetchThemes()
-    if (params.id) {
-      fetchStory(params.id as string)
-    }
-  }, [params.id])
+    fetchStory()
+  }, [storyId])
 
-  // formDataが変更されたら自動保存（既存データ読み込み後のみ）
-  useEffect(() => {
-    if (isLoadingStory) return // データ読み込み中は保存しない
+  const fetchStory = async () => {
+    if (!storyId) return
 
-    const saveTimer = setTimeout(() => {
-      const draft = {
-        formData,
-        concurrentApplications,
-        savedAt: new Date().toISOString()
-      }
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(draft))
-    }, 1000) // 1秒のデバウンス
-
-    return () => clearTimeout(saveTimer)
-  }, [formData, concurrentApplications, isLoadingStory])
-
-  useEffect(() => {
-    // 未ログインの場合はログインページへ
-    if (status === "unauthenticated") {
-      router.push("/auth/signin")
-    }
-  }, [status, router])
-
-  const fetchStory = async (id: string) => {
     try {
-      const res = await fetch(`/api/stories/${id}`)
+      setIsLoadingStory(true)
+      const res = await fetch(`/api/stories/${storyId}`)
       if (res.ok) {
         const story = await res.json()
 
-        // 管理者または投稿者本人かチェック
-        if (session?.user) {
-          const isAdmin = session.user.role === "SUPER_ADMIN" ||
-                          session.user.role === "ADMIN" ||
-                          session.user.role === "STAFF"
-          const isAuthor = story.author && story.author.id === session.user.id
-
-          if (!isAdmin && !isAuthor) {
-            router.push("/stories")
-            return
-          }
-        } else {
-          router.push("/auth/signin")
-          return
-        }
-
-        // フォームデータにセット
+        // フォームデータに設定
         setFormData({
           authorName: story.authorName || "",
           gender: story.gender || "",
@@ -128,8 +88,8 @@ export default function EditStoryPage() {
           admissionType: story.admissionType || "",
           university: story.university || "",
           faculty: story.faculty || "",
-          year: story.year ? story.year.toString() : "",
-          explorationThemeIds: story.explorationThemes?.map((et: any) => et.theme.id) || [],
+          year: story.year?.toString() || "",
+          explorationThemeIds: story.explorationThemes?.map((et: any) => et.themeId) || [],
           researchTheme: story.researchTheme || "",
           researchMotivation: story.researchMotivation || "",
           researchDetails: story.researchDetails || "",
@@ -155,30 +115,15 @@ export default function EditStoryPage() {
           adviceToJuniors: story.adviceToJuniors || "",
         })
 
-        // 併願校をセット
+        // 併願校データを設定
         setConcurrentApplications(story.concurrentApplications || [])
-        setAgreedToTerms(true) // 既に投稿済みなので同意済み
-
-        // localStorageから下書きがあれば復元（編集中のデータを優先）
-        const savedDraft = localStorage.getItem(STORAGE_KEY)
-        if (savedDraft) {
-          try {
-            const draft = JSON.parse(savedDraft)
-            // 下書きがある場合は、ユーザーに確認を表示することもできますが、ここでは自動で復元
-            if (draft.formData) {
-              setFormData(draft.formData)
-              setConcurrentApplications(draft.concurrentApplications || [])
-            }
-          } catch (error) {
-            console.error("下書きの復元に失敗しました:", error)
-          }
-        }
-      } else {
-        router.push("/stories")
+      } else if (res.status === 403 || res.status === 404) {
+        setError("体験談が見つからないか、編集権限がありません")
+        setTimeout(() => router.push("/my-stories"), 2000)
       }
     } catch (error) {
       console.error("Error fetching story:", error)
-      router.push("/stories")
+      setError("体験談の読み込みに失敗しました")
     } finally {
       setIsLoadingStory(false)
     }
@@ -233,12 +178,7 @@ export default function EditStoryPage() {
     setError("")
     setIsLoading(true)
 
-    // バリデーション
-    if (!agreedToTerms) {
-      setError("投稿内容の公開に同意してください")
-      setIsLoading(false)
-      return
-    }
+    // バリデーション（編集時は同意チェック不要）
 
     // 必須フィールドのチェック
     if (!formData.authorName?.trim()) {
@@ -330,8 +270,8 @@ export default function EditStoryPage() {
 
       console.log("更新データ:", payload)
 
-      const res = await fetch(`/api/stories/${params.id}`, {
-        method: "PUT",
+      const res = await fetch(`/api/stories/${storyId}`, {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
@@ -339,9 +279,8 @@ export default function EditStoryPage() {
       })
 
       if (res.ok) {
-        // 更新成功時に下書きを削除
-        localStorage.removeItem(STORAGE_KEY)
-        router.push(`/stories/${params.id}`)
+        // 更新成功時は体験談詳細ページにリダイレクト
+        router.push(`/stories/${storyId}`)
       } else {
         const data = await res.json()
         console.error("更新エラー:", data)
@@ -357,10 +296,12 @@ export default function EditStoryPage() {
 
   if (isLoadingStory) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
-          <p className="text-gray-600 mt-4">読み込み中...</p>
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center py-20">
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent"></div>
+            <p className="text-gray-600 mt-4">読み込み中...</p>
+          </div>
         </div>
       </div>
     )
@@ -1294,31 +1235,6 @@ export default function EditStoryPage() {
             </div>
           </div>
 
-          {/* 同意チェックボックス */}
-          <div className="border-t pt-6">
-            <div className="flex items-start">
-              <div className="flex items-center h-5">
-                <input
-                  id="agree-terms"
-                  type="checkbox"
-                  checked={agreedToTerms}
-                  onChange={(e) => setAgreedToTerms(e.target.checked)}
-                  className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300"
-                />
-              </div>
-              <div className="ml-3 text-sm">
-                <label htmlFor="agree-terms" className="font-medium text-gray-700">
-                  体験談の提供および広報活用に関する同意 *
-                </label>
-                <p className="text-gray-500 mt-1">
-                  私は、私が提供する体験談・コメント・受験を通じた感想等について、loohcs志塾のWebサイト、SNS、パンフレット等の広報活動に活用されることに同意します。<br />
-                  なお、広報において氏名・出身校・進学先・学年等の個人情報を使用する場合には、事前に本人の同意を得た上で、同意された範囲内でのみ使用されることを確認しています。<br />
-                  本フォームを通じて提供される情報は、上記目的の範囲内で適切に管理されます。
-                </p>
-              </div>
-            </div>
-          </div>
-
           <div className="flex justify-end space-x-4">
             <button
               type="button"
@@ -1329,7 +1245,7 @@ export default function EditStoryPage() {
             </button>
             <button
               type="submit"
-              disabled={isLoading || formData.explorationThemeIds.length === 0 || !agreedToTerms}
+              disabled={isLoading || isLoadingStory || formData.explorationThemeIds.length === 0}
               className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? "更新中..." : "更新する"}
