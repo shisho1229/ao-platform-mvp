@@ -80,6 +80,9 @@ export default function StoryDetailPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [isFavorited, setIsFavorited] = useState(false)
   const [isFavoriteLoading, setIsFavoriteLoading] = useState(false)
+  const [showDocumentsUrlModal, setShowDocumentsUrlModal] = useState(false)
+  const [documentsUrlInput, setDocumentsUrlInput] = useState("")
+  const [isUpdatingUrl, setIsUpdatingUrl] = useState(false)
 
   useEffect(() => {
     if (params.id) {
@@ -140,6 +143,41 @@ export default function StoryDetailPage() {
       checkFavoriteStatus(story.id)
     }
   }, [story, session])
+
+  const handleUpdateDocumentsUrl = async () => {
+    if (!story) return
+
+    setIsUpdatingUrl(true)
+    try {
+      const res = await fetch(`/api/admin/stories/${story.id}/documents-url`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ documentsUrl: documentsUrlInput || null }),
+      })
+
+      if (res.ok) {
+        // ストーリーを再取得
+        await fetchStory(story.id)
+        setShowDocumentsUrlModal(false)
+        setDocumentsUrlInput("")
+      } else {
+        const data = await res.json()
+        alert(data.error || "URLの更新に失敗しました")
+      }
+    } catch (error) {
+      console.error("Error updating documents URL:", error)
+      alert("URLの更新に失敗しました")
+    } finally {
+      setIsUpdatingUrl(false)
+    }
+  }
+
+  const openDocumentsUrlModal = () => {
+    setDocumentsUrlInput(story?.documentsUrl || "")
+    setShowDocumentsUrlModal(true)
+  }
 
   const labels = {
     highSchoolLevel: {
@@ -352,18 +390,39 @@ export default function StoryDetailPage() {
                   {/* 管理者用: 合格書類URL */}
                   {(session?.user?.role === "SUPER_ADMIN" ||
                     session?.user?.role === "ADMIN" ||
-                    session?.user?.role === "STAFF") &&
-                    story.documentsUrl && (
+                    session?.user?.role === "STAFF") && (
                     <div className="pt-3 border-t" style={{ borderColor: '#bac9d0' }}>
-                      <a
-                        href={story.documentsUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors text-sm font-semibold"
-                      >
-                        <ExternalLink className="w-4 h-4" />
-                        合格書類を開く（管理者のみ）
-                      </a>
+                      <h3 className="text-sm font-bold mb-2" style={{ color: '#044465' }}>合格書類（管理者のみ）</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {story.documentsUrl ? (
+                          <>
+                            <a
+                              href={story.documentsUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors text-sm font-semibold"
+                            >
+                              <ExternalLink className="w-4 h-4" />
+                              合格書類を閲覧する
+                            </a>
+                            <button
+                              onClick={openDocumentsUrlModal}
+                              className="inline-flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm font-semibold"
+                            >
+                              <Edit className="w-4 h-4" />
+                              URLを変更する
+                            </button>
+                          </>
+                        ) : (
+                          <button
+                            onClick={openDocumentsUrlModal}
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-semibold"
+                          >
+                            <ExternalLink className="w-4 h-4" />
+                            合格書類を掲載する
+                          </button>
+                        )}
+                      </div>
                     </div>
                   )}
                   {/* 併願校 */}
@@ -624,6 +683,53 @@ export default function StoryDetailPage() {
             )}
           </div>
         </div>
+
+        {/* 合格書類URLモーダル */}
+        {showDocumentsUrlModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+              <h2 className="text-xl font-bold mb-4" style={{ color: '#044465' }}>
+                {story?.documentsUrl ? '合格書類URLを変更' : '合格書類URLを掲載'}
+              </h2>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    合格書類のURL
+                  </label>
+                  <input
+                    type="url"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="https://..."
+                    value={documentsUrlInput}
+                    onChange={(e) => setDocumentsUrlInput(e.target.value)}
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Google Drive、Dropbox等の共有リンクを入力してください
+                  </p>
+                </div>
+                <div className="flex justify-end gap-2">
+                  <button
+                    onClick={() => {
+                      setShowDocumentsUrlModal(false)
+                      setDocumentsUrlInput("")
+                    }}
+                    className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                    disabled={isUpdatingUrl}
+                  >
+                    キャンセル
+                  </button>
+                  <button
+                    onClick={handleUpdateDocumentsUrl}
+                    className="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+                    disabled={isUpdatingUrl}
+                  >
+                    {isUpdatingUrl ? '更新中...' : '保存'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

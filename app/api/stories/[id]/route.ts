@@ -1,30 +1,29 @@
 import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
-import { getCurrentUser, canViewDocuments } from "@/lib/auth"
 
-// GET /api/stories/[id] - 合格体験談詳細取得
+// GET /api/stories/[id] - 体験談詳細取得
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params
-    const currentUser = await getCurrentUser()
+    const { id: storyId } = await params
 
     const story = await prisma.graduateStory.findUnique({
-      where: { id },
+      where: { id: storyId },
       include: {
         author: {
           select: {
             id: true,
             name: true,
             campus: true,
-          }
+          },
         },
         explorationThemes: {
           include: {
             theme: true,
-          }
+          },
         },
         concurrentApplications: true,
       },
@@ -37,21 +36,28 @@ export async function GET(
       )
     }
 
-    // 公開されていない場合は管理者/スタッフのみ閲覧可能
-    if (!story.published && (!currentUser || !canViewDocuments(currentUser.role))) {
-      return NextResponse.json(
-        { error: "この体験談は現在非公開です" },
-        { status: 403 }
-      )
+    // 公開されていない体験談は、投稿者本人と管理者のみ閲覧可能
+    if (!story.published) {
+      const session = await auth()
+      if (!session?.user) {
+        return NextResponse.json(
+          { error: "この体験談は非公開です" },
+          { status: 403 }
+        )
+      }
+
+      const isAdmin = ["SUPER_ADMIN", "ADMIN", "STAFF"].includes(session.user.role)
+      const isAuthor = session.user.id === story.authorId
+
+      if (!isAdmin && !isAuthor) {
+        return NextResponse.json(
+          { error: "この体験談は非公開です" },
+          { status: 403 }
+        )
+      }
     }
 
-    // documentsUrlは管理者/スタッフのみに表示
-    const responseStory = {
-      ...story,
-      documentsUrl: currentUser && canViewDocuments(currentUser.role) ? story.documentsUrl : undefined,
-    }
-
-    return NextResponse.json(responseStory)
+    return NextResponse.json(story)
   } catch (error) {
     console.error("Error fetching story:", error)
     return NextResponse.json(
@@ -61,129 +67,181 @@ export async function GET(
   }
 }
 
-// PUT /api/stories/[id] - 合格体験談更新（投稿者本人のみ）
-export async function PUT(
+// PATCH /api/stories/[id] - 体験談更新（投稿者本人と管理者のみ）
+export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params
-    const currentUser = await getCurrentUser()
+    const session = await auth()
 
-    if (!currentUser) {
+    if (!session?.user) {
       return NextResponse.json(
-        { error: "認証が必要です" },
+        { error: "ログインが必要です" },
         { status: 401 }
       )
     }
 
-    // 既存の体験談を取得
-    const existingStory = await prisma.graduateStory.findUnique({
-      where: { id },
+    const { id: storyId } = await params
+
+    // 体験談の存在確認と権限チェック
+    const story = await prisma.graduateStory.findUnique({
+      where: { id: storyId },
+      select: { id: true, authorId: true },
     })
 
-    if (!existingStory) {
+    if (!story) {
       return NextResponse.json(
         { error: "体験談が見つかりません" },
         { status: 404 }
       )
     }
 
-    // 管理者または投稿者本人かチェック
-    const isAdmin = currentUser.role === "SUPER_ADMIN" ||
-                    currentUser.role === "ADMIN" ||
-                    currentUser.role === "STAFF"
-    const isAuthor = existingStory.authorId === currentUser.id
+    // 投稿者本人または管理者のみ編集可能
+    const isAdmin = ["SUPER_ADMIN", "ADMIN", "STAFF"].includes(session.user.role)
+    const isAuthor = session.user.id === story.authorId
 
     if (!isAdmin && !isAuthor) {
       return NextResponse.json(
-        { error: "この体験談を編集する権限がありません" },
+        { error: "編集権限がありません。編集できるのは投稿者本人と管理者のみです。" },
         { status: 403 }
       )
     }
 
     const body = await request.json()
 
-    // 探究テーマの接続データを作成
-    const explorationThemesData = body.explorationThemeIds?.map((themeId: number) => ({
-      themeId,
-    })) || []
+    const {
+      authorName,
+      gender,
+      highSchoolLevel,
+      highSchoolName,
+      gradeAverage,
+      campus,
+      admissionType,
+      university,
+      faculty,
+      year,
+      explorationThemeIds,
+      researchTheme,
+      researchMotivation,
+      researchDetails,
+      targetProfessor,
+      hasSportsAchievement,
+      sportsDetails,
+      sportsAchievements,
+      hasEnglishQualification,
+      englishQualification,
+      hasStudyAbroad,
+      studyAbroadDetails,
+      hasLeaderExperience,
+      leaderExperienceDetails,
+      hasContestAchievement,
+      contestAchievementDetails,
+      interviewQuestions,
+      selectionFlowType,
+      firstRoundResult,
+      secondRoundResult,
+      documentPreparation,
+      secondRoundPreparation,
+      materials,
+      adviceToJuniors,
+      concurrentApplications,
+    } = body
 
-    // 併願校データを作成
-    const concurrentApplicationsData = body.concurrentApplications?.map((app: any) => ({
-      university: app.university,
-      faculty: app.faculty,
-      result: app.result,
-    })) || []
+    // バリデーション
+    if (explorationThemeIds && (!Array.isArray(explorationThemeIds) || explorationThemeIds.length === 0)) {
+      return NextResponse.json(
+        { error: "探究テーマを少なくとも1つ選択してください" },
+        { status: 400 }
+      )
+    }
+
+    // 既存の探究テーマと併願校を削除
+    await prisma.storyExplorationTheme.deleteMany({
+      where: { storyId },
+    })
+
+    await prisma.concurrentApplication.deleteMany({
+      where: { storyId },
+    })
 
     // 体験談を更新
     const updatedStory = await prisma.graduateStory.update({
-      where: { id },
+      where: { id: storyId },
       data: {
-        authorName: body.authorName,
-        gender: body.gender || null,
-        highSchoolLevel: body.highSchoolLevel,
-        highSchoolName: body.highSchoolName || null,
-        gradeAverage: body.gradeAverage,
-        campus: body.campus || null,
-        admissionType: body.admissionType,
-        university: body.university,
-        faculty: body.faculty,
-        year: body.year ? parseInt(body.year) : null,
-        researchTheme: body.researchTheme || null,
-        researchMotivation: body.researchMotivation || null,
-        researchDetails: body.researchDetails || null,
-        targetProfessor: body.targetProfessor || null,
-        hasSportsAchievement: body.hasSportsAchievement || false,
-        sportsDetails: body.sportsDetails || null,
-        sportsAchievements: body.sportsAchievements || [],
-        hasEnglishQualification: body.hasEnglishQualification || false,
-        englishQualification: body.englishQualification || null,
-        hasStudyAbroad: body.hasStudyAbroad || false,
-        studyAbroadDetails: body.studyAbroadDetails || null,
-        hasLeaderExperience: body.hasLeaderExperience || false,
-        leaderExperienceDetails: body.leaderExperienceDetails || null,
-        hasContestAchievement: body.hasContestAchievement || false,
-        contestAchievementDetails: body.contestAchievementDetails || null,
-        interviewQuestions: body.interviewQuestions || null,
-        selectionFlowType: body.selectionFlowType || null,
-        firstRoundResult: body.firstRoundResult || null,
-        secondRoundResult: body.secondRoundResult || null,
-        documentPreparation: body.documentPreparation || null,
-        secondRoundPreparation: body.secondRoundPreparation || null,
-        materials: body.materials || null,
-        adviceToJuniors: body.adviceToJuniors || null,
+        authorName: authorName || null,
+        gender: gender || null,
+        highSchoolLevel,
+        highSchoolName: highSchoolName || null,
+        gradeAverage,
+        campus: campus || null,
+        admissionType,
+        university,
+        faculty,
+        year: year ? parseInt(year) : null,
+        researchTheme,
+        researchMotivation,
+        researchDetails,
+        targetProfessor,
+        hasSportsAchievement,
+        sportsDetails,
+        sportsAchievements: sportsAchievements || [],
+        hasEnglishQualification,
+        englishQualification,
+        hasStudyAbroad,
+        studyAbroadDetails,
+        hasLeaderExperience,
+        leaderExperienceDetails,
+        hasContestAchievement,
+        contestAchievementDetails,
+        interviewQuestions,
+        selectionFlowType,
+        firstRoundResult,
+        secondRoundResult,
+        documentPreparation,
+        secondRoundPreparation,
+        materials,
+        adviceToJuniors,
         explorationThemes: {
-          deleteMany: {},
-          create: explorationThemesData,
+          create: explorationThemeIds?.map((themeId: number) => ({
+            themeId,
+          })) || [],
         },
-        concurrentApplications: {
-          deleteMany: {},
-          create: concurrentApplicationsData,
-        },
+        concurrentApplications: concurrentApplications
+          ? {
+              create: concurrentApplications,
+            }
+          : undefined,
       },
       include: {
-        author: {
-          select: {
-            id: true,
-            name: true,
-            campus: true,
-          }
-        },
         explorationThemes: {
           include: {
             theme: true,
-          }
+          },
         },
         concurrentApplications: true,
       },
     })
 
     return NextResponse.json(updatedStory)
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error updating story:", error)
+    console.error("Error details:", {
+      message: error.message,
+      code: error.code,
+      meta: error.meta,
+      stack: error.stack
+    })
+
+    // Prismaエラーの詳細を返す（開発環境用）
+    const errorMessage = error.message || "体験談の更新に失敗しました"
+    const errorDetails = error.code ? ` (Code: ${error.code})` : ""
+
     return NextResponse.json(
-      { error: "体験談の更新に失敗しました" },
+      {
+        error: `体験談の更新に失敗しました: ${errorMessage}${errorDetails}`,
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      },
       { status: 500 }
     )
   }
