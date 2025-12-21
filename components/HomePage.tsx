@@ -108,7 +108,7 @@ export default function HomePage() {
             {session?.user && (
               <Link
                 href="/stories/new"
-                className="block p-6 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+                className="block p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
                 style={{
                   background: 'linear-gradient(135deg, #064e3b 0%, #047857 50%, #059669 100%)',
                 }}
