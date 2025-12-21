@@ -43,7 +43,6 @@ export default function StoriesPage() {
   const [facultyFilter, setFacultyFilter] = useState("")
   const [yearFilter, setYearFilter] = useState("")
   const [campusFilter, setCampusFilter] = useState("")
-  const [showFilters, setShowFilters] = useState(false)
 
   useEffect(() => {
     fetchStories()
@@ -117,97 +116,113 @@ export default function StoriesPage() {
 
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(to bottom right, #bac9d0, white, #bac9d0)' }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* ヘッダーセクション */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4 shadow-lg" style={{ background: 'linear-gradient(to bottom right, #044465, #055a7a)' }}>
-            <GraduationCap className="w-8 h-8 text-white" />
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-3 shadow-lg" style={{ background: 'linear-gradient(to bottom right, #044465, #055a7a)' }}>
+            <GraduationCap className="w-7 h-7 text-white" />
           </div>
-          <h1 className="text-4xl font-bold mb-3" style={{ color: '#044465' }}>
+          <h1 className="text-3xl font-bold mb-2" style={{ color: '#044465' }}>
             loohcs志塾 合格者体験談
           </h1>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto mb-6">
+          <p className="text-gray-600 text-base max-w-2xl mx-auto mb-4">
             先輩の体験から学び、自分だけの合格ストーリーを描こう
           </p>
           {session?.user?.role === "USER" && (
             <Link
               href="/stories/new"
-              className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl hover:from-orange-600 hover:to-orange-700 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+              className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl hover:from-orange-600 hover:to-orange-700 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
             >
-              <Award className="w-5 h-5" />
+              <Award className="w-4 h-4" />
               体験談を投稿する
             </Link>
           )}
         </div>
 
-        {/* フィルターセクション */}
-        <div className="mb-8">
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
-            style={{ background: 'linear-gradient(to right, #044465, #055a7a)', color: 'white' }}
-          >
-            <Filter className="w-5 h-5" />
-            {showFilters ? 'フィルターを閉じる' : '絞り込み検索'}
-          </button>
-
-          {showFilters && (
-            <div className="mt-4 bg-white rounded-2xl shadow-lg p-6 border" style={{ borderColor: '#bac9d0' }}>
-              <div className="mb-4">
-                <label className="block text-sm font-semibold mb-2" style={{ color: '#044465' }}>
-                  キーワード検索
-                </label>
-                <input
-                  type="text"
-                  className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                  placeholder="大学名、学部、入試方式、高校名、名前、活動内容などで検索"
-                  value={keywordFilter}
-                  onChange={(e) => setKeywordFilter(e.target.value)}
-                />
+        {/* 2カラムレイアウト: 左側フィルター、右側結果 */}
+        <div className="flex gap-6">
+          {/* 左側: 検索・絞り込みサイドバー */}
+          <div className="w-80 flex-shrink-0">
+            <div className="bg-white rounded-2xl shadow-lg p-6 border sticky top-6" style={{ borderColor: '#bac9d0' }}>
+              <div className="flex items-center gap-2 mb-6">
+                <Filter className="w-5 h-5" style={{ color: '#044465' }} />
+                <h2 className="text-lg font-bold" style={{ color: '#044465' }}>
+                  絞り込み検索
+                </h2>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+
+              <div className="space-y-5">
+                {/* キーワード検索 */}
+                <div>
+                  <label className="block text-sm font-semibold mb-2" style={{ color: '#044465' }}>
+                    キーワード検索
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
+                    placeholder="学部、入試方式、高校名など"
+                    value={keywordFilter}
+                    onChange={(e) => setKeywordFilter(e.target.value)}
+                  />
+                </div>
+
+                {/* 大学名（選択式） */}
                 <div>
                   <label className="block text-sm font-semibold mb-2" style={{ color: '#044465' }}>
                     大学名
                   </label>
-                  <input
-                    type="text"
-                    className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    placeholder="例：早稲田大学"
+                  <select
+                    className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
                     value={universityFilter}
                     onChange={(e) => setUniversityFilter(e.target.value)}
-                  />
+                  >
+                    <option value="">すべて</option>
+                    <option value="慶應義塾大学">慶應義塾大学</option>
+                    <option value="早稲田大学">早稲田大学</option>
+                    <option value="上智大学">上智大学</option>
+                    <option value="青山学院大学">青山学院大学</option>
+                    <option value="明治大学">明治大学</option>
+                    <option value="立教大学">立教大学</option>
+                    <option value="中央大学">中央大学</option>
+                    <option value="学習院大学">学習院大学</option>
+                  </select>
                 </div>
+
+                {/* 学部学科名 */}
                 <div>
                   <label className="block text-sm font-semibold mb-2" style={{ color: '#044465' }}>
                     学部学科名
                   </label>
                   <input
                     type="text"
-                    className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
                     placeholder="例：政治経済学部"
                     value={facultyFilter}
                     onChange={(e) => setFacultyFilter(e.target.value)}
                   />
                 </div>
+
+                {/* 年度 */}
                 <div>
                   <label className="block text-sm font-semibold mb-2" style={{ color: '#044465' }}>
                     年度
                   </label>
                   <input
                     type="number"
-                    className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
                     placeholder="例：2024"
                     value={yearFilter}
                     onChange={(e) => setYearFilter(e.target.value)}
                   />
                 </div>
+
+                {/* 校舎 */}
                 <div>
                   <label className="block text-sm font-semibold mb-2" style={{ color: '#044465' }}>
                     校舎
                   </label>
                   <select
-                    className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
                     value={campusFilter}
                     onChange={(e) => setCampusFilter(e.target.value)}
                   >
@@ -221,19 +236,24 @@ export default function StoriesPage() {
                   </select>
                 </div>
               </div>
+
+              {/* フィルタークリアボタン */}
               {(keywordFilter || universityFilter || facultyFilter || yearFilter || campusFilter) && (
-                <div className="flex justify-end">
+                <div className="mt-6 pt-6 border-t" style={{ borderColor: '#bac9d0' }}>
                   <button
                     onClick={clearFilters}
-                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                    className="w-full px-4 py-2.5 text-sm font-medium text-white rounded-lg transition-colors shadow-md hover:shadow-lg"
+                    style={{ background: 'linear-gradient(to right, #044465, #055a7a)' }}
                   >
                     フィルターをクリア
                   </button>
                 </div>
               )}
             </div>
-          )}
-        </div>
+          </div>
+
+          {/* 右側: 検索結果 */}
+          <div className="flex-1">
 
         {isLoading ? (
           <div className="text-center py-20">
@@ -253,7 +273,7 @@ export default function StoriesPage() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {stories.map((story) => (
               <Link
                 key={story.id}
@@ -377,6 +397,8 @@ export default function StoriesPage() {
             ))}
           </div>
         )}
+          </div>
+        </div>
       </div>
     </div>
   )
