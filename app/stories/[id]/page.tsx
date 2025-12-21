@@ -233,31 +233,23 @@ export default function StoryDetailPage() {
             <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full -mr-32 -mt-32"></div>
             <div className="relative flex items-center justify-between gap-4">
               <div className="flex-1 min-w-0">
-                <h1 className="text-xl sm:text-2xl font-bold text-white leading-tight flex flex-wrap items-center gap-x-2 gap-y-1">
+                <h1 className="text-xl sm:text-2xl font-bold text-white leading-tight flex flex-wrap items-center gap-2">
                   <span>{story.university}</span>
-                  <span className="text-white/40">/</span>
                   <span>{story.faculty}</span>
-                  <span className="text-white/40">/</span>
                   <span className="inline-flex items-center px-3 py-1 bg-orange-500 text-white text-sm font-semibold rounded-full">
                     {story.admissionType}
                   </span>
                   {story.year && (
-                    <>
-                      <span className="text-white/40">/</span>
-                      <span className="inline-flex items-center px-3 py-1 bg-blue-500 text-white text-sm font-semibold rounded-full">
-                        {story.year}年度
-                      </span>
-                    </>
+                    <span className="inline-flex items-center px-3 py-1 bg-blue-500 text-white text-sm font-semibold rounded-full">
+                      {story.year}年度
+                    </span>
                   )}
                   {(() => {
                     const result = getAdmissionResult(story.firstRoundResult, story.secondRoundResult)
                     return result ? (
-                      <>
-                        <span className="text-white/40">/</span>
-                        <span className="inline-flex items-center px-3 py-1 bg-green-500 text-white text-sm font-semibold rounded-full">
-                          {result.label}
-                        </span>
-                      </>
+                      <span className="inline-flex items-center px-3 py-1 bg-green-500 text-white text-sm font-semibold rounded-full">
+                        {result.label}
+                      </span>
                     ) : null
                   })()}
                 </h1>
@@ -381,70 +373,6 @@ export default function StoryDetailPage() {
               </div>
             </div>
 
-            {/* 探究テーマ */}
-            {story.explorationThemes.length > 0 && (
-              <div className="border-t pt-6" style={{ borderColor: '#bac9d0' }}>
-                <h2 className="text-xl font-bold mb-4" style={{ color: '#044465' }}>
-                  探究テーマ
-                </h2>
-                <div className="flex flex-wrap gap-2">
-                  {story.explorationThemes.map((et) => (
-                    <span
-                      key={et.theme.id}
-                      className="inline-block px-4 py-2 text-sm font-semibold rounded-full border"
-                      style={{ color: '#044465', backgroundColor: '#f0f4f5', borderColor: '#bac9d0' }}
-                    >
-                      {et.theme.name}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* 探究・活動 */}
-            {(story.researchTheme || story.researchMotivation || story.researchDetails || story.targetProfessor) && (
-              <div className="border-t pt-6" style={{ borderColor: '#bac9d0' }}>
-                <h2 className="text-xl font-bold mb-4 flex items-center gap-2" style={{ color: '#044465' }}>
-                  <Target className="w-6 h-6" />
-                  探究・活動
-                </h2>
-                <div className="space-y-4">
-                  {story.researchTheme && (
-                    <div>
-                      <h3 className="font-semibold mb-2" style={{ color: '#055a7a' }}>志</h3>
-                      <p className="text-gray-700 whitespace-pre-wrap bg-gray-50 p-4 rounded-lg">
-                        {story.researchTheme}
-                      </p>
-                    </div>
-                  )}
-                  {story.researchMotivation && (
-                    <div>
-                      <h3 className="font-semibold mb-2" style={{ color: '#055a7a' }}>きっかけ</h3>
-                      <p className="text-gray-700 whitespace-pre-wrap bg-gray-50 p-4 rounded-lg">
-                        {story.researchMotivation}
-                      </p>
-                    </div>
-                  )}
-                  {story.researchDetails && (
-                    <div>
-                      <h3 className="font-semibold mb-2" style={{ color: '#055a7a' }}>探究活動の詳細</h3>
-                      <p className="text-gray-700 whitespace-pre-wrap bg-gray-50 p-4 rounded-lg">
-                        {story.researchDetails}
-                      </p>
-                    </div>
-                  )}
-                  {story.targetProfessor && (
-                    <div>
-                      <h3 className="font-semibold mb-2" style={{ color: '#055a7a' }}>大学で学びたい教授</h3>
-                      <p className="text-gray-700 whitespace-pre-wrap bg-gray-50 p-4 rounded-lg">
-                        {story.targetProfessor}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
             {/* 実績 */}
             {(story.hasSportsAchievement || story.hasEnglishQualification || story.hasStudyAbroad || story.hasLeaderExperience || story.hasContestAchievement) && (
               <div className="border-t pt-6" style={{ borderColor: '#bac9d0' }}>
@@ -511,6 +439,70 @@ export default function StoryDetailPage() {
                         コンテスト実績
                       </h3>
                       <p className="text-gray-700 whitespace-pre-wrap">{story.contestAchievementDetails}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* 探究テーマ */}
+            {story.explorationThemes.length > 0 && (
+              <div className="border-t pt-6" style={{ borderColor: '#bac9d0' }}>
+                <h2 className="text-xl font-bold mb-4" style={{ color: '#044465' }}>
+                  探究テーマ
+                </h2>
+                <div className="flex flex-wrap gap-2">
+                  {story.explorationThemes.map((et) => (
+                    <span
+                      key={et.theme.id}
+                      className="inline-block px-4 py-2 text-sm font-semibold rounded-full border"
+                      style={{ color: '#044465', backgroundColor: '#f0f4f5', borderColor: '#bac9d0' }}
+                    >
+                      {et.theme.name}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* 探究・活動 */}
+            {(story.researchTheme || story.researchMotivation || story.researchDetails || story.targetProfessor) && (
+              <div className="border-t pt-6" style={{ borderColor: '#bac9d0' }}>
+                <h2 className="text-xl font-bold mb-4 flex items-center gap-2" style={{ color: '#044465' }}>
+                  <Target className="w-6 h-6" />
+                  探究・活動
+                </h2>
+                <div className="space-y-4">
+                  {story.researchTheme && (
+                    <div>
+                      <h3 className="font-semibold mb-2" style={{ color: '#055a7a' }}>志</h3>
+                      <p className="text-gray-700 whitespace-pre-wrap bg-gray-50 p-4 rounded-lg">
+                        {story.researchTheme}
+                      </p>
+                    </div>
+                  )}
+                  {story.researchMotivation && (
+                    <div>
+                      <h3 className="font-semibold mb-2" style={{ color: '#055a7a' }}>きっかけ</h3>
+                      <p className="text-gray-700 whitespace-pre-wrap bg-gray-50 p-4 rounded-lg">
+                        {story.researchMotivation}
+                      </p>
+                    </div>
+                  )}
+                  {story.researchDetails && (
+                    <div>
+                      <h3 className="font-semibold mb-2" style={{ color: '#055a7a' }}>探究活動の詳細</h3>
+                      <p className="text-gray-700 whitespace-pre-wrap bg-gray-50 p-4 rounded-lg">
+                        {story.researchDetails}
+                      </p>
+                    </div>
+                  )}
+                  {story.targetProfessor && (
+                    <div>
+                      <h3 className="font-semibold mb-2" style={{ color: '#055a7a' }}>大学で学びたい教授</h3>
+                      <p className="text-gray-700 whitespace-pre-wrap bg-gray-50 p-4 rounded-lg">
+                        {story.targetProfessor}
+                      </p>
                     </div>
                   )}
                 </div>
