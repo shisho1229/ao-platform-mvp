@@ -184,9 +184,99 @@ export default function EditStoryPage() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-8 bg-white p-8 rounded-lg shadow">
-          {/* 基礎情報 */}
+          {/* 基礎属性 */}
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-gray-900">基礎情報</h2>
+            <h2 className="text-xl font-semibold text-gray-900">基礎属性</h2>
+
+            <div className="grid grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">投稿者名</label>
+                <input
+                  type="text"
+                  value={formData.authorName}
+                  onChange={(e) => setFormData({ ...formData, authorName: e.target.value })}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  placeholder="任意"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">性別</label>
+                <select
+                  value={formData.gender}
+                  onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                >
+                  <option value="">選択してください</option>
+                  <option value="MALE">男性</option>
+                  <option value="FEMALE">女性</option>
+                  <option value="OTHER">その他</option>
+                  <option value="PREFER_NOT_TO_SAY">回答しない</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">高校偏差値帯</label>
+                <select
+                  value={formData.highSchoolLevel}
+                  onChange={(e) => setFormData({ ...formData, highSchoolLevel: e.target.value })}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                >
+                  <option value="LEVEL_1">~50</option>
+                  <option value="LEVEL_2">51-60</option>
+                  <option value="LEVEL_3">61-70</option>
+                  <option value="LEVEL_4">71~</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">高校名</label>
+                <input
+                  type="text"
+                  value={formData.highSchoolName}
+                  onChange={(e) => setFormData({ ...formData, highSchoolName: e.target.value })}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  placeholder="任意"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">評定平均</label>
+                <select
+                  value={formData.gradeAverage}
+                  onChange={(e) => setFormData({ ...formData, gradeAverage: e.target.value })}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                >
+                  <option value="RANGE_1">~3.0</option>
+                  <option value="RANGE_2">3.1-3.5</option>
+                  <option value="RANGE_3">3.6-4.0</option>
+                  <option value="RANGE_4">4.1-4.5</option>
+                  <option value="RANGE_5">4.6~</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">所属校舎</label>
+                <select
+                  value={formData.campus}
+                  onChange={(e) => setFormData({ ...formData, campus: e.target.value })}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                >
+                  <option value="">選択してください</option>
+                  <option value="武蔵小杉">武蔵小杉</option>
+                  <option value="下北沢">下北沢</option>
+                  <option value="渋谷">渋谷</option>
+                  <option value="オンライン">オンライン</option>
+                  <option value="青葉台">青葉台</option>
+                  <option value="自由が丘">自由が丘</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* 受験情報 */}
+          <div className="space-y-6 border-t pt-6">
+            <h2 className="text-xl font-semibold text-gray-900">受験情報</h2>
 
             <div className="grid grid-cols-2 gap-6">
               <div>
@@ -226,9 +316,28 @@ export default function EditStoryPage() {
                   value={formData.year}
                   onChange={(e) => setFormData({ ...formData, year: e.target.value })}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  placeholder="例：2024"
                 />
               </div>
 
+              <div>
+                <label className="block text-sm font-medium text-gray-700">選考フロータイプ</label>
+                <input
+                  type="text"
+                  value={formData.selectionFlowType}
+                  onChange={(e) => setFormData({ ...formData, selectionFlowType: e.target.value })}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  placeholder="任意"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* 選考結果 */}
+          <div className="space-y-6 border-t pt-6">
+            <h2 className="text-xl font-semibold text-gray-900">選考結果</h2>
+
+            <div className="grid grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700">一次選考結果</label>
                 <input
@@ -251,6 +360,17 @@ export default function EditStoryPage() {
                 />
               </div>
             </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">面接で聞かれた内容</label>
+              <textarea
+                value={formData.interviewQuestions}
+                onChange={(e) => setFormData({ ...formData, interviewQuestions: e.target.value })}
+                rows={5}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                placeholder="任意"
+              />
+            </div>
           </div>
 
           {/* 探究・活動 */}
@@ -264,6 +384,7 @@ export default function EditStoryPage() {
                 onChange={(e) => setFormData({ ...formData, researchTheme: e.target.value })}
                 rows={3}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                placeholder="任意"
               />
             </div>
 
@@ -274,6 +395,7 @@ export default function EditStoryPage() {
                 onChange={(e) => setFormData({ ...formData, researchMotivation: e.target.value })}
                 rows={3}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                placeholder="任意"
               />
             </div>
 
@@ -284,6 +406,7 @@ export default function EditStoryPage() {
                 onChange={(e) => setFormData({ ...formData, researchDetails: e.target.value })}
                 rows={5}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                placeholder="任意"
               />
             </div>
 
@@ -294,7 +417,147 @@ export default function EditStoryPage() {
                 onChange={(e) => setFormData({ ...formData, targetProfessor: e.target.value })}
                 rows={3}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                placeholder="任意"
               />
+            </div>
+          </div>
+
+          {/* 実績 */}
+          <div className="space-y-6 border-t pt-6">
+            <h2 className="text-xl font-semibold text-gray-900">実績</h2>
+
+            <div className="space-y-4">
+              <div>
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={formData.hasSportsAchievement}
+                    onChange={(e) => setFormData({ ...formData, hasSportsAchievement: e.target.checked })}
+                    className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  />
+                  <span className="ml-2 text-sm font-medium text-gray-700">スポーツ実績あり</span>
+                </label>
+                {formData.hasSportsAchievement && (
+                  <div className="mt-3 space-y-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">競技名</label>
+                      <input
+                        type="text"
+                        value={formData.sportsDetails}
+                        onChange={(e) => setFormData({ ...formData, sportsDetails: e.target.value })}
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        placeholder="例：サッカー"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">実績（カンマ区切り）</label>
+                      <input
+                        type="text"
+                        value={formData.sportsAchievements.join(", ")}
+                        onChange={(e) => setFormData({ ...formData, sportsAchievements: e.target.value.split(",").map(s => s.trim()).filter(Boolean) })}
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        placeholder="例：全国大会出場, 県大会優勝"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={formData.hasEnglishQualification}
+                    onChange={(e) => setFormData({ ...formData, hasEnglishQualification: e.target.checked })}
+                    className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  />
+                  <span className="ml-2 text-sm font-medium text-gray-700">英語資格あり</span>
+                </label>
+                {formData.hasEnglishQualification && (
+                  <div className="mt-3">
+                    <label className="block text-sm font-medium text-gray-700">資格詳細</label>
+                    <textarea
+                      value={formData.englishQualification}
+                      onChange={(e) => setFormData({ ...formData, englishQualification: e.target.value })}
+                      rows={2}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                      placeholder="例：TOEFL iBT 100点"
+                    />
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={formData.hasStudyAbroad}
+                    onChange={(e) => setFormData({ ...formData, hasStudyAbroad: e.target.checked })}
+                    className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  />
+                  <span className="ml-2 text-sm font-medium text-gray-700">留学経験あり</span>
+                </label>
+                {formData.hasStudyAbroad && (
+                  <div className="mt-3">
+                    <label className="block text-sm font-medium text-gray-700">留学詳細</label>
+                    <textarea
+                      value={formData.studyAbroadDetails}
+                      onChange={(e) => setFormData({ ...formData, studyAbroadDetails: e.target.value })}
+                      rows={3}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                      placeholder="留学先、期間、内容など"
+                    />
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={formData.hasLeaderExperience}
+                    onChange={(e) => setFormData({ ...formData, hasLeaderExperience: e.target.checked })}
+                    className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  />
+                  <span className="ml-2 text-sm font-medium text-gray-700">リーダー経験あり</span>
+                </label>
+                {formData.hasLeaderExperience && (
+                  <div className="mt-3">
+                    <label className="block text-sm font-medium text-gray-700">リーダー経験詳細</label>
+                    <textarea
+                      value={formData.leaderExperienceDetails}
+                      onChange={(e) => setFormData({ ...formData, leaderExperienceDetails: e.target.value })}
+                      rows={3}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                      placeholder="役職、活動内容など"
+                    />
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={formData.hasContestAchievement}
+                    onChange={(e) => setFormData({ ...formData, hasContestAchievement: e.target.checked })}
+                    className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  />
+                  <span className="ml-2 text-sm font-medium text-gray-700">コンテスト実績あり</span>
+                </label>
+                {formData.hasContestAchievement && (
+                  <div className="mt-3">
+                    <label className="block text-sm font-medium text-gray-700">コンテスト実績詳細</label>
+                    <textarea
+                      value={formData.contestAchievementDetails}
+                      onChange={(e) => setFormData({ ...formData, contestAchievementDetails: e.target.value })}
+                      rows={3}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                      placeholder="コンテスト名、結果など"
+                    />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 

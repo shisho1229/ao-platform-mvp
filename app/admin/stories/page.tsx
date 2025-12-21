@@ -11,6 +11,7 @@ interface Story {
   faculty: string
   admissionType: string
   year?: number
+  campus?: string
   firstRoundResult?: string
   secondRoundResult?: string
   published: boolean
@@ -252,6 +253,9 @@ export default function AdminStoriesPage() {
                   入試方式
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  所属校舎
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   最終結果
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -279,6 +283,11 @@ export default function AdminStoriesPage() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">{story.admissionType}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">
+                      {story.campus || <span className="text-gray-400">未記入</span>}
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {(() => {
