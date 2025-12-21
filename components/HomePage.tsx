@@ -147,7 +147,7 @@ export default function HomePage() {
           {/* 右側: タイトル・キャッチコピー + 最新体験記 */}
           <div className="flex-1">
             {/* 上部: タイトル・キャッチコピーと合格実績 */}
-            <section className="mb-8 relative">
+            <section className="mb-12 relative">
               {/* 合格実績（右上） */}
               <div className="absolute top-0 right-0 rounded-xl p-6 shadow-xl max-w-xl" style={{ background: 'linear-gradient(135deg, #044465 0%, #055a7a 50%, #0891b2 100%)' }}>
                 <div className="flex items-center gap-3 mb-4">
