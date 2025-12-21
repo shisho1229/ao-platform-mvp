@@ -238,11 +238,15 @@ export default function StoryDetailPage() {
                   <span className="text-white/40">/</span>
                   <span>{story.faculty}</span>
                   <span className="text-white/40">/</span>
-                  <span>{story.admissionType}</span>
+                  <span className="inline-flex items-center px-3 py-1 bg-orange-500 text-white text-sm font-semibold rounded-full">
+                    {story.admissionType}
+                  </span>
                   {story.year && (
                     <>
                       <span className="text-white/40">/</span>
-                      <span>{story.year}年度</span>
+                      <span className="inline-flex items-center px-3 py-1 bg-blue-500 text-white text-sm font-semibold rounded-full">
+                        {story.year}年度
+                      </span>
                     </>
                   )}
                   {(() => {
