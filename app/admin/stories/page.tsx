@@ -14,6 +14,7 @@ interface Story {
   campus?: string
   firstRoundResult?: string
   secondRoundResult?: string
+  status: string
   published: boolean
   documentsUrl?: string
   createdAt: string
@@ -31,7 +32,7 @@ export default function AdminStoriesPage() {
   const [stories, setStories] = useState<Story[]>([])
   const [loading, setLoading] = useState(true)
   const [processing, setProcessing] = useState<string | null>(null)
-  const [filter, setFilter] = useState<"all" | "published" | "unpublished">("all")
+  const [filter, setFilter] = useState<"all" | "pending_review" | "needs_revision" | "published" | "unpublished">("pending_review")
   const [showDocumentsModal, setShowDocumentsModal] = useState<string | null>(null)
   const [showEditRequestModal, setShowEditRequestModal] = useState<string | null>(null)
   const [documentsUrl, setDocumentsUrl] = useState("")
@@ -53,7 +54,11 @@ export default function AdminStoriesPage() {
   const fetchStories = async () => {
     try {
       const params = new URLSearchParams()
-      if (filter === "published") {
+      if (filter === "pending_review") {
+        params.append("status", "PENDING_REVIEW")
+      } else if (filter === "needs_revision") {
+        params.append("status", "NEEDS_REVISION")
+      } else if (filter === "published") {
         params.append("published", "true")
       } else if (filter === "unpublished") {
         params.append("published", "false")
@@ -203,14 +208,24 @@ export default function AdminStoriesPage() {
         {/* Filter Buttons */}
         <div className="flex gap-2">
           <button
-            onClick={() => setFilter("all")}
+            onClick={() => setFilter("pending_review")}
             className={`px-4 py-2 rounded-lg transition-colors ${
-              filter === "all"
-                ? "bg-blue-600 text-white"
+              filter === "pending_review"
+                ? "bg-yellow-600 text-white"
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
           >
-            すべて ({stories.length})
+            添削待ち
+          </button>
+          <button
+            onClick={() => setFilter("needs_revision")}
+            className={`px-4 py-2 rounded-lg transition-colors ${
+              filter === "needs_revision"
+                ? "bg-orange-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          >
+            修正依頼中
           </button>
           <button
             onClick={() => setFilter("published")}
@@ -231,6 +246,16 @@ export default function AdminStoriesPage() {
             }`}
           >
             非公開
+          </button>
+          <button
+            onClick={() => setFilter("all")}
+            className={`px-4 py-2 rounded-lg transition-colors ${
+              filter === "all"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          >
+            すべて
           </button>
         </div>
       </div>
@@ -321,13 +346,25 @@ export default function AdminStoriesPage() {
                     )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                      story.published
-                        ? "bg-green-100 text-green-800"
-                        : "bg-red-100 text-red-800"
-                    }`}>
-                      {story.published ? "公開中" : "非公開"}
-                    </span>
+                    <div className="flex flex-col gap-1">
+                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                        story.status === "PENDING_REVIEW"
+                          ? "bg-yellow-100 text-yellow-800"
+                          : story.status === "NEEDS_REVISION"
+                          ? "bg-orange-100 text-orange-800"
+                          : story.published
+                          ? "bg-green-100 text-green-800"
+                          : "bg-red-100 text-red-800"
+                      }`}>
+                        {story.status === "PENDING_REVIEW"
+                          ? "添削待ち"
+                          : story.status === "NEEDS_REVISION"
+                          ? "修正依頼中"
+                          : story.published
+                          ? "公開中"
+                          : "非公開"}
+                      </span>
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
                     <div className="flex gap-1.5">

@@ -165,20 +165,30 @@ export async function PATCH(
       where: { storyId },
     })
 
+    // 投稿者が編集した場合は、ステータスを添削待ちに戻す
+    const updateData: any = {
+      authorName: authorName || null,
+      gender: gender || null,
+      highSchoolLevel,
+      highSchoolName: highSchoolName || null,
+      gradeAverage,
+      campus: campus || null,
+      admissionType,
+      university,
+      faculty,
+      year: year ? parseInt(year) : null,
+    }
+
+    // 投稿者本人が編集した場合は、ステータスをPENDING_REVIEWに戻す
+    if (isAuthor && !isAdmin) {
+      updateData.status = "PENDING_REVIEW"
+    }
+
     // 体験談を更新
     const updatedStory = await prisma.graduateStory.update({
       where: { id: storyId },
       data: {
-        authorName: authorName || null,
-        gender: gender || null,
-        highSchoolLevel,
-        highSchoolName: highSchoolName || null,
-        gradeAverage,
-        campus: campus || null,
-        admissionType,
-        university,
-        faculty,
-        year: year ? parseInt(year) : null,
+        ...updateData,
         researchTheme,
         researchMotivation,
         researchDetails,

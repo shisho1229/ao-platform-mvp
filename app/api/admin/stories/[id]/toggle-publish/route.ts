@@ -14,7 +14,7 @@ export async function POST(
     // 現在の状態を取得
     const story = await prisma.graduateStory.findUnique({
       where: { id: storyId },
-      select: { published: true },
+      select: { published: true, status: true },
     })
 
     if (!story) {
@@ -24,11 +24,16 @@ export async function POST(
       )
     }
 
+    // 公開する場合はステータスをPUBLISHEDに、非公開にする場合はPENDING_REVIEWに
+    const newPublishedStatus = !story.published
+    const newStatus = newPublishedStatus ? "PUBLISHED" : "PENDING_REVIEW"
+
     // 公開状態を切り替え
     const updatedStory = await prisma.graduateStory.update({
       where: { id: storyId },
       data: {
-        published: !story.published,
+        published: newPublishedStatus,
+        status: newStatus,
       },
       include: {
         author: {

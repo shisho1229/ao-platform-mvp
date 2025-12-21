@@ -152,6 +152,16 @@ export default function MyStoriesPage() {
                   <div className="p-6">
                     {/* ステータスバッジ */}
                     <div className="flex flex-wrap gap-2 mb-3">
+                      {story.status === "PENDING_REVIEW" && (
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold text-white bg-yellow-500">
+                          添削待ち
+                        </span>
+                      )}
+                      {story.status === "NEEDS_REVISION" && (
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold text-white bg-orange-500">
+                          修正依頼中
+                        </span>
+                      )}
                       {story.published ? (
                         <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold text-white bg-green-500">
                           公開中

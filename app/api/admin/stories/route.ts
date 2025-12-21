@@ -9,8 +9,14 @@ export async function GET(request: NextRequest) {
 
     const searchParams = request.nextUrl.searchParams
     const published = searchParams.get("published")
+    const status = searchParams.get("status")
 
     const where: any = {}
+
+    // ステータスフィルター（添削待ち、修正依頼中など）
+    if (status) {
+      where.status = status
+    }
 
     // 公開/非公開フィルター
     if (published === "true") {

@@ -41,6 +41,12 @@ export async function POST(
       )
     }
 
+    // ステータスを「修正依頼中」に更新
+    await prisma.graduateStory.update({
+      where: { id: storyId },
+      data: { status: "NEEDS_REVISION" },
+    })
+
     // メール送信
     try {
       await sendEmail({
