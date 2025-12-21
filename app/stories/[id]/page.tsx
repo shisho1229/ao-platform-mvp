@@ -10,6 +10,7 @@ interface Story {
   id: string
   university: string
   faculty: string
+  authorId: string
   authorName?: string
   gender: string | null
   highSchoolLevel: string
@@ -19,6 +20,11 @@ interface Story {
   admissionType: string
   year?: number
   documentsUrl?: string
+  author?: {
+    id: string
+    name: string | null
+    campus: string | null
+  }
 
   // 探究・活動
   researchTheme?: string
@@ -227,12 +233,28 @@ export default function StoryDetailPage() {
             <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full -mr-32 -mt-32"></div>
             <div className="relative flex items-center justify-between gap-4">
               <div className="flex-1 min-w-0">
-                <h1 className="text-2xl font-bold text-white leading-tight">
-                  {story.university}{story.faculty}{story.admissionType}
-                  {story.year && `${story.year}年度`}
+                <h1 className="text-xl sm:text-2xl font-bold text-white leading-tight flex flex-wrap items-center gap-x-2 gap-y-1">
+                  <span>{story.university}</span>
+                  <span className="text-white/40">/</span>
+                  <span>{story.faculty}</span>
+                  <span className="text-white/40">/</span>
+                  <span>{story.admissionType}</span>
+                  {story.year && (
+                    <>
+                      <span className="text-white/40">/</span>
+                      <span>{story.year}年度</span>
+                    </>
+                  )}
                   {(() => {
                     const result = getAdmissionResult(story.firstRoundResult, story.secondRoundResult)
-                    return result ? result.label : ''
+                    return result ? (
+                      <>
+                        <span className="text-white/40">/</span>
+                        <span className="inline-flex items-center px-3 py-1 bg-green-500 text-white text-sm font-semibold rounded-full">
+                          {result.label}
+                        </span>
+                      </>
+                    ) : null
                   })()}
                 </h1>
               </div>
@@ -240,9 +262,19 @@ export default function StoryDetailPage() {
                 <div className="flex gap-2 flex-shrink-0">
                   {(session.user.role === "SUPER_ADMIN" ||
                     session.user.role === "ADMIN" ||
-                    session.user.role === "STAFF") && (
+                    session.user.role === "STAFF" ||
+                    (story.author && session.user.id === story.author.id)) && (
                     <button
-                      onClick={() => router.push(`/admin/stories/${story.id}/edit`)}
+                      onClick={() => {
+                        // 管理者は管理画面、投稿者本人はユーザー編集ページへ
+                        if (session.user.role === "SUPER_ADMIN" ||
+                            session.user.role === "ADMIN" ||
+                            session.user.role === "STAFF") {
+                          router.push(`/admin/stories/${story.id}/edit`)
+                        } else {
+                          router.push(`/stories/${story.id}/edit`)
+                        }
+                      }}
                       className="p-3 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white transition-all duration-200 shadow-lg"
                       title="編集する"
                     >

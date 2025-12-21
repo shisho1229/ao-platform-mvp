@@ -1,7 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, useParams } from "next/navigation"
+import { useSession } from "next-auth/react"
 
 interface ExplorationTheme {
   id: number
@@ -9,10 +10,13 @@ interface ExplorationTheme {
   description: string
 }
 
-export default function NewStoryPage() {
+export default function EditStoryPage() {
   const router = useRouter()
+  const params = useParams()
+  const { data: session, status } = useSession()
   const [themes, setThemes] = useState<ExplorationTheme[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [isLoadingStory, setIsLoadingStory] = useState(true)
   const [error, setError] = useState("")
 
   // フォームデータ
@@ -59,26 +63,19 @@ export default function NewStoryPage() {
   >([])
 
   const [agreedToTerms, setAgreedToTerms] = useState(false)
-  const STORAGE_KEY = "story_draft"
+  const STORAGE_KEY = `story_edit_draft_${params.id}`
 
   useEffect(() => {
     fetchThemes()
-
-    // localStorageから下書きを復元
-    const savedDraft = localStorage.getItem(STORAGE_KEY)
-    if (savedDraft) {
-      try {
-        const draft = JSON.parse(savedDraft)
-        setFormData(draft.formData || formData)
-        setConcurrentApplications(draft.concurrentApplications || [])
-      } catch (error) {
-        console.error("下書きの復元に失敗しました:", error)
-      }
+    if (params.id) {
+      fetchStory(params.id as string)
     }
-  }, [])
+  }, [params.id])
 
-  // formDataが変更されたら自動保存
+  // formDataが変更されたら自動保存（既存データ読み込み後のみ）
   useEffect(() => {
+    if (isLoadingStory) return // データ読み込み中は保存しない
+
     const saveTimer = setTimeout(() => {
       const draft = {
         formData,
@@ -89,7 +86,93 @@ export default function NewStoryPage() {
     }, 1000) // 1秒のデバウンス
 
     return () => clearTimeout(saveTimer)
-  }, [formData, concurrentApplications])
+  }, [formData, concurrentApplications, isLoadingStory])
+
+  useEffect(() => {
+    // 未ログインの場合はログインページへ
+    if (status === "unauthenticated") {
+      router.push("/auth/signin")
+    }
+  }, [status, router])
+
+  const fetchStory = async (id: string) => {
+    try {
+      const res = await fetch(`/api/stories/${id}`)
+      if (res.ok) {
+        const story = await res.json()
+
+        // 投稿者本人かチェック
+        if (session?.user && story.author && story.author.id !== session.user.id) {
+          router.push("/stories")
+          return
+        }
+
+        // フォームデータにセット
+        setFormData({
+          authorName: story.authorName || "",
+          gender: story.gender || "",
+          highSchoolLevel: story.highSchoolLevel || "LEVEL_2",
+          highSchoolName: story.highSchoolName || "",
+          gradeAverage: story.gradeAverage || "RANGE_3",
+          campus: story.campus || "",
+          admissionType: story.admissionType || "",
+          university: story.university || "",
+          faculty: story.faculty || "",
+          year: story.year ? story.year.toString() : "",
+          explorationThemeIds: story.explorationThemes?.map((et: any) => et.theme.id) || [],
+          researchTheme: story.researchTheme || "",
+          researchMotivation: story.researchMotivation || "",
+          researchDetails: story.researchDetails || "",
+          targetProfessor: story.targetProfessor || "",
+          hasSportsAchievement: story.hasSportsAchievement || false,
+          sportsDetails: story.sportsDetails || "",
+          sportsAchievements: story.sportsAchievements || [],
+          hasEnglishQualification: story.hasEnglishQualification || false,
+          englishQualification: story.englishQualification || "",
+          hasStudyAbroad: story.hasStudyAbroad || false,
+          studyAbroadDetails: story.studyAbroadDetails || "",
+          hasLeaderExperience: story.hasLeaderExperience || false,
+          leaderExperienceDetails: story.leaderExperienceDetails || "",
+          hasContestAchievement: story.hasContestAchievement || false,
+          contestAchievementDetails: story.contestAchievementDetails || "",
+          interviewQuestions: story.interviewQuestions || "",
+          selectionFlowType: story.selectionFlowType || "",
+          firstRoundResult: story.firstRoundResult || "",
+          secondRoundResult: story.secondRoundResult || "",
+          documentPreparation: story.documentPreparation || "",
+          secondRoundPreparation: story.secondRoundPreparation || "",
+          materials: story.materials || "",
+          adviceToJuniors: story.adviceToJuniors || "",
+        })
+
+        // 併願校をセット
+        setConcurrentApplications(story.concurrentApplications || [])
+        setAgreedToTerms(true) // 既に投稿済みなので同意済み
+
+        // localStorageから下書きがあれば復元（編集中のデータを優先）
+        const savedDraft = localStorage.getItem(STORAGE_KEY)
+        if (savedDraft) {
+          try {
+            const draft = JSON.parse(savedDraft)
+            // 下書きがある場合は、ユーザーに確認を表示することもできますが、ここでは自動で復元
+            if (draft.formData) {
+              setFormData(draft.formData)
+              setConcurrentApplications(draft.concurrentApplications || [])
+            }
+          } catch (error) {
+            console.error("下書きの復元に失敗しました:", error)
+          }
+        }
+      } else {
+        router.push("/stories")
+      }
+    } catch (error) {
+      console.error("Error fetching story:", error)
+      router.push("/stories")
+    } finally {
+      setIsLoadingStory(false)
+    }
+  }
 
   const fetchThemes = async () => {
     try {
@@ -235,10 +318,10 @@ export default function NewStoryPage() {
           concurrentApplications.length > 0 ? concurrentApplications : undefined,
       }
 
-      console.log("投稿データ:", payload)
+      console.log("更新データ:", payload)
 
-      const res = await fetch("/api/stories", {
-        method: "POST",
+      const res = await fetch(`/api/stories/${params.id}`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
@@ -246,27 +329,38 @@ export default function NewStoryPage() {
       })
 
       if (res.ok) {
-        // 投稿成功時に下書きを削除
+        // 更新成功時に下書きを削除
         localStorage.removeItem(STORAGE_KEY)
-        router.push("/stories")
+        router.push(`/stories/${params.id}`)
       } else {
         const data = await res.json()
-        console.error("投稿エラー:", data)
-        setError(data.error || data.details || "投稿に失敗しました")
+        console.error("更新エラー:", data)
+        setError(data.error || data.details || "更新に失敗しました")
       }
     } catch (error) {
-      console.error("投稿エラー (catch):", error)
-      setError(`投稿に失敗しました: ${error instanceof Error ? error.message : '不明なエラー'}`)
+      console.error("更新エラー (catch):", error)
+      setError(`更新に失敗しました: ${error instanceof Error ? error.message : '不明なエラー'}`)
     } finally {
       setIsLoading(false)
     }
+  }
+
+  if (isLoadingStory) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
+          <p className="text-gray-600 mt-4">読み込み中...</p>
+        </div>
+      </div>
+    )
   }
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">
-          合格体験談を投稿
+          合格体験談を編集
         </h1>
 
         {error && (
@@ -1228,7 +1322,7 @@ export default function NewStoryPage() {
               disabled={isLoading || formData.explorationThemeIds.length === 0 || !agreedToTerms}
               className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? "投稿中..." : "投稿する"}
+              {isLoading ? "更新中..." : "更新する"}
             </button>
           </div>
         </form>
