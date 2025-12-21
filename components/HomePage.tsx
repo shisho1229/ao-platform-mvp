@@ -154,16 +154,18 @@ export default function HomePage() {
                   <h2 className="text-4xl font-bold mb-4 whitespace-nowrap" style={{ color: '#f0f4f8' }}>
                     Loohcs志塾 合格者体験記
                   </h2>
-                  <p className="text-2xl mb-3" style={{ color: '#d4af37' }}>
+                  <p className="text-2xl mb-4 font-bold" style={{ color: '#FFD700' }}>
                     志を抱く、場所となる。
                   </p>
-                  <p className="text-lg mb-3" style={{ color: '#e8eef5' }}>
-                    どんな受験生も、どんな志望校も、<br />
-                    人生が変わるほどの成長と合格を掴み取れます。
-                  </p>
-                  <p className="text-base" style={{ color: '#bac9d0' }}>
-                    先輩の体験から学び、自分だけの合格ストーリーを描こう
-                  </p>
+                  <div className="space-y-2">
+                    <p className="text-lg leading-relaxed" style={{ color: '#e8eef5' }}>
+                      どんな受験生も、どんな志望校も、<br />
+                      人生が変わるほどの成長と合格を掴み取れます。
+                    </p>
+                    <p className="text-lg leading-relaxed" style={{ color: '#e8eef5' }}>
+                      先輩の体験から学び、自分だけの合格ストーリーを描こう
+                    </p>
+                  </div>
                 </div>
 
                 {/* 合格実績（右側） */}
