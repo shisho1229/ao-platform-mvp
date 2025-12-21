@@ -13,50 +13,71 @@ export async function GET(request: NextRequest) {
     const campus = searchParams.get("campus")
     const themeIds = searchParams.get("themeIds")?.split(",").map(Number)
 
-    const where: any = {
-      published: true, // 公開されている体験談のみ
-    }
+    // AND条件を格納する配列
+    const andConditions: any[] = [
+      { published: true } // 公開されている体験談のみ
+    ]
 
-    // キーワード検索（大学名、学部、入試方式、高校名、探究テーマ、名前などで検索）
+    // キーワード検索（OR条件）
     if (keyword) {
-      where.OR = [
-        { university: { contains: keyword, mode: 'insensitive' } },
-        { faculty: { contains: keyword, mode: 'insensitive' } },
-        { admissionType: { contains: keyword, mode: 'insensitive' } },
-        { highSchoolName: { contains: keyword, mode: 'insensitive' } },
-        { researchTheme: { contains: keyword, mode: 'insensitive' } },
-        { researchDetails: { contains: keyword, mode: 'insensitive' } },
-        { contestAchievementDetails: { contains: keyword, mode: 'insensitive' } },
-        { preparationMethod: { contains: keyword, mode: 'insensitive' } },
-        { adviceToJuniors: { contains: keyword, mode: 'insensitive' } },
-        { author: { name: { contains: keyword, mode: 'insensitive' } } },
-      ]
+      andConditions.push({
+        OR: [
+          { university: { contains: keyword, mode: 'insensitive' } },
+          { faculty: { contains: keyword, mode: 'insensitive' } },
+          { admissionType: { contains: keyword, mode: 'insensitive' } },
+          { highSchoolName: { contains: keyword, mode: 'insensitive' } },
+          { researchTheme: { contains: keyword, mode: 'insensitive' } },
+          { researchDetails: { contains: keyword, mode: 'insensitive' } },
+          { authorName: { contains: keyword, mode: 'insensitive' } },
+          { adviceToJuniors: { contains: keyword, mode: 'insensitive' } },
+          { explorationThemes: {
+            some: {
+              theme: {
+                name: { contains: keyword, mode: 'insensitive' }
+              }
+            }
+          }},
+        ]
+      })
     }
 
+    // 大学名フィルター
     if (university) {
-      where.university = { contains: university }
+      andConditions.push({ university: { contains: university } })
     }
 
+    // 学部フィルター
     if (faculty) {
-      where.faculty = { contains: faculty }
+      andConditions.push({ faculty: { contains: faculty } })
     }
 
+    // 年度フィルター
     if (year) {
-      where.year = parseInt(year)
+      andConditions.push({ year: parseInt(year) })
     }
 
+    // 校舎フィルター
     if (campus) {
-      where.author = {
-        campus: campus
-      }
+      andConditions.push({
+        author: {
+          campus: campus
+        }
+      })
     }
 
+    // 探究テーマフィルター
     if (themeIds && themeIds.length > 0) {
-      where.explorationThemes = {
-        some: {
-          themeId: { in: themeIds }
+      andConditions.push({
+        explorationThemes: {
+          some: {
+            themeId: { in: themeIds }
+          }
         }
-      }
+      })
+    }
+
+    const where = {
+      AND: andConditions
     }
 
     const stories = await prisma.graduateStory.findMany({
