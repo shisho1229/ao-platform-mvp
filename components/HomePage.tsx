@@ -184,7 +184,7 @@ export default function HomePage() {
                   まだ体験談が投稿されていません
                 </div>
               ) : (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                   {stories.map((story) => (
                     <Link
                       key={story.id}
@@ -195,28 +195,22 @@ export default function HomePage() {
                       onMouseLeave={(e) => e.currentTarget.style.borderColor = '#e5e7eb'}
                     >
                       {/* カードヘッダー - グラデーション背景 */}
-                      <div className="p-3 relative overflow-hidden" style={{ background: 'linear-gradient(to bottom right, #044465, #055a7a)' }}>
-                        <div className="absolute top-0 right-0 w-20 h-20 bg-white opacity-10 rounded-full -mr-10 -mt-10"></div>
-                        <div className="absolute bottom-0 left-0 w-16 h-16 bg-white opacity-10 rounded-full -ml-8 -mb-8"></div>
+                      <div className="p-2.5 relative overflow-hidden" style={{ background: 'linear-gradient(to bottom right, #044465, #055a7a)' }}>
+                        <div className="absolute top-0 right-0 w-16 h-16 bg-white opacity-10 rounded-full -mr-8 -mt-8"></div>
+                        <div className="absolute bottom-0 left-0 w-12 h-12 bg-white opacity-10 rounded-full -ml-6 -mb-6"></div>
                         <div className="relative">
                           {/* 公開通知 */}
                           {story.authorName && (
-                            <div className="mb-1.5 text-xs text-green-200 font-medium">
+                            <div className="mb-1 text-xs text-green-200 font-medium">
                               {story.authorName}さんの体験談が公開されました
                             </div>
                           )}
-                          <div className="flex items-start justify-between mb-1.5">
-                            <div className="flex-1">
-                              <h2 className="text-sm font-bold text-white mb-0.5 group-hover:scale-105 transition-transform leading-tight">
-                                {story.university}
-                              </h2>
-                              <p className="text-xs font-medium leading-tight" style={{ color: '#bac9d0' }}>{story.faculty}</p>
-                            </div>
-                            <div className="flex-shrink-0 ml-2">
-                              <div className="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center">
-                                <GraduationCap className="w-4 h-4 text-white" />
-                              </div>
-                            </div>
+                          {/* 大学名と学部を縦に並べる */}
+                          <div className="mb-1.5">
+                            <h2 className="text-sm font-bold text-white mb-0.5 group-hover:scale-105 transition-transform leading-tight">
+                              {story.university}
+                            </h2>
+                            <p className="text-xs font-medium leading-tight" style={{ color: '#bac9d0' }}>{story.faculty}</p>
                           </div>
                           <div className="flex flex-wrap gap-1">
                             <div className="inline-block px-1.5 py-0.5 bg-orange-500 text-white text-xs font-semibold rounded-full">
@@ -240,11 +234,11 @@ export default function HomePage() {
                       </div>
 
                       {/* カードボディ */}
-                      <div className="p-3">
+                      <div className="p-2.5">
                         {/* 投稿者情報 */}
-                        <div className="mb-2 p-2 rounded-lg" style={{ backgroundColor: '#f0f4f5' }}>
+                        <div className="mb-2 p-1.5 rounded-lg" style={{ backgroundColor: '#f0f4f5' }}>
                           {story.highSchoolName && (
-                            <div className="flex items-center gap-1 mb-1">
+                            <div className="flex items-center gap-1 mb-0.5">
                               <GraduationCap className="w-3 h-3 flex-shrink-0" style={{ color: '#044465' }} />
                               <p className="text-xs font-semibold leading-tight" style={{ color: '#044465' }}>
                                 {story.highSchoolName}
@@ -264,8 +258,8 @@ export default function HomePage() {
                         {/* 志 - 大きく目立たせる */}
                         {story.researchTheme && (
                           <div>
-                            <p className="text-xs text-gray-500 font-semibold mb-1.5">志</p>
-                            <p className="text-sm font-bold text-gray-800 line-clamp-3 leading-relaxed">
+                            <p className="text-xs text-gray-500 font-semibold mb-1">志</p>
+                            <p className="text-sm font-bold text-gray-800 line-clamp-2 leading-relaxed">
                               {story.researchTheme}
                             </p>
                           </div>
