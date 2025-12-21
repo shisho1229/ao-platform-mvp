@@ -101,9 +101,19 @@ export default function EditStoryPage() {
       if (res.ok) {
         const story = await res.json()
 
-        // 投稿者本人かチェック
-        if (session?.user && story.author && story.author.id !== session.user.id) {
-          router.push("/stories")
+        // 管理者または投稿者本人かチェック
+        if (session?.user) {
+          const isAdmin = session.user.role === "SUPER_ADMIN" ||
+                          session.user.role === "ADMIN" ||
+                          session.user.role === "STAFF"
+          const isAuthor = story.author && story.author.id === session.user.id
+
+          if (!isAdmin && !isAuthor) {
+            router.push("/stories")
+            return
+          }
+        } else {
+          router.push("/auth/signin")
           return
         }
 

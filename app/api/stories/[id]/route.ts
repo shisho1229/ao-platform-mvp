@@ -89,8 +89,13 @@ export async function PUT(
       )
     }
 
-    // 投稿者本人かチェック
-    if (existingStory.authorId !== currentUser.id) {
+    // 管理者または投稿者本人かチェック
+    const isAdmin = currentUser.role === "SUPER_ADMIN" ||
+                    currentUser.role === "ADMIN" ||
+                    currentUser.role === "STAFF"
+    const isAuthor = existingStory.authorId === currentUser.id
+
+    if (!isAdmin && !isAuthor) {
       return NextResponse.json(
         { error: "この体験談を編集する権限がありません" },
         { status: 403 }
