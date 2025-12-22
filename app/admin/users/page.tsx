@@ -25,6 +25,8 @@ export default function AdminUsersPage() {
   const [loading, setLoading] = useState(true)
   const [processing, setProcessing] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<"pending" | "staff" | "users">("pending")
+  const [searchQuery, setSearchQuery] = useState("")
+  const [campusFilter, setCampusFilter] = useState("")
 
   const isSuperAdmin = session?.user?.role === "SUPER_ADMIN"
   const isStaffOrAdmin = session?.user?.role === "SUPER_ADMIN" ||
@@ -38,19 +40,27 @@ export default function AdminUsersPage() {
     }
 
     fetchUsers()
-  }, [session, router])
+  }, [session, router, searchQuery, campusFilter])
 
   const fetchUsers = async () => {
     try {
+      // クエリパラメータを構築
+      const params = new URLSearchParams()
+      if (searchQuery) params.append("search", searchQuery)
+      if (campusFilter) params.append("campus", campusFilter)
+      const queryString = params.toString()
+
       // 承認待ちユーザー取得
-      const pendingResponse = await fetch("/api/users/pending")
+      const pendingUrl = queryString ? `/api/users/pending?${queryString}` : "/api/users/pending"
+      const pendingResponse = await fetch(pendingUrl)
       if (pendingResponse.ok) {
         const data = await pendingResponse.json()
         setPendingUsers(data)
       }
 
       // 承認済みユーザー取得
-      const approvedResponse = await fetch("/api/admin/users?approved=true")
+      const approvedUrl = queryString ? `/api/admin/users?approved=true&${queryString}` : "/api/admin/users?approved=true"
+      const approvedResponse = await fetch(approvedUrl)
       if (approvedResponse.ok) {
         const data = await approvedResponse.json()
 
@@ -68,6 +78,11 @@ export default function AdminUsersPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const clearFilters = () => {
+    setSearchQuery("")
+    setCampusFilter("")
   }
 
   const handleApprove = async (userId: string) => {
@@ -185,6 +200,58 @@ export default function AdminUsersPage() {
 
   return (
     <div>
+      {/* 検索とフィルター */}
+      <div className="mb-6 bg-white rounded-lg shadow p-4">
+        <h3 className="text-sm font-semibold text-gray-700 mb-3">検索・フィルター</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* 検索 */}
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1">
+              名前またはメールアドレス
+            </label>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="検索..."
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+
+          {/* 校舎フィルター */}
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1">
+              所属校舎
+            </label>
+            <select
+              value={campusFilter}
+              onChange={(e) => setCampusFilter(e.target.value)}
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="">すべて</option>
+              <option value="武蔵小杉">武蔵小杉</option>
+              <option value="下北沢">下北沢</option>
+              <option value="自由が丘">自由が丘</option>
+              <option value="渋谷">渋谷</option>
+              <option value="オンライン">オンライン</option>
+              <option value="青葉台">青葉台</option>
+            </select>
+          </div>
+        </div>
+
+        {/* フィルタークリアボタン */}
+        {(searchQuery || campusFilter) && (
+          <div className="mt-3 flex justify-end">
+            <button
+              onClick={clearFilters}
+              className="px-4 py-2 text-sm text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+            >
+              フィルターをクリア
+            </button>
+          </div>
+        )}
+      </div>
+
       {/* Tab Navigation */}
       <div className="mb-6 border-b">
         <div className="flex gap-4">

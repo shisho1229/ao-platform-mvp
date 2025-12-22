@@ -9,6 +9,8 @@ export async function GET(request: NextRequest) {
 
     const searchParams = request.nextUrl.searchParams
     const approved = searchParams.get("approved")
+    const search = searchParams.get("search")
+    const campus = searchParams.get("campus")
 
     const where: any = {}
 
@@ -16,6 +18,19 @@ export async function GET(request: NextRequest) {
       where.approved = true
     } else if (approved === "false") {
       where.approved = false
+    }
+
+    // 検索フィルター（名前またはメールアドレス）
+    if (search) {
+      where.OR = [
+        { name: { contains: search, mode: 'insensitive' } },
+        { email: { contains: search, mode: 'insensitive' } }
+      ]
+    }
+
+    // 校舎フィルター
+    if (campus) {
+      where.campus = campus
     }
 
     const users = await prisma.user.findMany({

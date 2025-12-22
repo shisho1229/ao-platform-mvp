@@ -8,9 +8,28 @@ export async function GET(request: NextRequest) {
     // 管理者権限チェック
     await requireRole(["SUPER_ADMIN", "ADMIN", "STAFF"])
 
+    const searchParams = request.nextUrl.searchParams
+    const search = searchParams.get("search")
+    const campus = searchParams.get("campus")
+
+    const where: any = { approved: false }
+
+    // 検索フィルター（名前またはメールアドレス）
+    if (search) {
+      where.OR = [
+        { name: { contains: search, mode: 'insensitive' } },
+        { email: { contains: search, mode: 'insensitive' } }
+      ]
+    }
+
+    // 校舎フィルター
+    if (campus) {
+      where.campus = campus
+    }
+
     // 承認待ちのユーザーを取得
     const pendingUsers = await prisma.user.findMany({
-      where: { approved: false },
+      where,
       select: {
         id: true,
         email: true,
