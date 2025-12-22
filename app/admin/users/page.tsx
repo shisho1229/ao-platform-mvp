@@ -483,7 +483,7 @@ export default function AdminUsersPage() {
             </table>
           </div>
         )
-      ) : (
+      ) : activeTab === "users" ? (
         /* 一般ユーザー */
         regularUsers.length === 0 ? (
           <div className="bg-white rounded-lg shadow p-8 text-center text-gray-500">
