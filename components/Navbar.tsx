@@ -11,6 +11,7 @@ export default function Navbar() {
   const [unpublishedCount, setUnpublishedCount] = useState(0)
 
   const isStaffOrAdmin = session?.user?.role === "SUPER_ADMIN" ||
+                         session?.user?.role === "MANAGER" ||
                          session?.user?.role === "ADMIN" ||
                          session?.user?.role === "STAFF"
 
@@ -49,11 +50,13 @@ export default function Navbar() {
     ...(isStaffOrAdmin ? [{ name: "管理画面", href: "/admin/users", badge: unpublishedCount }] : []),
   ]
 
-  const roleLabel = {
+  const roleLabel: Record<string, string> = {
     SUPER_ADMIN: "最高管理者",
+    MANAGER: "マネージャー",
     ADMIN: "管理者",
     STAFF: "スタッフ",
     USER: "ユーザー",
+    GRADUATE: "卒塾生",
   }
 
   return (
