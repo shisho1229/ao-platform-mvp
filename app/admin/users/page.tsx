@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { CheckCircle, XCircle, UserPlus, Shield, UserMinus } from "lucide-react"
 
 interface User {
@@ -184,9 +185,25 @@ export default function AdminUsersPage() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-6" style={{ color: '#044465' }}>
-        ユーザー管理
-      </h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold" style={{ color: '#044465' }}>
+          ユーザー管理
+        </h1>
+        <div className="flex gap-3">
+          <Link
+            href="/admin/dashboard"
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            📊 ダッシュボード
+          </Link>
+          <Link
+            href="/admin/stories"
+            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+          >
+            📝 投稿管理
+          </Link>
+        </div>
+      </div>
 
       {/* Tab Navigation */}
       <div className="mb-6 border-b">

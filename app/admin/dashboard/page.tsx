@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { Users, BookOpen, Heart, TrendingUp, BarChart3, Award } from "lucide-react"
 
 interface Stats {
@@ -107,8 +108,32 @@ export default function AdminDashboardPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* ヘッダー */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">管理者ダッシュボード</h1>
-          <p className="text-gray-600">プラットフォームの統計情報</p>
+          <div className="flex justify-between items-center mb-4">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">管理者ダッシュボード</h1>
+              <p className="text-gray-600">プラットフォームの統計情報</p>
+            </div>
+            <div className="flex gap-3">
+              <Link
+                href="/admin/stories"
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                📝 投稿管理
+              </Link>
+              <Link
+                href="/admin/users"
+                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+              >
+                👥 ユーザー管理
+              </Link>
+              <Link
+                href="/"
+                className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+              >
+                🏠 ホーム
+              </Link>
+            </div>
+          </div>
         </div>
 
         {/* サマリーカード */}
