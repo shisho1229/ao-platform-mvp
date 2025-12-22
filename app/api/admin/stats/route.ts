@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma"
 // GET /api/admin/stats - 管理者用統計データ取得
 export async function GET() {
   try {
-    await requireRole(["SUPER_ADMIN", "STAFF"])
+    await requireRole(["SUPER_ADMIN", "MANAGER", "STAFF"])
 
     // 並列で全ての統計を取得
     const [

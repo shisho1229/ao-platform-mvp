@@ -2,13 +2,13 @@ import { NextRequest, NextResponse } from "next/server"
 import { requireRole } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 
-// POST /api/admin/users/[id]/promote-staff - スタッフ権限付与（SUPER_ADMINのみ）
+// POST /api/admin/users/[id]/promote-staff - スタッフ権限付与（SUPER_ADMIN、MANAGERのみ）
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const user = await requireRole(["SUPER_ADMIN"])
+    const user = await requireRole(["SUPER_ADMIN", "MANAGER"])
     const { id: userId } = await params
 
     // 対象ユーザーを取得
@@ -24,9 +24,9 @@ export async function POST(
     }
 
     // 既にスタッフまたは管理者の場合はエラー
-    if (targetUser.role === "STAFF" || targetUser.role === "ADMIN" || targetUser.role === "SUPER_ADMIN") {
+    if (targetUser.role === "STAFF" || targetUser.role === "MANAGER" || targetUser.role === "ADMIN" || targetUser.role === "SUPER_ADMIN") {
       return NextResponse.json(
-        { error: "このユーザーは既にスタッフ権限を持っています" },
+        { error: "このユーザーは既にスタッフ以上の権限を持っています" },
         { status: 400 }
       )
     }
@@ -54,7 +54,7 @@ export async function POST(
 
     if (error.message === "権限がありません") {
       return NextResponse.json(
-        { error: "最高管理者のみがスタッフ権限を付与できます" },
+        { error: "最高管理者またはマネージャーのみがスタッフ権限を付与できます" },
         { status: 403 }
       )
     }

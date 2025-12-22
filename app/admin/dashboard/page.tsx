@@ -35,7 +35,7 @@ export default function AdminDashboardPage() {
 
     if (status === "authenticated") {
       // 管理者権限チェック
-      if (session?.user?.role !== "SUPER_ADMIN" && session?.user?.role !== "STAFF") {
+      if (session?.user?.role !== "SUPER_ADMIN" && session?.user?.role !== "MANAGER" && session?.user?.role !== "STAFF") {
         router.push("/")
         return
       }
@@ -72,9 +72,11 @@ export default function AdminDashboardPage() {
   const getRoleLabel = (role: string) => {
     switch (role) {
       case "SUPER_ADMIN": return "最高管理者"
+      case "MANAGER": return "マネージャー"
       case "STAFF": return "スタッフ"
       case "USER": return "一般ユーザー"
       case "ADMIN": return "管理者"
+      case "GRADUATE": return "卒塾生"
       default: return role
     }
   }

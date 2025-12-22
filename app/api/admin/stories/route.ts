@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma"
 // GET /api/admin/stories - 管理者用体験記一覧取得（非公開も含む）
 export async function GET(request: NextRequest) {
   try {
-    await requireRole(["SUPER_ADMIN", "ADMIN", "STAFF"])
+    await requireRole(["SUPER_ADMIN", "MANAGER", "ADMIN", "STAFF"])
 
     const searchParams = request.nextUrl.searchParams
     const published = searchParams.get("published")

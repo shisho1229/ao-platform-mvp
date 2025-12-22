@@ -9,7 +9,7 @@ export async function POST(
 ) {
   try {
     // 管理者権限チェック
-    await requireRole(["SUPER_ADMIN", "ADMIN", "STAFF"])
+    await requireRole(["SUPER_ADMIN", "MANAGER", "ADMIN", "STAFF"])
 
     const { id: userId } = await params
 

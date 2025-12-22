@@ -8,7 +8,7 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    await requireRole(["SUPER_ADMIN", "ADMIN", "STAFF"])
+    await requireRole(["SUPER_ADMIN", "MANAGER", "ADMIN", "STAFF"])
     const { id: storyId } = await params
     const { documentsUrl } = await request.json()
 
@@ -81,7 +81,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    await requireRole(["SUPER_ADMIN", "ADMIN", "STAFF"])
+    await requireRole(["SUPER_ADMIN", "MANAGER", "ADMIN", "STAFF"])
     const { id: storyId } = await params
 
     // 書類URLを削除

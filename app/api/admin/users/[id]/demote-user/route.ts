@@ -2,13 +2,13 @@ import { NextRequest, NextResponse } from "next/server"
 import { requireRole } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 
-// POST /api/admin/users/[id]/demote-user - スタッフ権限を削除してUSERに降格（SUPER_ADMINのみ）
+// POST /api/admin/users/[id]/demote-user - スタッフ権限を削除してUSERに降格（SUPER_ADMIN、MANAGERのみ）
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const user = await requireRole(["SUPER_ADMIN"])
+    const user = await requireRole(["SUPER_ADMIN", "MANAGER"])
     const { id: userId } = await params
 
     // 対象ユーザーを取得
@@ -23,10 +23,10 @@ export async function POST(
       )
     }
 
-    // SUPER_ADMINは降格できない
-    if (targetUser.role === "SUPER_ADMIN") {
+    // SUPER_ADMINとMANAGERは降格できない（SUPER_ADMINのみが降格可能）
+    if (targetUser.role === "SUPER_ADMIN" || targetUser.role === "MANAGER") {
       return NextResponse.json(
-        { error: "最高管理者を降格することはできません" },
+        { error: "最高管理者とマネージャーを降格することはできません" },
         { status: 400 }
       )
     }
@@ -61,7 +61,7 @@ export async function POST(
 
     if (error.message === "権限がありません") {
       return NextResponse.json(
-        { error: "最高管理者のみが権限を変更できます" },
+        { error: "最高管理者またはマネージャーのみが権限を変更できます" },
         { status: 403 }
       )
     }

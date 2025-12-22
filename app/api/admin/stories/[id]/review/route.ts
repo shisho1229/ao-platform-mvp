@@ -8,7 +8,7 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    await requireRole(["SUPER_ADMIN", "ADMIN", "STAFF"])
+    await requireRole(["SUPER_ADMIN", "MANAGER", "ADMIN", "STAFF"])
     const { id: storyId } = await params
     const body = await request.json()
 

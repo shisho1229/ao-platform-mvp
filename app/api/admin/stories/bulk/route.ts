@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma"
 // POST /api/admin/stories/bulk - 一括操作
 export async function POST(request: NextRequest) {
   try {
-    await requireRole(["SUPER_ADMIN", "STAFF"])
+    await requireRole(["SUPER_ADMIN", "MANAGER", "STAFF"])
     const body = await request.json()
     const { action, storyIds } = body
 

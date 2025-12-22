@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma"
 // GET /api/admin/stories/pending - 承認待ち体験記一覧取得
 export async function GET(request: NextRequest) {
   try {
-    await requireRole(["SUPER_ADMIN", "ADMIN", "STAFF"])
+    await requireRole(["SUPER_ADMIN", "MANAGER", "ADMIN", "STAFF"])
 
     const stories = await prisma.graduateStory.findMany({
       where: {

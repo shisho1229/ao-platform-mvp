@@ -21,16 +21,19 @@ export default function AdminUsersPage() {
   const router = useRouter()
   const [pendingUsers, setPendingUsers] = useState<User[]>([])
   const [staffUsers, setStaffUsers] = useState<User[]>([])
+  const [managerUsers, setManagerUsers] = useState<User[]>([])
   const [regularUsers, setRegularUsers] = useState<User[]>([])
   const [graduateUsers, setGraduateUsers] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
   const [processing, setProcessing] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState<"pending" | "staff" | "users" | "graduates">("pending")
+  const [activeTab, setActiveTab] = useState<"pending" | "staff" | "managers" | "users" | "graduates">("pending")
   const [searchQuery, setSearchQuery] = useState("")
   const [campusFilter, setCampusFilter] = useState("")
 
   const isSuperAdmin = session?.user?.role === "SUPER_ADMIN"
+  const isManagerOrAbove = session?.user?.role === "SUPER_ADMIN" || session?.user?.role === "MANAGER"
   const isStaffOrAdmin = session?.user?.role === "SUPER_ADMIN" ||
+                         session?.user?.role === "MANAGER" ||
                          session?.user?.role === "ADMIN" ||
                          session?.user?.role === "STAFF"
 
@@ -65,14 +68,16 @@ export default function AdminUsersPage() {
       if (approvedResponse.ok) {
         const data = await approvedResponse.json()
 
-        // スタッフ、一般ユーザー、卒塾生に分離
+        // スタッフ、マネージャー、一般ユーザー、卒塾生に分離
         const staff = data.filter((u: User) =>
           u.role === "SUPER_ADMIN" || u.role === "ADMIN" || u.role === "STAFF"
         )
+        const managers = data.filter((u: User) => u.role === "MANAGER")
         const users = data.filter((u: User) => u.role === "USER")
         const graduates = data.filter((u: User) => u.role === "GRADUATE")
 
         setStaffUsers(staff)
+        setManagerUsers(managers)
         setRegularUsers(users)
         setGraduateUsers(graduates)
       }
@@ -209,10 +214,39 @@ export default function AdminUsersPage() {
     }
   }
 
+  const handleChangeToManager = async (userId: string, toManager: boolean) => {
+    if (!confirm(toManager ? "このユーザーをマネージャーに変更しますか？" : "このマネージャーを一般ユーザーに戻しますか？")) return
+
+    setProcessing(userId)
+    try {
+      const response = await fetch(`/api/admin/users/${userId}/change-manager`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ toManager })
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        alert(data.message)
+        fetchUsers()
+      } else {
+        const error = await response.json()
+        alert(error.error || "変更に失敗しました")
+      }
+    } catch (error) {
+      console.error("マネージャー変更エラー:", error)
+      alert("変更に失敗しました")
+    } finally {
+      setProcessing(null)
+    }
+  }
+
   const getRoleLabel = (role: string) => {
     switch (role) {
       case "SUPER_ADMIN":
         return "最高管理者"
+      case "MANAGER":
+        return "マネージャー"
       case "ADMIN":
         return "管理者"
       case "STAFF":
@@ -306,6 +340,16 @@ export default function AdminUsersPage() {
             }`}
           >
             スタッフ ({staffUsers.length})
+          </button>
+          <button
+            onClick={() => setActiveTab("managers")}
+            className={`px-4 py-2 font-medium border-b-2 transition-colors ${
+              activeTab === "managers"
+                ? "border-blue-500 text-blue-600"
+                : "border-transparent text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            マネージャー ({managerUsers.length})
           </button>
           <button
             onClick={() => setActiveTab("users")}
@@ -463,7 +507,7 @@ export default function AdminUsersPage() {
                         {new Date(user.createdAt).toLocaleString('ja-JP')}
                       </div>
                     </td>
-                    {isSuperAdmin && (
+                    {isManagerOrAbove && (
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         {user.role === "STAFF" && (
                           <button
@@ -475,6 +519,79 @@ export default function AdminUsersPage() {
                             ユーザーに降格
                           </button>
                         )}
+                      </td>
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )
+      ) : activeTab === "managers" ? (
+        /* マネージャー */
+        managerUsers.length === 0 ? (
+          <div className="bg-white rounded-lg shadow p-8 text-center text-gray-500">
+            マネージャーはいません
+          </div>
+        ) : (
+          <div className="bg-white rounded-lg shadow overflow-hidden">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    名前
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    メールアドレス
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    校舎
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    権限
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    登録日時
+                  </th>
+                  {isSuperAdmin && (
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      操作
+                    </th>
+                  )}
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {managerUsers.map((user) => (
+                  <tr key={user.id}>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">{user.name}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-500">{user.email}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-500">{user.campus || "-"}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="px-2 py-1 text-xs font-medium rounded-full bg-indigo-100 text-indigo-800">
+                        {getRoleLabel(user.role)}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-500">
+                        {new Date(user.createdAt).toLocaleString('ja-JP')}
+                      </div>
+                    </td>
+                    {isSuperAdmin && (
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button
+                          onClick={() => handleChangeToManager(user.id, false)}
+                          disabled={processing === user.id}
+                          className="inline-flex items-center px-3 py-1.5 bg-orange-600 text-white rounded-md hover:bg-orange-700 disabled:opacity-50 transition-colors"
+                        >
+                          <UserMinus className="w-4 h-4 mr-1" />
+                          ユーザーに降格
+                        </button>
                       </td>
                     )}
                   </tr>
@@ -540,8 +657,20 @@ export default function AdminUsersPage() {
                     </td>
                     {isStaffOrAdmin && (
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 flex-wrap">
                           {isSuperAdmin && (
+                            <>
+                              <button
+                                onClick={() => handleChangeToManager(user.id, true)}
+                                disabled={processing === user.id}
+                                className="inline-flex items-center px-3 py-1.5 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+                              >
+                                <Shield className="w-4 h-4 mr-1" />
+                                マネージャーに昇格
+                              </button>
+                            </>
+                          )}
+                          {isManagerOrAbove && (
                             <button
                               onClick={() => handlePromoteToStaff(user.id)}
                               disabled={processing === user.id}

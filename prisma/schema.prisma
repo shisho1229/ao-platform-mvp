@@ -29,10 +29,11 @@ model User {
 }
 
 enum UserRole {
-  SUPER_ADMIN  // 最高管理者（@loohcs.co.jpのみ）
+  SUPER_ADMIN  // 最高管理者（musashikosugi@juku.loohcs.co.jp）すべての権限
+  MANAGER      // マネージャー（スタッフ⇔ユーザー切替、書類URL管理、投稿・閲覧可能）
   ADMIN        // 管理者（非推奨、既存データ互換用）
-  STAFF        // スタッフ（最高管理者が権限付与）
-  USER         // 一般ユーザー
+  STAFF        // スタッフ（書類URL管理、投稿・閲覧可能）
+  USER         // 一般ユーザー（投稿・閲覧可能）
   GRADUATE     // 卒塾生（投稿可能、閲覧不可）
 }
 

@@ -16,8 +16,8 @@ export default async function AdminLayout({
     redirect("/auth/signin")
   }
 
-  // 権限チェック（SUPER_ADMIN, ADMIN, STAFFのみアクセス可能）
-  const allowedRoles = ["SUPER_ADMIN", "ADMIN", "STAFF"]
+  // 権限チェック（SUPER_ADMIN, MANAGER, ADMIN, STAFFのみアクセス可能）
+  const allowedRoles = ["SUPER_ADMIN", "MANAGER", "ADMIN", "STAFF"]
   if (!allowedRoles.includes(session.user.role)) {
     redirect("/")
   }

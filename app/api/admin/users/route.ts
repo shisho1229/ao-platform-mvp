@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma"
 // GET /api/admin/users - 承認済みユーザー一覧取得
 export async function GET(request: NextRequest) {
   try {
-    await requireRole(["SUPER_ADMIN", "ADMIN", "STAFF"])
+    await requireRole(["SUPER_ADMIN", "MANAGER", "ADMIN", "STAFF"])
 
     const searchParams = request.nextUrl.searchParams
     const approved = searchParams.get("approved")

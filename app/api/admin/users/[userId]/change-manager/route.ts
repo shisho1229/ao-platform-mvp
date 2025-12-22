@@ -2,18 +2,18 @@ import { NextRequest, NextResponse } from "next/server"
 import { requireRole } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 
-// POST /api/admin/users/[userId]/change-graduate - ユーザーを卒塾生に変更
+// POST /api/admin/users/[userId]/change-manager - ユーザーをマネージャーに変更（SUPER_ADMINのみ）
 export async function POST(
   request: NextRequest,
   { params }: { params: { userId: string } }
 ) {
   try {
-    // SUPER_ADMIN、ADMIN、STAFFのみが実行可能
-    await requireRole(["SUPER_ADMIN", "MANAGER", "ADMIN", "STAFF"])
+    // SUPER_ADMINのみが実行可能
+    await requireRole(["SUPER_ADMIN"])
 
     const { userId } = params
     const body = await request.json()
-    const { toGraduate } = body // true: 卒塾生にする, false: USERに戻す
+    const { toManager } = body // true: マネージャーにする, false: USERに戻す
 
     // ユーザーが存在するか確認
     const user = await prisma.user.findUnique({
@@ -27,10 +27,10 @@ export async function POST(
       )
     }
 
-    // 最高管理者やスタッフは変更できない
-    if (user.role === "SUPER_ADMIN" || user.role === "STAFF" || user.role === "ADMIN") {
+    // 最高管理者は変更できない
+    if (user.role === "SUPER_ADMIN") {
       return NextResponse.json(
-        { error: "管理者・スタッフは卒塾生に変更できません" },
+        { error: "最高管理者をマネージャーに変更できません" },
         { status: 400 }
       )
     }
@@ -39,21 +39,21 @@ export async function POST(
     const updatedUser = await prisma.user.update({
       where: { id: userId },
       data: {
-        role: toGraduate ? "GRADUATE" : "USER",
+        role: toManager ? "MANAGER" : "USER",
       },
     })
 
     return NextResponse.json({
       success: true,
       user: updatedUser,
-      message: toGraduate ? "卒塾生に変更しました" : "一般ユーザーに戻しました",
+      message: toManager ? "マネージャーに変更しました" : "一般ユーザーに戻しました",
     })
   } catch (error: any) {
-    console.error("Error changing user to graduate:", error)
+    console.error("Error changing user to manager:", error)
 
     if (error.message === "権限がありません") {
       return NextResponse.json(
-        { error: "権限がありません" },
+        { error: "最高管理者のみがマネージャーを任命できます" },
         { status: 403 }
       )
     }
