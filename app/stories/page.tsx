@@ -44,10 +44,11 @@ export default function StoriesPage() {
   const [facultyFilter, setFacultyFilter] = useState("")
   const [yearFilter, setYearFilter] = useState("")
   const [campusFilter, setCampusFilter] = useState("")
+  const [sortBy, setSortBy] = useState("newest")
 
   useEffect(() => {
     fetchStories()
-  }, [keywordFilter, universityFilter, facultyFilter, yearFilter, campusFilter])
+  }, [keywordFilter, universityFilter, facultyFilter, yearFilter, campusFilter, sortBy])
 
   const handleKeywordSearch = (e?: React.FormEvent) => {
     if (e) e.preventDefault()
@@ -62,6 +63,7 @@ export default function StoriesPage() {
       if (facultyFilter) params.append("faculty", facultyFilter)
       if (yearFilter) params.append("year", yearFilter)
       if (campusFilter) params.append("campus", campusFilter)
+      if (sortBy) params.append("sortBy", sortBy)
 
       const queryString = params.toString()
       const url = queryString ? `/api/stories?${queryString}` : "/api/stories"
@@ -261,6 +263,22 @@ export default function StoriesPage() {
                     <option value="渋谷">渋谷</option>
                     <option value="オンライン">オンライン</option>
                     <option value="青葉台">青葉台</option>
+                  </select>
+                </div>
+
+                {/* ソート */}
+                <div>
+                  <label className="block text-sm font-semibold mb-2" style={{ color: '#044465' }}>
+                    並び替え
+                  </label>
+                  <select
+                    className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                  >
+                    <option value="newest">新着順</option>
+                    <option value="popular">人気順（お気に入り数）</option>
+                    <option value="university">大学名順</option>
                   </select>
                 </div>
               </div>

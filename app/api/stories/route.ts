@@ -12,6 +12,7 @@ export async function GET(request: NextRequest) {
     const year = searchParams.get("year")
     const campus = searchParams.get("campus")
     const themeIds = searchParams.get("themeIds")?.split(",").map(Number)
+    const sortBy = searchParams.get("sortBy") || "newest" // newest, popular, university
 
     // AND条件を格納する配列
     const andConditions: any[] = [
@@ -87,6 +88,17 @@ export async function GET(request: NextRequest) {
       AND: andConditions
     }
 
+    // ソート条件を設定
+    let orderBy: any = { createdAt: "desc" } // デフォルト: 新着順
+
+    if (sortBy === "popular") {
+      // お気に入り数順（多い順）- Prismaでは直接カウントできないので後処理
+      orderBy = { createdAt: "desc" } // 一旦新着順で取得
+    } else if (sortBy === "university") {
+      // 大学名順
+      orderBy = [{ university: "asc" }, { createdAt: "desc" }]
+    }
+
     const stories = await prisma.graduateStory.findMany({
       where,
       include: {
@@ -102,13 +114,27 @@ export async function GET(request: NextRequest) {
           }
         },
         concurrentApplications: true,
+        favorites: {
+          select: {
+            id: true,
+          }
+        },
       },
-      orderBy: {
-        createdAt: "desc",
-      },
+      orderBy,
     })
 
-    return NextResponse.json(stories)
+    // お気に入り数を追加し、人気順の場合はソート
+    const storiesWithFavorites = stories.map(story => ({
+      ...story,
+      favoritesCount: story.favorites.length,
+      favorites: undefined, // favoriteの詳細は除外
+    }))
+
+    if (sortBy === "popular") {
+      storiesWithFavorites.sort((a, b) => b.favoritesCount - a.favoritesCount)
+    }
+
+    return NextResponse.json(storiesWithFavorites)
   } catch (error) {
     console.error("Error fetching stories:", error)
     return NextResponse.json(
@@ -131,6 +157,7 @@ export async function POST(request: NextRequest) {
     })
 
     const {
+      status,
       authorName,
       gender,
       highSchoolLevel,
@@ -168,29 +195,32 @@ export async function POST(request: NextRequest) {
       concurrentApplications,
     } = body
 
-    // バリデーション
-    if (!explorationThemeIds || !Array.isArray(explorationThemeIds) || explorationThemeIds.length === 0) {
+    // 下書きの場合はバリデーションをスキップ
+    const isDraft = status === "DRAFT"
+
+    // バリデーション（下書き以外）
+    if (!isDraft && (!explorationThemeIds || !Array.isArray(explorationThemeIds) || explorationThemeIds.length === 0)) {
       return NextResponse.json(
         { error: "探究テーマを少なくとも1つ選択してください" },
         { status: 400 }
       )
     }
 
-    // 体験記を作成（最初は非公開、添削待ち状態）
+    // 体験記を作成（下書きまたは添削待ち状態）
     const story = await prisma.graduateStory.create({
       data: {
         authorId: user.id,
         authorName: authorName || null,
         gender: gender || null,
-        highSchoolLevel,
+        highSchoolLevel: highSchoolLevel || "LEVEL_2",
         highSchoolName: highSchoolName || null,
-        gradeAverage,
+        gradeAverage: gradeAverage || "RANGE_3",
         campus: campus || null,
-        admissionType,
-        university,
-        faculty,
+        admissionType: admissionType || "",
+        university: university || "",
+        faculty: faculty || "",
         year: year ? parseInt(year) : null,
-        status: "PENDING_REVIEW",
+        status: isDraft ? "DRAFT" : "PENDING_REVIEW",
         published: false,
         researchTheme,
         researchMotivation,
@@ -215,11 +245,13 @@ export async function POST(request: NextRequest) {
         secondRoundPreparation,
         materials,
         adviceToJuniors,
-        explorationThemes: {
-          create: explorationThemeIds.map((themeId: number) => ({
-            themeId,
-          })),
-        },
+        explorationThemes: explorationThemeIds && explorationThemeIds.length > 0
+          ? {
+              create: explorationThemeIds.map((themeId: number) => ({
+                themeId,
+              })),
+            }
+          : undefined,
         concurrentApplications: concurrentApplications
           ? {
               create: concurrentApplications,

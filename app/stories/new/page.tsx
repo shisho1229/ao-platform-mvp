@@ -13,7 +13,9 @@ export default function NewStoryPage() {
   const router = useRouter()
   const [themes, setThemes] = useState<ExplorationTheme[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [isSavingDraft, setIsSavingDraft] = useState(false)
   const [error, setError] = useState("")
+  const [successMessage, setSuccessMessage] = useState("")
 
   // フォームデータ
   const [formData, setFormData] = useState({
@@ -262,6 +264,44 @@ export default function NewStoryPage() {
     }
   }
 
+  const handleSaveDraft = async () => {
+    setError("")
+    setSuccessMessage("")
+    setIsSavingDraft(true)
+
+    try {
+      const payload = {
+        ...formData,
+        status: "DRAFT", // 下書きステータスで保存
+        concurrentApplications:
+          concurrentApplications.length > 0 ? concurrentApplications : undefined,
+      }
+
+      const res = await fetch("/api/stories", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      })
+
+      if (res.ok) {
+        setSuccessMessage("下書きを保存しました")
+        // 3秒後にマイ投稿ページへ
+        setTimeout(() => {
+          router.push("/my-stories")
+        }, 2000)
+      } else {
+        const data = await res.json()
+        setError(data.error || "下書きの保存に失敗しました")
+      }
+    } catch (error) {
+      setError(`下書きの保存に失敗しました: ${error instanceof Error ? error.message : '不明なエラー'}`)
+    } finally {
+      setIsSavingDraft(false)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -272,6 +312,12 @@ export default function NewStoryPage() {
         {error && (
           <div className="mb-4 rounded-md bg-red-50 p-4">
             <p className="text-sm text-red-800">{error}</p>
+          </div>
+        )}
+
+        {successMessage && (
+          <div className="mb-4 rounded-md bg-green-50 p-4">
+            <p className="text-sm text-green-800">{successMessage}</p>
           </div>
         )}
 
@@ -1215,21 +1261,31 @@ export default function NewStoryPage() {
             </div>
           </div>
 
-          <div className="flex justify-end space-x-4">
+          <div className="flex justify-between items-center">
             <button
               type="button"
-              onClick={() => router.back()}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+              onClick={handleSaveDraft}
+              disabled={isSavingDraft || isLoading}
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              キャンセル
+              {isSavingDraft ? "保存中..." : "下書き保存"}
             </button>
-            <button
-              type="submit"
-              disabled={isLoading || formData.explorationThemeIds.length === 0 || !agreedToTerms}
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isLoading ? "投稿中..." : "投稿する"}
-            </button>
+            <div className="flex space-x-4">
+              <button
+                type="button"
+                onClick={() => router.back()}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+              >
+                キャンセル
+              </button>
+              <button
+                type="submit"
+                disabled={isLoading || isSavingDraft || formData.explorationThemeIds.length === 0 || !agreedToTerms}
+                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isLoading ? "投稿中..." : "投稿する"}
+              </button>
+            </div>
           </div>
         </form>
       </div>

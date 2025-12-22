@@ -27,6 +27,7 @@ export default function MyStoriesPage() {
   const router = useRouter()
   const [stories, setStories] = useState<Story[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [activeTab, setActiveTab] = useState<"submitted" | "drafts">("submitted")
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -125,11 +126,42 @@ export default function MyStoriesPage() {
           </Link>
         </div>
 
+        {/* タブ */}
+        <div className="mb-6 flex gap-2 border-b border-gray-200">
+          <button
+            onClick={() => setActiveTab("submitted")}
+            className={`px-6 py-3 font-semibold border-b-2 transition-colors ${
+              activeTab === "submitted"
+                ? "border-blue-500 text-blue-600"
+                : "border-transparent text-gray-600 hover:text-gray-800"
+            }`}
+          >
+            投稿済み（{stories.filter(s => s.status !== "DRAFT").length}）
+          </button>
+          <button
+            onClick={() => setActiveTab("drafts")}
+            className={`px-6 py-3 font-semibold border-b-2 transition-colors ${
+              activeTab === "drafts"
+                ? "border-blue-500 text-blue-600"
+                : "border-transparent text-gray-600 hover:text-gray-800"
+            }`}
+          >
+            下書き（{stories.filter(s => s.status === "DRAFT").length}）
+          </button>
+        </div>
+
         {/* 投稿一覧 */}
-        {stories.length === 0 ? (
+        {(() => {
+          const filteredStories = activeTab === "drafts"
+            ? stories.filter(s => s.status === "DRAFT")
+            : stories.filter(s => s.status !== "DRAFT")
+
+          return filteredStories.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-lg shadow-lg">
             <BookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-600 text-lg mb-6">まだ投稿がありません</p>
+            <p className="text-gray-600 text-lg mb-6">
+              {activeTab === "drafts" ? "下書きがありません" : "まだ投稿がありません"}
+            </p>
             <Link
               href="/stories/new"
               className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-white rounded-xl shadow-lg transition-all hover:shadow-xl"
@@ -141,7 +173,7 @@ export default function MyStoriesPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {stories.map((story) => {
+            {filteredStories.map((story) => {
               const result = getAdmissionResult(story.admissionType, story.firstRoundResult, story.secondRoundResult)
 
               return (
@@ -152,6 +184,11 @@ export default function MyStoriesPage() {
                   <div className="p-6">
                     {/* ステータスバッジ */}
                     <div className="flex flex-wrap gap-2 mb-3">
+                      {story.status === "DRAFT" && (
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold text-white bg-gray-500">
+                          下書き
+                        </span>
+                      )}
                       {story.status === "PENDING_REVIEW" && (
                         <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold text-white bg-yellow-500">
                           添削待ち
@@ -221,7 +258,8 @@ export default function MyStoriesPage() {
               )
             })}
           </div>
-        )}
+        )
+        })()}
       </div>
     </div>
   )
