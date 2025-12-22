@@ -358,6 +358,7 @@ export default function StoriesPage() {
             </p>
           </div>
         ) : (
+          <>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             {stories.map((story) => (
               <Link
@@ -492,6 +493,7 @@ export default function StoriesPage() {
               />
             </div>
           )}
+          </>
         )}
           </div>
         </div>
