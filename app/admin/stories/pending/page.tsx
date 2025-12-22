@@ -5,6 +5,8 @@ import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { CheckCircle, XCircle, Clock, ExternalLink, ArrowLeft } from "lucide-react"
+import { useToast } from "@/components/ui/Toast"
+import { useConfirm } from "@/components/ui/ConfirmModal"
 
 interface Story {
   id: string
@@ -33,6 +35,8 @@ interface Story {
 export default function AdminPendingStoriesPage() {
   const { data: session } = useSession()
   const router = useRouter()
+  const { showToast } = useToast()
+  const { confirm } = useConfirm()
   const [stories, setStories] = useState<Story[]>([])
   const [loading, setLoading] = useState(true)
   const [processing, setProcessing] = useState<string | null>(null)
@@ -67,7 +71,13 @@ export default function AdminPendingStoriesPage() {
   }
 
   const handleApprove = async (storyId: string) => {
-    if (!confirm("この体験記を承認して公開しますか？")) return
+    const confirmed = await confirm({
+      title: "体験記を承認",
+      message: "この体験記を承認して公開しますか？",
+      confirmText: "承認",
+      variant: "info",
+    })
+    if (!confirmed) return
 
     setProcessing(storyId)
     try {
@@ -78,15 +88,15 @@ export default function AdminPendingStoriesPage() {
       })
 
       if (response.ok) {
-        alert("体験記を承認しました")
+        showToast("体験記を承認しました", "success")
         fetchPendingStories()
       } else {
         const data = await response.json()
-        alert(`承認に失敗しました: ${data.error}`)
+        showToast(`承認に失敗しました: ${data.error}`, "error")
       }
     } catch (error) {
       console.error("承認エラー:", error)
-      alert("承認に失敗しました")
+      showToast("承認に失敗しました", "error")
     } finally {
       setProcessing(null)
     }
@@ -94,7 +104,7 @@ export default function AdminPendingStoriesPage() {
 
   const handleRequestRevision = async (storyId: string) => {
     if (!reviewNotes.trim()) {
-      alert("修正依頼の内容を入力してください")
+      showToast("修正依頼の内容を入力してください", "warning")
       return
     }
 
@@ -110,17 +120,17 @@ export default function AdminPendingStoriesPage() {
       })
 
       if (response.ok) {
-        alert("修正を依頼しました")
+        showToast("修正を依頼しました", "success")
         setShowReviewModal(null)
         setReviewNotes("")
         fetchPendingStories()
       } else {
         const data = await response.json()
-        alert(`修正依頼に失敗しました: ${data.error}`)
+        showToast(`修正依頼に失敗しました: ${data.error}`, "error")
       }
     } catch (error) {
       console.error("修正依頼エラー:", error)
-      alert("修正依頼に失敗しました")
+      showToast("修正依頼に失敗しました", "error")
     } finally {
       setProcessing(null)
     }

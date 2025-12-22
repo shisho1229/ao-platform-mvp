@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { requireRole } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
+import { Prisma } from "@prisma/client"
 
 // GET /api/stories - 合格体験記一覧取得
 export async function GET(request: NextRequest) {
@@ -14,8 +15,13 @@ export async function GET(request: NextRequest) {
     const themeIds = searchParams.get("themeIds")?.split(",").map(Number)
     const sortBy = searchParams.get("sortBy") || "newest" // newest, popular, university
 
+    // ページネーションパラメータ
+    const page = parseInt(searchParams.get("page") || "1")
+    const limit = parseInt(searchParams.get("limit") || "12")
+    const skip = (page - 1) * limit
+
     // AND条件を格納する配列
-    const andConditions: any[] = [
+    const andConditions: Prisma.GraduateStoryWhereInput[] = [
       { published: true } // 公開されている体験記のみ
     ]
 
@@ -89,7 +95,7 @@ export async function GET(request: NextRequest) {
     }
 
     // ソート条件を設定
-    let orderBy: any = { createdAt: "desc" } // デフォルト: 新着順
+    let orderBy: Prisma.GraduateStoryOrderByWithRelationInput | Prisma.GraduateStoryOrderByWithRelationInput[] = { createdAt: "desc" } // デフォルト: 新着順
 
     if (sortBy === "popular") {
       // お気に入り数順（多い順）- Prismaでは直接カウントできないので後処理
@@ -98,6 +104,9 @@ export async function GET(request: NextRequest) {
       // 大学名順
       orderBy = [{ university: "asc" }, { createdAt: "desc" }]
     }
+
+    // 総件数を取得
+    const totalCount = await prisma.graduateStory.count({ where })
 
     const stories = await prisma.graduateStory.findMany({
       where,
@@ -121,6 +130,8 @@ export async function GET(request: NextRequest) {
         },
       },
       orderBy,
+      skip,
+      take: limit,
     })
 
     // お気に入り数を追加し、人気順の場合はソート
@@ -134,7 +145,17 @@ export async function GET(request: NextRequest) {
       storiesWithFavorites.sort((a, b) => b.favoritesCount - a.favoritesCount)
     }
 
-    return NextResponse.json(storiesWithFavorites)
+    // ページネーション情報を含めて返す
+    return NextResponse.json({
+      stories: storiesWithFavorites,
+      pagination: {
+        page,
+        limit,
+        totalCount,
+        totalPages: Math.ceil(totalCount / limit),
+        hasMore: page * limit < totalCount,
+      }
+    })
   } catch (error) {
     console.error("Error fetching stories:", error)
     return NextResponse.json(
@@ -269,16 +290,18 @@ export async function POST(request: NextRequest) {
     })
 
     return NextResponse.json(story, { status: 201 })
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error creating story:", error)
+
+    const err = error as Error & { code?: string; meta?: unknown }
     console.error("Error details:", {
-      message: error.message,
-      code: error.code,
-      meta: error.meta,
-      stack: error.stack
+      message: err.message,
+      code: err.code,
+      meta: err.meta,
+      stack: err.stack
     })
 
-    if (error.message === "権限がありません") {
+    if (err.message === "権限がありません") {
       return NextResponse.json(
         { error: "合格者のみ体験記を投稿できます" },
         { status: 403 }
@@ -286,13 +309,13 @@ export async function POST(request: NextRequest) {
     }
 
     // Prismaエラーの詳細を返す（開発環境用）
-    const errorMessage = error.message || "体験記の投稿に失敗しました"
-    const errorDetails = error.code ? ` (Code: ${error.code})` : ""
+    const errorMessage = err.message || "体験記の投稿に失敗しました"
+    const errorDetails = err.code ? ` (Code: ${err.code})` : ""
 
     return NextResponse.json(
       {
         error: `体験記の投稿に失敗しました: ${errorMessage}${errorDetails}`,
-        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        details: process.env.NODE_ENV === 'development' ? err.message : undefined
       },
       { status: 500 }
     )

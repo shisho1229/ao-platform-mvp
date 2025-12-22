@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
 import { BookOpen, Users, GraduationCap, Filter } from "lucide-react"
+import { Pagination } from "@/components/ui/Pagination"
 
 interface Story {
   id: string
@@ -33,6 +34,14 @@ interface Story {
   createdAt: string
 }
 
+interface PaginationInfo {
+  page: number
+  limit: number
+  totalCount: number
+  totalPages: number
+  hasMore: boolean
+}
+
 export default function StoriesPage() {
   const router = useRouter()
   const { data: session } = useSession()
@@ -45,18 +54,22 @@ export default function StoriesPage() {
   const [yearFilter, setYearFilter] = useState("")
   const [campusFilter, setCampusFilter] = useState("")
   const [sortBy, setSortBy] = useState("newest")
+  const [currentPage, setCurrentPage] = useState(1)
+  const [pagination, setPagination] = useState<PaginationInfo | null>(null)
 
   useEffect(() => {
     fetchStories()
-  }, [keywordFilter, universityFilter, facultyFilter, yearFilter, campusFilter, sortBy])
+  }, [keywordFilter, universityFilter, facultyFilter, yearFilter, campusFilter, sortBy, currentPage])
 
   const handleKeywordSearch = (e?: React.FormEvent) => {
     if (e) e.preventDefault()
+    setCurrentPage(1) // 検索時はページをリセット
     setKeywordFilter(keywordInput)
   }
 
   const fetchStories = async () => {
     try {
+      setIsLoading(true)
       const params = new URLSearchParams()
       if (keywordFilter) params.append("keyword", keywordFilter)
       if (universityFilter) params.append("university", universityFilter)
@@ -64,20 +77,27 @@ export default function StoriesPage() {
       if (yearFilter) params.append("year", yearFilter)
       if (campusFilter) params.append("campus", campusFilter)
       if (sortBy) params.append("sortBy", sortBy)
+      params.append("page", currentPage.toString())
+      params.append("limit", "12")
 
-      const queryString = params.toString()
-      const url = queryString ? `/api/stories?${queryString}` : "/api/stories"
+      const url = `/api/stories?${params.toString()}`
 
       const res = await fetch(url)
       if (res.ok) {
         const data = await res.json()
-        setStories(data)
+        setStories(data.stories)
+        setPagination(data.pagination)
       }
     } catch (error) {
       console.error("Error fetching stories:", error)
     } finally {
       setIsLoading(false)
     }
+  }
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page)
+    window.scrollTo({ top: 0, behavior: "smooth" })
   }
 
   const clearFilters = () => {
@@ -87,6 +107,7 @@ export default function StoriesPage() {
     setFacultyFilter("")
     setYearFilter("")
     setCampusFilter("")
+    setCurrentPage(1)
   }
 
   const getUniversityColor = (university: string) => {
@@ -310,6 +331,14 @@ export default function StoriesPage() {
 
           {/* 右側: 検索結果 */}
           <div className="flex-1">
+            {/* 検索結果ヘッダー */}
+            {pagination && !isLoading && (
+              <div className="mb-4 flex items-center justify-between">
+                <p className="text-sm text-gray-600">
+                  {pagination.totalCount}件中 {((pagination.page - 1) * pagination.limit) + 1} - {Math.min(pagination.page * pagination.limit, pagination.totalCount)}件を表示
+                </p>
+              </div>
+            )}
 
         {isLoading ? (
           <div className="text-center py-20">
@@ -452,6 +481,17 @@ export default function StoriesPage() {
               </Link>
             ))}
           </div>
+
+          {/* ページネーション */}
+          {pagination && pagination.totalPages > 1 && (
+            <div className="mt-8">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={pagination.totalPages}
+                onPageChange={handlePageChange}
+              />
+            </div>
+          )}
         )}
           </div>
         </div>

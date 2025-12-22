@@ -3,6 +3,7 @@ import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 import Navbar from "@/components/Navbar";
 import AuthGuard from "@/components/AuthGuard";
+import { UIProviders } from "@/components/ui/UIProviders";
 
 export const metadata: Metadata = {
   title: "Loohcs志塾 合格者体験記",
@@ -18,10 +19,12 @@ export default function RootLayout({
     <html lang="ja">
       <body className="antialiased">
         <SessionProvider>
-          <AuthGuard>
-            <Navbar />
-            {children}
-          </AuthGuard>
+          <UIProviders>
+            <AuthGuard>
+              <Navbar />
+              {children}
+            </AuthGuard>
+          </UIProviders>
         </SessionProvider>
       </body>
     </html>

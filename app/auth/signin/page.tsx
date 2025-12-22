@@ -110,12 +110,6 @@ export default function SignInPage() {
           </div>
         </form>
 
-        <div className="mt-6 text-center text-sm text-gray-600">
-          <p>テストアカウント:</p>
-          <p>Admin: admin@example.com / password123</p>
-          <p>Staff: staff@example.com / password123</p>
-          <p>User: user1@example.com / password123</p>
-        </div>
       </div>
     </div>
   )

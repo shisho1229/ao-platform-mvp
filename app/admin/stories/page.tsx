@@ -5,6 +5,8 @@ import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Eye, EyeOff, Trash2, Link as LinkIcon, Mail, ExternalLink, Edit } from "lucide-react"
+import { useToast } from "@/components/ui/Toast"
+import { useConfirm } from "@/components/ui/ConfirmModal"
 
 interface Story {
   id: string
@@ -30,6 +32,8 @@ interface Story {
 export default function AdminStoriesPage() {
   const { data: session } = useSession()
   const router = useRouter()
+  const { showToast } = useToast()
+  const { confirm } = useConfirm()
   const [stories, setStories] = useState<Story[]>([])
   const [loading, setLoading] = useState(true)
   const [processing, setProcessing] = useState<string | null>(null)
@@ -100,7 +104,13 @@ export default function AdminStoriesPage() {
   }
 
   const handleTogglePublish = async (storyId: string, currentStatus: boolean) => {
-    if (!confirm(`この体験記を${currentStatus ? "非公開" : "公開"}にしますか？`)) return
+    const confirmed = await confirm({
+      title: currentStatus ? "非公開にする" : "公開する",
+      message: `この体験記を${currentStatus ? "非公開" : "公開"}にしますか？`,
+      confirmText: currentStatus ? "非公開にする" : "公開する",
+      variant: currentStatus ? "warning" : "info",
+    })
+    if (!confirmed) return
 
     setProcessing(storyId)
     try {
@@ -109,21 +119,27 @@ export default function AdminStoriesPage() {
       })
 
       if (response.ok) {
-        alert(`体験記を${currentStatus ? "非公開" : "公開"}にしました`)
+        showToast(`体験記を${currentStatus ? "非公開" : "公開"}にしました`, "success")
         fetchStories()
       } else {
-        alert("公開状態の切り替えに失敗しました")
+        showToast("公開状態の切り替えに失敗しました", "error")
       }
     } catch (error) {
       console.error("公開切り替えエラー:", error)
-      alert("公開状態の切り替えに失敗しました")
+      showToast("公開状態の切り替えに失敗しました", "error")
     } finally {
       setProcessing(null)
     }
   }
 
   const handleDelete = async (storyId: string) => {
-    if (!confirm("この体験記を削除しますか？この操作は取り消せません。")) return
+    const confirmed = await confirm({
+      title: "体験記を削除",
+      message: "この体験記を削除しますか？この操作は取り消せません。",
+      confirmText: "削除",
+      variant: "danger",
+    })
+    if (!confirmed) return
 
     setProcessing(storyId)
     try {
@@ -132,14 +148,14 @@ export default function AdminStoriesPage() {
       })
 
       if (response.ok) {
-        alert("体験記を削除しました")
+        showToast("体験記を削除しました", "success")
         fetchStories()
       } else {
-        alert("削除に失敗しました")
+        showToast("削除に失敗しました", "error")
       }
     } catch (error) {
       console.error("削除エラー:", error)
-      alert("削除に失敗しました")
+      showToast("削除に失敗しました", "error")
     } finally {
       setProcessing(null)
     }
@@ -157,17 +173,17 @@ export default function AdminStoriesPage() {
       })
 
       if (response.ok) {
-        alert("書類URLを保存しました")
+        showToast("書類URLを保存しました", "success")
         setShowDocumentsModal(null)
         setDocumentsUrl("")
         fetchStories()
       } else {
         const error = await response.json()
-        alert(error.error || "書類URLの保存に失敗しました")
+        showToast(error.error || "書類URLの保存に失敗しました", "error")
       }
     } catch (error) {
       console.error("書類URL保存エラー:", error)
-      alert("書類URLの保存に失敗しました")
+      showToast("書類URLの保存に失敗しました", "error")
     } finally {
       setProcessing(null)
     }
@@ -177,7 +193,7 @@ export default function AdminStoriesPage() {
     if (!showEditRequestModal) return
 
     if (!editRequestMessage.trim()) {
-      alert("編集依頼メッセージを入力してください")
+      showToast("編集依頼メッセージを入力してください", "warning")
       return
     }
 
@@ -190,16 +206,16 @@ export default function AdminStoriesPage() {
       })
 
       if (response.ok) {
-        alert("編集依頼を送信しました")
+        showToast("編集依頼を送信しました", "success")
         setShowEditRequestModal(null)
         setEditRequestMessage("")
       } else {
         const error = await response.json()
-        alert(error.error || "編集依頼の送信に失敗しました")
+        showToast(error.error || "編集依頼の送信に失敗しました", "error")
       }
     } catch (error) {
       console.error("編集依頼送信エラー:", error)
-      alert("編集依頼の送信に失敗しました")
+      showToast("編集依頼の送信に失敗しました", "error")
     } finally {
       setProcessing(null)
     }
@@ -233,14 +249,18 @@ export default function AdminStoriesPage() {
 
   const handleBulkOperation = async (action: "publish" | "unpublish" | "approve" | "delete") => {
     if (selectedStories.length === 0) {
-      alert("体験記を選択してください")
+      showToast("体験記を選択してください", "warning")
       return
     }
 
     const actionLabel = action === "publish" ? "公開" : action === "unpublish" ? "非公開" : action === "approve" ? "承認" : "削除"
-    if (!confirm(`選択した${selectedStories.length}件の体験記を${actionLabel}しますか？`)) {
-      return
-    }
+    const confirmed = await confirm({
+      title: `一括${actionLabel}`,
+      message: `選択した${selectedStories.length}件の体験記を${actionLabel}しますか？`,
+      confirmText: actionLabel,
+      variant: action === "delete" ? "danger" : "info",
+    })
+    if (!confirmed) return
 
     setBulkProcessing(true)
     try {
@@ -252,16 +272,16 @@ export default function AdminStoriesPage() {
 
       if (response.ok) {
         const data = await response.json()
-        alert(data.message)
+        showToast(data.message, "success")
         setSelectedStories([])
         fetchStories()
       } else {
         const error = await response.json()
-        alert(error.error || "一括操作に失敗しました")
+        showToast(error.error || "一括操作に失敗しました", "error")
       }
     } catch (error) {
       console.error("一括操作エラー:", error)
-      alert("一括操作に失敗しました")
+      showToast("一括操作に失敗しました", "error")
     } finally {
       setBulkProcessing(false)
     }

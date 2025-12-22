@@ -5,6 +5,8 @@ import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { CheckCircle, XCircle, UserPlus, Shield, UserMinus } from "lucide-react"
+import { useToast } from "@/components/ui/Toast"
+import { useConfirm } from "@/components/ui/ConfirmModal"
 
 interface User {
   id: string
@@ -19,6 +21,8 @@ interface User {
 export default function AdminUsersPage() {
   const { data: session } = useSession()
   const router = useRouter()
+  const { showToast } = useToast()
+  const { confirm } = useConfirm()
   const [pendingUsers, setPendingUsers] = useState<User[]>([])
   const [staffUsers, setStaffUsers] = useState<User[]>([])
   const [regularUsers, setRegularUsers] = useState<User[]>([])
@@ -86,7 +90,13 @@ export default function AdminUsersPage() {
   }
 
   const handleApprove = async (userId: string) => {
-    if (!confirm("このユーザーを承認しますか？")) return
+    const confirmed = await confirm({
+      title: "ユーザー承認",
+      message: "このユーザーを承認しますか？",
+      confirmText: "承認",
+      variant: "info",
+    })
+    if (!confirmed) return
 
     setProcessing(userId)
     try {
@@ -95,21 +105,27 @@ export default function AdminUsersPage() {
       })
 
       if (response.ok) {
-        alert("ユーザーを承認しました")
+        showToast("ユーザーを承認しました", "success")
         fetchUsers()
       } else {
-        alert("承認に失敗しました")
+        showToast("承認に失敗しました", "error")
       }
     } catch (error) {
       console.error("承認エラー:", error)
-      alert("承認に失敗しました")
+      showToast("承認に失敗しました", "error")
     } finally {
       setProcessing(null)
     }
   }
 
   const handleReject = async (userId: string) => {
-    if (!confirm("このユーザーを拒否（削除）しますか？この操作は取り消せません。")) return
+    const confirmed = await confirm({
+      title: "ユーザー拒否",
+      message: "このユーザーを拒否（削除）しますか？この操作は取り消せません。",
+      confirmText: "拒否",
+      variant: "danger",
+    })
+    if (!confirmed) return
 
     setProcessing(userId)
     try {
@@ -118,21 +134,27 @@ export default function AdminUsersPage() {
       })
 
       if (response.ok) {
-        alert("ユーザーを拒否しました")
+        showToast("ユーザーを拒否しました", "success")
         fetchUsers()
       } else {
-        alert("拒否に失敗しました")
+        showToast("拒否に失敗しました", "error")
       }
     } catch (error) {
       console.error("拒否エラー:", error)
-      alert("拒否に失敗しました")
+      showToast("拒否に失敗しました", "error")
     } finally {
       setProcessing(null)
     }
   }
 
   const handlePromoteToStaff = async (userId: string) => {
-    if (!confirm("このユーザーにスタッフ権限を付与しますか？")) return
+    const confirmed = await confirm({
+      title: "スタッフに昇格",
+      message: "このユーザーにスタッフ権限を付与しますか？",
+      confirmText: "昇格",
+      variant: "info",
+    })
+    if (!confirmed) return
 
     setProcessing(userId)
     try {
@@ -141,22 +163,28 @@ export default function AdminUsersPage() {
       })
 
       if (response.ok) {
-        alert("スタッフ権限を付与しました")
+        showToast("スタッフ権限を付与しました", "success")
         fetchUsers()
       } else {
         const error = await response.json()
-        alert(error.error || "権限付与に失敗しました")
+        showToast(error.error || "権限付与に失敗しました", "error")
       }
     } catch (error) {
       console.error("権限付与エラー:", error)
-      alert("権限付与に失敗しました")
+      showToast("権限付与に失敗しました", "error")
     } finally {
       setProcessing(null)
     }
   }
 
   const handleDemoteToUser = async (userId: string) => {
-    if (!confirm("このユーザーをスタッフからユーザーに降格しますか？")) return
+    const confirmed = await confirm({
+      title: "ユーザーに降格",
+      message: "このユーザーをスタッフからユーザーに降格しますか？",
+      confirmText: "降格",
+      variant: "warning",
+    })
+    if (!confirmed) return
 
     setProcessing(userId)
     try {
@@ -165,15 +193,15 @@ export default function AdminUsersPage() {
       })
 
       if (response.ok) {
-        alert("ユーザー権限に降格しました")
+        showToast("ユーザー権限に降格しました", "success")
         fetchUsers()
       } else {
         const error = await response.json()
-        alert(error.error || "降格に失敗しました")
+        showToast(error.error || "降格に失敗しました", "error")
       }
     } catch (error) {
       console.error("降格エラー:", error)
-      alert("降格に失敗しました")
+      showToast("降格に失敗しました", "error")
     } finally {
       setProcessing(null)
     }

@@ -5,11 +5,13 @@ import { useParams, useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
+import { useToast } from "@/components/ui/Toast"
 
 export default function EditStoryPage() {
   const params = useParams()
   const router = useRouter()
   const { data: session } = useSession()
+  const { showToast } = useToast()
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState("")
@@ -135,7 +137,7 @@ export default function EditStoryPage() {
       })
 
       if (response.ok) {
-        alert("体験記を更新しました")
+        showToast("体験記を更新しました", "success")
         router.push("/admin/stories")
       } else {
         const data = await response.json()

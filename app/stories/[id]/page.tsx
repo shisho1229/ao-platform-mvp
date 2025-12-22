@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
 import { Heart, ArrowLeft, GraduationCap, Award, Globe, Users, BookOpen, FileText, Target, ExternalLink, Edit } from "lucide-react"
+import { useToast } from "@/components/ui/Toast"
 
 interface Story {
   id: string
@@ -76,6 +77,7 @@ export default function StoryDetailPage() {
   const params = useParams()
   const router = useRouter()
   const { data: session } = useSession()
+  const { showToast } = useToast()
   const [story, setStory] = useState<Story | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isFavorited, setIsFavorited] = useState(false)
@@ -162,13 +164,14 @@ export default function StoryDetailPage() {
         await fetchStory(story.id)
         setShowDocumentsUrlModal(false)
         setDocumentsUrlInput("")
+        showToast("URLを更新しました", "success")
       } else {
         const data = await res.json()
-        alert(data.error || "URLの更新に失敗しました")
+        showToast(data.error || "URLの更新に失敗しました", "error")
       }
     } catch (error) {
       console.error("Error updating documents URL:", error)
-      alert("URLの更新に失敗しました")
+      showToast("URLの更新に失敗しました", "error")
     } finally {
       setIsUpdatingUrl(false)
     }
