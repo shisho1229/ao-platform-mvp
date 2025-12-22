@@ -24,6 +24,7 @@ model User {
   // リレーション
   graduateStories GraduateStory[]
   favorites       Favorite[]
+  storyDrafts     StoryDraft[]
 
   @@map("users")
 }
@@ -190,4 +191,33 @@ model Favorite {
 
   @@unique([userId, storyId])
   @@map("favorites")
+}
+
+// メール送信失敗ログ
+model FailedEmail {
+  id          String   @id @default(uuid())
+  to          String
+  subject     String
+  type        String   // edit_request, notification, etc.
+  error       String   @db.Text
+  context     String?  @db.Text // JSON形式で追加情報を保存
+  retryCount  Int      @default(0)
+  resolved    Boolean  @default(false)
+  resolvedAt  DateTime?
+  createdAt   DateTime @default(now())
+
+  @@map("failed_emails")
+}
+
+// 下書き保存
+model StoryDraft {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  data      String   @db.Text // JSON形式でフォームデータを保存
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId])
+  @@map("story_drafts")
 }

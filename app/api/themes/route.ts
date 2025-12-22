@@ -10,7 +10,12 @@ export async function GET() {
       },
     })
 
-    return NextResponse.json(themes)
+    // キャッシュヘッダーを設定（1時間キャッシュ、24時間はstale-while-revalidate）
+    return NextResponse.json(themes, {
+      headers: {
+        "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
+      },
+    })
   } catch (error) {
     console.error("Error fetching themes:", error)
     return NextResponse.json(
