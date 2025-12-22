@@ -327,7 +327,7 @@ export default function AdminStoriesPage() {
     const result = getResultBadge(story)
 
     return (
-      <div className="bg-white rounded-lg shadow p-4 mb-3">
+      <div className="bg-white rounded-2xl shadow-lg p-4 mb-3 border" style={{ borderColor: '#bac9d0' }}>
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-start gap-3">
             <input
@@ -337,7 +337,7 @@ export default function AdminStoriesPage() {
               className="mt-1 w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
             />
             <div className="min-w-0">
-              <h3 className="text-base font-semibold text-gray-900">{story.university}</h3>
+              <h3 className="text-base font-semibold" style={{ color: '#044465' }}>{story.university}</h3>
               <p className="text-sm text-gray-600">{story.faculty}</p>
               <p className="text-xs text-gray-500">{story.admissionType}</p>
             </div>
@@ -365,7 +365,7 @@ export default function AdminStoriesPage() {
           </span>
         </div>
 
-        <div className="flex items-center gap-2 text-sm text-gray-600 mb-3 pb-3 border-b">
+        <div className="flex items-center gap-2 text-sm text-gray-600 mb-3 pb-3 border-b" style={{ borderColor: '#bac9d0' }}>
           <User className="w-3.5 h-3.5" />
           <span className="truncate">{story.author.name}</span>
           <span className="text-gray-400 truncate">({story.author.email})</span>
@@ -374,7 +374,8 @@ export default function AdminStoriesPage() {
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => router.push(`/admin/stories/${story.id}/edit`)}
-            className="flex-1 inline-flex items-center justify-center gap-1 px-3 py-2 bg-indigo-600 text-white rounded text-xs hover:bg-indigo-700"
+            className="flex-1 inline-flex items-center justify-center gap-1 px-3 py-2 text-white rounded-lg text-xs"
+            style={{ background: 'linear-gradient(to right, #044465, #055a7a)' }}
           >
             <Edit className="w-3 h-3" />
             編集
@@ -383,7 +384,7 @@ export default function AdminStoriesPage() {
           <button
             onClick={() => handleTogglePublish(story.id, story.published)}
             disabled={processing === story.id}
-            className={`flex-1 inline-flex items-center justify-center gap-1 px-3 py-2 rounded text-white text-xs disabled:opacity-50 ${
+            className={`flex-1 inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-white text-xs disabled:opacity-50 ${
               story.published ? "bg-orange-600 hover:bg-orange-700" : "bg-green-600 hover:bg-green-700"
             }`}
           >
@@ -395,7 +396,7 @@ export default function AdminStoriesPage() {
             href={`/stories/${story.id}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-1 px-3 py-2 bg-gray-600 text-white rounded text-xs hover:bg-gray-700"
+            className="inline-flex items-center justify-center gap-1 px-3 py-2 bg-gray-600 text-white rounded-lg text-xs hover:bg-gray-700"
           >
             <ExternalLink className="w-3 h-3" />
           </a>
@@ -403,7 +404,7 @@ export default function AdminStoriesPage() {
           <button
             onClick={() => handleDelete(story.id)}
             disabled={processing === story.id}
-            className="inline-flex items-center justify-center gap-1 px-3 py-2 bg-red-600 text-white rounded text-xs hover:bg-red-700 disabled:opacity-50"
+            className="inline-flex items-center justify-center gap-1 px-3 py-2 bg-red-600 text-white rounded-lg text-xs hover:bg-red-700 disabled:opacity-50"
           >
             <Trash2 className="w-3 h-3" />
           </button>
@@ -423,71 +424,75 @@ export default function AdminStoriesPage() {
     <div>
       <div className="mb-4 sm:mb-6">
         {/* Filter Buttons - Scrollable on mobile */}
-        <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
-          <button
-            onClick={() => setFilter("pending_review")}
-            className={`px-3 sm:px-4 py-2 rounded-lg transition-colors whitespace-nowrap text-sm ${
-              filter === "pending_review"
-                ? "bg-yellow-600 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-            }`}
-          >
-            添削待ち
-          </button>
-          <button
-            onClick={() => setFilter("needs_revision")}
-            className={`px-3 sm:px-4 py-2 rounded-lg transition-colors whitespace-nowrap text-sm ${
-              filter === "needs_revision"
-                ? "bg-orange-600 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-            }`}
-          >
-            修正依頼中
-          </button>
-          <button
-            onClick={() => setFilter("published")}
-            className={`px-3 sm:px-4 py-2 rounded-lg transition-colors whitespace-nowrap text-sm ${
-              filter === "published"
-                ? "bg-green-600 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-            }`}
-          >
-            公開中
-          </button>
-          <button
-            onClick={() => setFilter("unpublished")}
-            className={`px-3 sm:px-4 py-2 rounded-lg transition-colors whitespace-nowrap text-sm ${
-              filter === "unpublished"
-                ? "bg-red-600 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-            }`}
-          >
-            非公開
-          </button>
-          <button
-            onClick={() => setFilter("all")}
-            className={`px-3 sm:px-4 py-2 rounded-lg transition-colors whitespace-nowrap text-sm ${
-              filter === "all"
-                ? "bg-blue-600 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-            }`}
-          >
-            すべて
-          </button>
+        <div className="bg-white rounded-2xl shadow-lg p-2 border mb-4" style={{ borderColor: '#bac9d0' }}>
+          <div className="flex gap-2 overflow-x-auto pb-1">
+            <button
+              onClick={() => setFilter("pending_review")}
+              className={`px-3 sm:px-4 py-2 rounded-xl transition-colors whitespace-nowrap text-sm font-medium ${
+                filter === "pending_review"
+                  ? "bg-yellow-600 text-white shadow-md"
+                  : "text-gray-600 hover:bg-gray-100"
+              }`}
+            >
+              添削待ち
+            </button>
+            <button
+              onClick={() => setFilter("needs_revision")}
+              className={`px-3 sm:px-4 py-2 rounded-xl transition-colors whitespace-nowrap text-sm font-medium ${
+                filter === "needs_revision"
+                  ? "bg-orange-600 text-white shadow-md"
+                  : "text-gray-600 hover:bg-gray-100"
+              }`}
+            >
+              修正依頼中
+            </button>
+            <button
+              onClick={() => setFilter("published")}
+              className={`px-3 sm:px-4 py-2 rounded-xl transition-colors whitespace-nowrap text-sm font-medium ${
+                filter === "published"
+                  ? "bg-green-600 text-white shadow-md"
+                  : "text-gray-600 hover:bg-gray-100"
+              }`}
+            >
+              公開中
+            </button>
+            <button
+              onClick={() => setFilter("unpublished")}
+              className={`px-3 sm:px-4 py-2 rounded-xl transition-colors whitespace-nowrap text-sm font-medium ${
+                filter === "unpublished"
+                  ? "bg-red-600 text-white shadow-md"
+                  : "text-gray-600 hover:bg-gray-100"
+              }`}
+            >
+              非公開
+            </button>
+            <button
+              onClick={() => setFilter("all")}
+              className={`px-3 sm:px-4 py-2 rounded-xl transition-colors whitespace-nowrap text-sm font-medium ${
+                filter === "all"
+                  ? "text-white shadow-md"
+                  : "text-gray-600 hover:bg-gray-100"
+              }`}
+              style={filter === "all" ? { background: 'linear-gradient(to right, #044465, #055a7a)' } : {}}
+            >
+              すべて
+            </button>
+          </div>
         </div>
 
         {/* 詳細フィルター - Collapsible on mobile */}
-        <div className="mt-4">
+        <div>
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className="sm:hidden w-full flex items-center justify-between px-4 py-3 bg-white rounded-lg shadow text-sm font-medium text-gray-700"
+            className="sm:hidden w-full flex items-center justify-between px-4 py-3 bg-white rounded-2xl shadow-lg border text-sm font-medium"
+            style={{ borderColor: '#bac9d0', color: '#044465' }}
           >
             <span>詳細フィルター {hasActiveFilters && `(${[universityFilter, facultyFilter, yearFilter, campusFilter, admissionResultFilter].filter(Boolean).length})`}</span>
             <ChevronDown className={`w-5 h-5 transition-transform ${showFilters ? 'rotate-180' : ''}`} />
           </button>
 
-          <div className={`${showFilters ? 'block' : 'hidden'} sm:block mt-2 sm:mt-0 bg-white rounded-lg shadow p-4`}>
-            <h3 className="hidden sm:block text-sm font-semibold text-gray-700 mb-3">詳細フィルター</h3>
+          <div className={`${showFilters ? 'block' : 'hidden'} sm:block mt-2 sm:mt-0 bg-white rounded-2xl shadow-lg p-4 border`} style={{ borderColor: '#bac9d0' }}>
+            <h3 className="hidden sm:block text-sm font-semibold mb-3" style={{ color: '#044465' }}>詳細フィルター</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
               <div>
                 <label className="block text-xs font-medium text-gray-700 mb-1">大学</label>
@@ -568,37 +573,38 @@ export default function AdminStoriesPage() {
 
       {/* 一括操作ボタン */}
       {selectedStories.length > 0 && (
-        <div className="mb-4 p-3 sm:p-4 bg-blue-50 rounded-lg">
+        <div className="mb-4 p-3 sm:p-4 bg-white rounded-2xl shadow-lg border" style={{ borderColor: '#bac9d0' }}>
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <span className="font-semibold text-blue-900 text-sm sm:text-base">
+            <span className="font-semibold text-sm sm:text-base" style={{ color: '#044465' }}>
               {selectedStories.length}件選択中
             </span>
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => handleBulkOperation("approve")}
                 disabled={bulkProcessing}
-                className="px-3 py-1.5 bg-green-600 text-white rounded text-xs sm:text-sm hover:bg-green-700 disabled:opacity-50"
+                className="px-3 py-1.5 bg-green-600 text-white rounded-lg text-xs sm:text-sm hover:bg-green-700 disabled:opacity-50"
               >
                 一括承認
               </button>
               <button
                 onClick={() => handleBulkOperation("publish")}
                 disabled={bulkProcessing}
-                className="px-3 py-1.5 bg-blue-600 text-white rounded text-xs sm:text-sm hover:bg-blue-700 disabled:opacity-50"
+                className="px-3 py-1.5 text-white rounded-lg text-xs sm:text-sm disabled:opacity-50"
+                style={{ background: 'linear-gradient(to right, #044465, #055a7a)' }}
               >
                 一括公開
               </button>
               <button
                 onClick={() => handleBulkOperation("unpublish")}
                 disabled={bulkProcessing}
-                className="px-3 py-1.5 bg-yellow-600 text-white rounded text-xs sm:text-sm hover:bg-yellow-700 disabled:opacity-50"
+                className="px-3 py-1.5 bg-yellow-600 text-white rounded-lg text-xs sm:text-sm hover:bg-yellow-700 disabled:opacity-50"
               >
                 一括非公開
               </button>
               <button
                 onClick={() => handleBulkOperation("delete")}
                 disabled={bulkProcessing}
-                className="px-3 py-1.5 bg-red-600 text-white rounded text-xs sm:text-sm hover:bg-red-700 disabled:opacity-50"
+                className="px-3 py-1.5 bg-red-600 text-white rounded-lg text-xs sm:text-sm hover:bg-red-700 disabled:opacity-50"
               >
                 一括削除
               </button>
@@ -608,10 +614,12 @@ export default function AdminStoriesPage() {
       )}
 
       {loading ? (
-        <div className="text-center py-12 text-gray-500">読み込み中...</div>
+        <div className="bg-white rounded-2xl shadow-lg p-12 text-center border" style={{ borderColor: '#bac9d0' }}>
+          <div className="text-gray-500">読み込み中...</div>
+        </div>
       ) : filteredStories.length === 0 ? (
-        <div className="bg-white rounded-lg shadow p-8 text-center text-gray-500">
-          体験記がありません
+        <div className="bg-white rounded-2xl shadow-lg p-8 text-center border" style={{ borderColor: '#bac9d0' }}>
+          <p className="text-gray-500">体験記がありません</p>
         </div>
       ) : (
         <>
@@ -632,9 +640,9 @@ export default function AdminStoriesPage() {
           </div>
 
           {/* デスクトップ: テーブル表示 */}
-          <div className="hidden sm:block bg-white rounded-lg shadow overflow-hidden overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+          <div className="hidden sm:block bg-white rounded-2xl shadow-lg overflow-hidden overflow-x-auto border" style={{ borderColor: '#bac9d0' }}>
+            <table className="min-w-full divide-y" style={{ borderColor: '#bac9d0' }}>
+              <thead style={{ background: 'linear-gradient(to right, #044465, #055a7a)' }}>
                 <tr>
                   <th className="px-4 py-3 text-left">
                     <input
@@ -644,35 +652,35 @@ export default function AdminStoriesPage() {
                       className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
                     />
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                     大学・学部
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                     入試方式
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                     校舎
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                     結果
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                     投稿者
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                     状態
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                     操作
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white divide-y" style={{ borderColor: '#e5e7eb' }}>
                 {filteredStories.map((story) => {
                   const status = getStatusBadge(story)
                   const result = getResultBadge(story)
                   return (
-                    <tr key={story.id}>
+                    <tr key={story.id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-4 py-4">
                         <input
                           type="checkbox"
@@ -682,15 +690,15 @@ export default function AdminStoriesPage() {
                         />
                       </td>
                       <td className="px-4 py-4">
-                        <div className="text-sm font-medium text-gray-900">{story.university}</div>
-                        <div className="text-sm text-gray-500">{story.faculty}</div>
+                        <div className="text-sm font-medium" style={{ color: '#044465' }}>{story.university}</div>
+                        <div className="text-sm text-gray-600">{story.faculty}</div>
                         {story.year && <div className="text-xs text-gray-400">{story.year}年</div>}
                       </td>
                       <td className="px-4 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{story.admissionType}</div>
+                        <div className="text-sm text-gray-600">{story.admissionType}</div>
                       </td>
                       <td className="px-4 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
+                        <div className="text-sm text-gray-600">
                           {story.campus || <span className="text-gray-400">未記入</span>}
                         </div>
                       </td>
@@ -700,8 +708,8 @@ export default function AdminStoriesPage() {
                         </span>
                       </td>
                       <td className="px-4 py-4">
-                        <div className="text-sm font-medium text-gray-900">{story.author.name}</div>
-                        <div className="text-sm text-gray-500">{story.author.email}</div>
+                        <div className="text-sm font-medium" style={{ color: '#044465' }}>{story.author.name}</div>
+                        <div className="text-sm text-gray-600">{story.author.email}</div>
                       </td>
                       <td className="px-4 py-4 whitespace-nowrap">
                         <span className={`px-2 py-1 text-xs font-medium rounded-full ${status.className}`}>
@@ -712,7 +720,8 @@ export default function AdminStoriesPage() {
                         <div className="flex gap-1.5">
                           <button
                             onClick={() => router.push(`/admin/stories/${story.id}/edit`)}
-                            className="inline-flex items-center gap-1 px-2 py-1 bg-indigo-600 text-white rounded text-xs hover:bg-indigo-700"
+                            className="inline-flex items-center gap-1 px-2 py-1 text-white rounded-lg text-xs"
+                            style={{ background: 'linear-gradient(to right, #044465, #055a7a)' }}
                             title="編集"
                           >
                             <Edit className="w-3 h-3" />
@@ -720,7 +729,7 @@ export default function AdminStoriesPage() {
                           <button
                             onClick={() => handleTogglePublish(story.id, story.published)}
                             disabled={processing === story.id}
-                            className={`inline-flex items-center gap-1 px-2 py-1 rounded text-white text-xs disabled:opacity-50 ${
+                            className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-white text-xs disabled:opacity-50 ${
                               story.published ? "bg-orange-600 hover:bg-orange-700" : "bg-green-600 hover:bg-green-700"
                             }`}
                             title={story.published ? "非公開" : "公開"}
@@ -730,7 +739,7 @@ export default function AdminStoriesPage() {
                           <button
                             onClick={() => openDocumentsModal(story)}
                             disabled={processing === story.id}
-                            className="inline-flex items-center px-2 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700 disabled:opacity-50"
+                            className="inline-flex items-center px-2 py-1 bg-blue-600 text-white rounded-lg text-xs hover:bg-blue-700 disabled:opacity-50"
                             title="書類URL"
                           >
                             <LinkIcon className="w-3 h-3" />
@@ -738,7 +747,7 @@ export default function AdminStoriesPage() {
                           <button
                             onClick={() => openEditRequestModal(story.id)}
                             disabled={processing === story.id}
-                            className="inline-flex items-center px-2 py-1 bg-purple-600 text-white rounded text-xs hover:bg-purple-700 disabled:opacity-50"
+                            className="inline-flex items-center px-2 py-1 bg-purple-600 text-white rounded-lg text-xs hover:bg-purple-700 disabled:opacity-50"
                             title="編集依頼"
                           >
                             <Mail className="w-3 h-3" />
@@ -747,7 +756,7 @@ export default function AdminStoriesPage() {
                             href={`/stories/${story.id}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center px-2 py-1 bg-gray-600 text-white rounded text-xs hover:bg-gray-700"
+                            className="inline-flex items-center px-2 py-1 bg-gray-600 text-white rounded-lg text-xs hover:bg-gray-700"
                             title="詳細"
                           >
                             <ExternalLink className="w-3 h-3" />
@@ -755,7 +764,7 @@ export default function AdminStoriesPage() {
                           <button
                             onClick={() => handleDelete(story.id)}
                             disabled={processing === story.id}
-                            className="inline-flex items-center px-2 py-1 bg-red-600 text-white rounded text-xs hover:bg-red-700 disabled:opacity-50"
+                            className="inline-flex items-center px-2 py-1 bg-red-600 text-white rounded-lg text-xs hover:bg-red-700 disabled:opacity-50"
                             title="削除"
                           >
                             <Trash2 className="w-3 h-3" />
@@ -774,8 +783,8 @@ export default function AdminStoriesPage() {
       {/* Documents URL Modal */}
       {showDocumentsModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg p-6 max-w-lg w-full">
-            <h3 className="text-lg font-bold mb-4">合格書類URL</h3>
+          <div className="bg-white rounded-2xl p-6 max-w-lg w-full shadow-xl border" style={{ borderColor: '#bac9d0' }}>
+            <h3 className="text-lg font-bold mb-4" style={{ color: '#044465' }}>合格書類URL</h3>
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Google DriveのURL
@@ -785,7 +794,8 @@ export default function AdminStoriesPage() {
                 value={documentsUrl}
                 onChange={(e) => setDocumentsUrl(e.target.value)}
                 placeholder="https://drive.google.com/..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                style={{ borderColor: '#bac9d0' }}
               />
               <p className="mt-2 text-xs text-gray-500">
                 このURLは管理者とスタッフのみが閲覧できます
@@ -797,14 +807,15 @@ export default function AdminStoriesPage() {
                   setShowDocumentsModal(null)
                   setDocumentsUrl("")
                 }}
-                className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
+                className="px-4 py-2 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200"
               >
                 キャンセル
               </button>
               <button
                 onClick={handleSaveDocumentsUrl}
                 disabled={processing === showDocumentsModal}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                className="px-4 py-2 text-white rounded-xl disabled:opacity-50"
+                style={{ background: 'linear-gradient(to right, #044465, #055a7a)' }}
               >
                 保存
               </button>
@@ -816,8 +827,8 @@ export default function AdminStoriesPage() {
       {/* Edit Request Modal */}
       {showEditRequestModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg p-6 max-w-lg w-full">
-            <h3 className="text-lg font-bold mb-4">編集依頼</h3>
+          <div className="bg-white rounded-2xl p-6 max-w-lg w-full shadow-xl border" style={{ borderColor: '#bac9d0' }}>
+            <h3 className="text-lg font-bold mb-4" style={{ color: '#044465' }}>編集依頼</h3>
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 依頼内容
@@ -827,7 +838,8 @@ export default function AdminStoriesPage() {
                 onChange={(e) => setEditRequestMessage(e.target.value)}
                 placeholder="投稿者に伝えたい編集内容を入力してください"
                 rows={6}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                className="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                style={{ borderColor: '#bac9d0' }}
               />
               <p className="mt-2 text-xs text-gray-500">
                 投稿者のメールアドレスに送信されます
@@ -839,14 +851,14 @@ export default function AdminStoriesPage() {
                   setShowEditRequestModal(null)
                   setEditRequestMessage("")
                 }}
-                className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
+                className="px-4 py-2 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200"
               >
                 キャンセル
               </button>
               <button
                 onClick={handleSendEditRequest}
                 disabled={processing === showEditRequestModal}
-                className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50"
+                className="px-4 py-2 bg-purple-600 text-white rounded-xl hover:bg-purple-700 disabled:opacity-50"
               >
                 送信
               </button>

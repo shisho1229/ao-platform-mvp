@@ -81,153 +81,158 @@ export default function AdminDashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="text-center py-20">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent"></div>
-            <p className="text-gray-600 mt-4">読み込み中...</p>
-          </div>
-        </div>
+      <div className="text-center py-20">
+        <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-t-transparent" style={{ borderColor: '#044465', borderTopColor: 'transparent' }}></div>
+        <p className="text-gray-600 mt-4">読み込み中...</p>
       </div>
     )
   }
 
   if (!stats) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <p className="text-center text-gray-600">統計データの読み込みに失敗しました</p>
-        </div>
+      <div className="bg-white rounded-2xl shadow-lg p-12 text-center border" style={{ borderColor: '#bac9d0' }}>
+        <p className="text-gray-600">統計データの読み込みに失敗しました</p>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* サマリーカード */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-3 bg-blue-100 rounded-lg">
-                <Users className="w-6 h-6 text-blue-600" />
-              </div>
-              <span className="text-sm text-gray-500">総ユーザー数</span>
-            </div>
-            <p className="text-3xl font-bold text-gray-900">{stats.overview.totalUsers}</p>
-          </div>
+    <div className="space-y-6">
+      {/* ヘッダー */}
+      <div className="text-center mb-6">
+        <div className="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-2xl mb-3 shadow-lg" style={{ background: 'linear-gradient(to bottom right, #044465, #055a7a)' }}>
+          <BarChart3 className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
+        </div>
+        <h1 className="text-2xl sm:text-3xl font-bold mb-2" style={{ color: '#044465' }}>
+          ダッシュボード
+        </h1>
+        <p className="text-gray-600 text-sm sm:text-base">
+          プラットフォームの統計情報
+        </p>
+      </div>
 
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-3 bg-green-100 rounded-lg">
-                <BookOpen className="w-6 h-6 text-green-600" />
-              </div>
-              <span className="text-sm text-gray-500">公開中の体験記</span>
+      {/* サマリーカード */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="bg-white rounded-2xl shadow-lg p-6 border" style={{ borderColor: '#bac9d0' }}>
+          <div className="flex items-center justify-between mb-4">
+            <div className="p-3 rounded-xl" style={{ backgroundColor: '#f0f4f5' }}>
+              <Users className="w-6 h-6" style={{ color: '#044465' }} />
             </div>
-            <p className="text-3xl font-bold text-gray-900">{stats.overview.publishedStories}</p>
-            <p className="text-sm text-gray-500 mt-1">総投稿数: {stats.overview.totalStories}</p>
+            <span className="text-sm text-gray-500">総ユーザー数</span>
           </div>
-
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-3 bg-yellow-100 rounded-lg">
-                <TrendingUp className="w-6 h-6 text-yellow-600" />
-              </div>
-              <span className="text-sm text-gray-500">添削待ち</span>
-            </div>
-            <p className="text-3xl font-bold text-gray-900">{stats.overview.pendingStories}</p>
-            <p className="text-sm text-gray-500 mt-1">下書き: {stats.overview.draftStories}</p>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-3 bg-pink-100 rounded-lg">
-                <Heart className="w-6 h-6 text-pink-600" />
-              </div>
-              <span className="text-sm text-gray-500">お気に入り総数</span>
-            </div>
-            <p className="text-3xl font-bold text-gray-900">{stats.overview.totalFavorites}</p>
-            <p className="text-sm text-gray-500 mt-1">直近7日: {stats.overview.recentStories}件</p>
-          </div>
+          <p className="text-3xl font-bold" style={{ color: '#044465' }}>{stats.overview.totalUsers}</p>
         </div>
 
-        {/* 詳細統計 */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          {/* ロール別ユーザー数 */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <Users className="w-5 h-5 text-gray-600" />
-              <h2 className="text-lg font-bold text-gray-900">ロール別ユーザー数</h2>
+        <div className="bg-white rounded-2xl shadow-lg p-6 border" style={{ borderColor: '#bac9d0' }}>
+          <div className="flex items-center justify-between mb-4">
+            <div className="p-3 rounded-xl bg-green-100">
+              <BookOpen className="w-6 h-6 text-green-600" />
             </div>
-            <div className="space-y-3">
-              {stats.usersByRole.map((item) => (
-                <div key={item.role} className="flex items-center justify-between p-3 bg-gray-50 rounded">
-                  <span className="text-sm font-medium text-gray-700">{getRoleLabel(item.role)}</span>
-                  <span className="text-lg font-bold text-gray-900">{item.count}名</span>
-                </div>
-              ))}
-            </div>
+            <span className="text-sm text-gray-500">公開中の体験記</span>
           </div>
-
-          {/* ステータス別体験記数 */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <BarChart3 className="w-5 h-5 text-gray-600" />
-              <h2 className="text-lg font-bold text-gray-900">ステータス別体験記数</h2>
-            </div>
-            <div className="space-y-3">
-              {stats.storiesByStatus.map((item) => (
-                <div key={item.status} className="flex items-center justify-between p-3 bg-gray-50 rounded">
-                  <span className="text-sm font-medium text-gray-700">{getStatusLabel(item.status)}</span>
-                  <span className="text-lg font-bold text-gray-900">{item.count}件</span>
-                </div>
-              ))}
-            </div>
-          </div>
+          <p className="text-3xl font-bold" style={{ color: '#044465' }}>{stats.overview.publishedStories}</p>
+          <p className="text-sm text-gray-500 mt-1">総投稿数: {stats.overview.totalStories}</p>
         </div>
 
-        {/* 大学別投稿数トップ10 */}
-        <div className="bg-white rounded-lg shadow p-6 mb-8">
+        <div className="bg-white rounded-2xl shadow-lg p-6 border" style={{ borderColor: '#bac9d0' }}>
+          <div className="flex items-center justify-between mb-4">
+            <div className="p-3 rounded-xl bg-orange-100">
+              <TrendingUp className="w-6 h-6 text-orange-600" />
+            </div>
+            <span className="text-sm text-gray-500">添削待ち</span>
+          </div>
+          <p className="text-3xl font-bold" style={{ color: '#044465' }}>{stats.overview.pendingStories}</p>
+          <p className="text-sm text-gray-500 mt-1">下書き: {stats.overview.draftStories}</p>
+        </div>
+
+        <div className="bg-white rounded-2xl shadow-lg p-6 border" style={{ borderColor: '#bac9d0' }}>
+          <div className="flex items-center justify-between mb-4">
+            <div className="p-3 rounded-xl bg-pink-100">
+              <Heart className="w-6 h-6 text-pink-600" />
+            </div>
+            <span className="text-sm text-gray-500">お気に入り総数</span>
+          </div>
+          <p className="text-3xl font-bold" style={{ color: '#044465' }}>{stats.overview.totalFavorites}</p>
+          <p className="text-sm text-gray-500 mt-1">直近7日: {stats.overview.recentStories}件</p>
+        </div>
+      </div>
+
+      {/* 詳細統計 */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+        {/* ロール別ユーザー数 */}
+        <div className="bg-white rounded-2xl shadow-lg p-6 border" style={{ borderColor: '#bac9d0' }}>
           <div className="flex items-center gap-2 mb-4">
-            <Award className="w-5 h-5 text-gray-600" />
-            <h2 className="text-lg font-bold text-gray-900">大学別投稿数 TOP 10</h2>
+            <Users className="w-5 h-5" style={{ color: '#044465' }} />
+            <h2 className="text-lg font-bold" style={{ color: '#044465' }}>ロール別ユーザー数</h2>
           </div>
-          <div className="space-y-2">
-            {stats.topUniversities.map((item, index) => (
-              <div key={item.university} className="flex items-center gap-4 p-3 bg-gray-50 rounded">
-                <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-blue-100 text-blue-600 font-bold rounded-full text-sm">
-                  {index + 1}
-                </span>
-                <span className="flex-1 text-sm font-medium text-gray-700">{item.university}</span>
-                <span className="text-lg font-bold text-gray-900">{item.count}件</span>
+          <div className="space-y-3">
+            {stats.usersByRole.map((item) => (
+              <div key={item.role} className="flex items-center justify-between p-3 rounded-lg" style={{ backgroundColor: '#f0f4f5' }}>
+                <span className="text-sm font-medium text-gray-700">{getRoleLabel(item.role)}</span>
+                <span className="text-lg font-bold" style={{ color: '#044465' }}>{item.count}名</span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* 人気の体験記トップ5 */}
-        <div className="bg-white rounded-lg shadow p-6">
+        {/* ステータス別体験記数 */}
+        <div className="bg-white rounded-2xl shadow-lg p-6 border" style={{ borderColor: '#bac9d0' }}>
           <div className="flex items-center gap-2 mb-4">
-            <Heart className="w-5 h-5 text-pink-600" />
-            <h2 className="text-lg font-bold text-gray-900">人気の体験記 TOP 5</h2>
+            <BarChart3 className="w-5 h-5" style={{ color: '#044465' }} />
+            <h2 className="text-lg font-bold" style={{ color: '#044465' }}>ステータス別体験記数</h2>
           </div>
-          <div className="space-y-2">
-            {stats.topStories.map((item, index) => (
-              <div key={item.id} className="flex items-center gap-4 p-3 bg-gray-50 rounded">
-                <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-pink-100 text-pink-600 font-bold rounded-full text-sm">
-                  {index + 1}
-                </span>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900">{item.university}</p>
-                  <p className="text-xs text-gray-500">{item.faculty}</p>
-                </div>
-                <div className="flex items-center gap-1 text-pink-600">
-                  <Heart className="w-4 h-4 fill-current" />
-                  <span className="text-lg font-bold">{item.favoritesCount}</span>
-                </div>
+          <div className="space-y-3">
+            {stats.storiesByStatus.map((item) => (
+              <div key={item.status} className="flex items-center justify-between p-3 rounded-lg" style={{ backgroundColor: '#f0f4f5' }}>
+                <span className="text-sm font-medium text-gray-700">{getStatusLabel(item.status)}</span>
+                <span className="text-lg font-bold" style={{ color: '#044465' }}>{item.count}件</span>
               </div>
             ))}
           </div>
+        </div>
+      </div>
+
+      {/* 大学別投稿数トップ10 */}
+      <div className="bg-white rounded-2xl shadow-lg p-6 border" style={{ borderColor: '#bac9d0' }}>
+        <div className="flex items-center gap-2 mb-4">
+          <Award className="w-5 h-5" style={{ color: '#044465' }} />
+          <h2 className="text-lg font-bold" style={{ color: '#044465' }}>大学別投稿数 TOP 10</h2>
+        </div>
+        <div className="space-y-2">
+          {stats.topUniversities.map((item, index) => (
+            <div key={item.university} className="flex items-center gap-4 p-3 rounded-lg" style={{ backgroundColor: '#f0f4f5' }}>
+              <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center font-bold rounded-full text-sm text-white" style={{ background: 'linear-gradient(to bottom right, #044465, #055a7a)' }}>
+                {index + 1}
+              </span>
+              <span className="flex-1 text-sm font-medium text-gray-700">{item.university}</span>
+              <span className="text-lg font-bold" style={{ color: '#044465' }}>{item.count}件</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 人気の体験記トップ5 */}
+      <div className="bg-white rounded-2xl shadow-lg p-6 border" style={{ borderColor: '#bac9d0' }}>
+        <div className="flex items-center gap-2 mb-4">
+          <Heart className="w-5 h-5 text-pink-600" />
+          <h2 className="text-lg font-bold" style={{ color: '#044465' }}>人気の体験記 TOP 5</h2>
+        </div>
+        <div className="space-y-2">
+          {stats.topStories.map((item, index) => (
+            <div key={item.id} className="flex items-center gap-4 p-3 rounded-lg" style={{ backgroundColor: '#f0f4f5' }}>
+              <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-pink-100 text-pink-600 font-bold rounded-full text-sm">
+                {index + 1}
+              </span>
+              <div className="flex-1">
+                <p className="text-sm font-medium" style={{ color: '#044465' }}>{item.university}</p>
+                <p className="text-xs text-gray-500">{item.faculty}</p>
+              </div>
+              <div className="flex items-center gap-1 text-pink-600">
+                <Heart className="w-4 h-4 fill-current" />
+                <span className="text-lg font-bold">{item.favoritesCount}</span>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

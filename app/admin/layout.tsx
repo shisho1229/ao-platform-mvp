@@ -25,7 +25,7 @@ export default async function AdminLayout({
   const isSuperAdmin = session.user.role === "SUPER_ADMIN"
 
   return (
-    <div className="min-h-screen" style={{ background: 'linear-gradient(to bottom, #ffffff, #f0f4f8)' }}>
+    <div className="min-h-screen" style={{ background: 'linear-gradient(to bottom right, #bac9d0, white, #bac9d0)' }}>
       {/* Header */}
       <header className="shadow-md" style={{ background: 'linear-gradient(to right, #044465, #055a7a)' }}>
         <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">

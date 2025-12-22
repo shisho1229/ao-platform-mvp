@@ -138,9 +138,9 @@ export default function AdminPendingStoriesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(to bottom right, #bac9d0, white, #bac9d0)' }}>
+        <div className="text-center bg-white rounded-2xl shadow-lg p-8 border" style={{ borderColor: '#bac9d0' }}>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4" style={{ borderColor: '#044465' }}></div>
           <p className="text-gray-600">読み込み中...</p>
         </div>
       </div>
@@ -148,25 +148,26 @@ export default function AdminPendingStoriesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen py-8" style={{ background: 'linear-gradient(to bottom right, #bac9d0, white, #bac9d0)' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* ヘッダー */}
         <div className="mb-8">
           <Link
             href="/admin/stories"
-            className="inline-flex items-center text-sm text-blue-600 hover:text-blue-800 mb-4"
+            className="inline-flex items-center text-sm hover:opacity-80 mb-4"
+            style={{ color: '#044465' }}
           >
             <ArrowLeft className="w-4 h-4 mr-1" />
             体験記管理に戻る
           </Link>
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">承認待ち体験記</h1>
+              <h1 className="text-3xl font-bold" style={{ color: '#044465' }}>承認待ち体験記</h1>
               <p className="mt-2 text-sm text-gray-600">
                 投稿された体験記を確認し、承認または修正を依頼してください
               </p>
             </div>
-            <div className="flex items-center gap-2 px-4 py-2 bg-orange-100 text-orange-800 rounded-lg">
+            <div className="flex items-center gap-2 px-4 py-2 bg-orange-100 text-orange-800 rounded-xl">
               <Clock className="w-5 h-5" />
               <span className="font-semibold">{stories.length}件</span>
             </div>
@@ -175,7 +176,7 @@ export default function AdminPendingStoriesPage() {
 
         {/* 体験記リスト */}
         {stories.length === 0 ? (
-          <div className="text-center py-12 bg-white rounded-lg shadow">
+          <div className="text-center py-12 bg-white rounded-2xl shadow-lg border" style={{ borderColor: '#bac9d0' }}>
             <Clock className="w-16 h-16 text-gray-400 mx-auto mb-4" />
             <p className="text-gray-600">承認待ちの体験記はありません</p>
           </div>
@@ -184,14 +185,15 @@ export default function AdminPendingStoriesPage() {
             {stories.map((story) => (
               <div
                 key={story.id}
-                className="bg-white rounded-lg shadow-md overflow-hidden border-l-4 border-orange-500"
+                className="bg-white rounded-2xl shadow-lg overflow-hidden border"
+                style={{ borderColor: '#bac9d0', borderLeftWidth: '4px', borderLeftColor: '#f97316' }}
               >
                 <div className="p-6">
                   {/* ヘッダー */}
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
-                        <h2 className="text-xl font-bold text-gray-900">
+                        <h2 className="text-xl font-bold" style={{ color: '#044465' }}>
                           {story.university} {story.faculty}
                         </h2>
                         <span className="px-3 py-1 bg-orange-100 text-orange-800 text-xs font-semibold rounded-full">
@@ -207,7 +209,8 @@ export default function AdminPendingStoriesPage() {
                     <Link
                       href={`/stories/${story.id}`}
                       target="_blank"
-                      className="flex-shrink-0 ml-4 p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                      className="flex-shrink-0 ml-4 p-2 rounded-xl transition-colors"
+                      style={{ color: '#044465' }}
                       title="体験記を見る"
                     >
                       <ExternalLink className="w-5 h-5" />
@@ -215,25 +218,25 @@ export default function AdminPendingStoriesPage() {
                   </div>
 
                   {/* 投稿者情報 */}
-                  <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+                  <div className="mb-4 p-3 bg-gray-50 rounded-xl">
                     <div className="grid grid-cols-2 gap-2 text-sm">
                       <div>
                         <span className="text-gray-600">投稿者:</span>
-                        <span className="ml-2 font-medium">{story.author.name}</span>
+                        <span className="ml-2 font-medium" style={{ color: '#044465' }}>{story.author.name}</span>
                       </div>
                       <div>
                         <span className="text-gray-600">メール:</span>
-                        <span className="ml-2 font-medium">{story.author.email}</span>
+                        <span className="ml-2 font-medium" style={{ color: '#044465' }}>{story.author.email}</span>
                       </div>
                       {story.author.campus && (
                         <div>
                           <span className="text-gray-600">校舎:</span>
-                          <span className="ml-2 font-medium">{story.author.campus}</span>
+                          <span className="ml-2 font-medium" style={{ color: '#044465' }}>{story.author.campus}</span>
                         </div>
                       )}
                       <div>
                         <span className="text-gray-600">投稿日:</span>
-                        <span className="ml-2 font-medium">
+                        <span className="ml-2 font-medium" style={{ color: '#044465' }}>
                           {new Date(story.createdAt).toLocaleDateString("ja-JP")}
                         </span>
                       </div>
@@ -243,12 +246,13 @@ export default function AdminPendingStoriesPage() {
                   {/* 探究テーマ */}
                   {story.explorationThemes.length > 0 && (
                     <div className="mb-4">
-                      <p className="text-xs text-gray-600 font-medium mb-2">探究テーマ:</p>
+                      <p className="text-xs font-medium mb-2" style={{ color: '#044465' }}>探究テーマ:</p>
                       <div className="flex flex-wrap gap-2">
                         {story.explorationThemes.map((et) => (
                           <span
                             key={et.theme.id}
-                            className="inline-block px-3 py-1 text-xs font-semibold text-blue-700 bg-blue-100 rounded-full"
+                            className="inline-block px-3 py-1 text-xs font-semibold rounded-full"
+                            style={{ color: '#044465', backgroundColor: 'rgba(4, 68, 101, 0.1)' }}
                           >
                             {et.theme.name}
                           </span>
@@ -258,11 +262,11 @@ export default function AdminPendingStoriesPage() {
                   )}
 
                   {/* アクションボタン */}
-                  <div className="flex gap-3 pt-4 border-t">
+                  <div className="flex gap-3 pt-4 border-t" style={{ borderColor: '#bac9d0' }}>
                     <button
                       onClick={() => handleApprove(story.id)}
                       disabled={processing === story.id}
-                      className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
                       <CheckCircle className="w-5 h-5" />
                       <span className="font-semibold">承認して公開</span>
@@ -270,7 +274,7 @@ export default function AdminPendingStoriesPage() {
                     <button
                       onClick={() => setShowReviewModal(story.id)}
                       disabled={processing === story.id}
-                      className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-xl hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
                       <XCircle className="w-5 h-5" />
                       <span className="font-semibold">修正を依頼</span>
@@ -285,13 +289,14 @@ export default function AdminPendingStoriesPage() {
         {/* 修正依頼モーダル */}
         {showReviewModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-lg max-w-lg w-full p-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">修正依頼</h3>
+            <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl border" style={{ borderColor: '#bac9d0' }}>
+              <h3 className="text-xl font-bold mb-4" style={{ color: '#044465' }}>修正依頼</h3>
               <p className="text-sm text-gray-600 mb-4">
                 投稿者に送信する修正依頼の内容を入力してください
               </p>
               <textarea
-                className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 mb-4"
+                className="w-full rounded-xl border shadow-sm focus:ring-2 mb-4"
+                style={{ borderColor: '#bac9d0' }}
                 rows={6}
                 placeholder="修正が必要な箇所や理由を具体的に記載してください"
                 value={reviewNotes}
@@ -303,14 +308,15 @@ export default function AdminPendingStoriesPage() {
                     setShowReviewModal(null)
                     setReviewNotes("")
                   }}
-                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="flex-1 px-4 py-2 border text-gray-700 rounded-xl hover:bg-gray-50 transition-colors"
+                  style={{ borderColor: '#bac9d0' }}
                 >
                   キャンセル
                 </button>
                 <button
                   onClick={() => handleRequestRevision(showReviewModal)}
                   disabled={!reviewNotes.trim() || processing === showReviewModal}
-                  className="flex-1 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="flex-1 px-4 py-2 bg-orange-600 text-white rounded-xl hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   送信
                 </button>

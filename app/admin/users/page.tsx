@@ -237,10 +237,10 @@ export default function AdminUsersPage() {
 
   // モバイル用カードコンポーネント
   const UserCard = ({ user, actions }: { user: User, actions?: React.ReactNode }) => (
-    <div className="bg-white rounded-lg shadow p-4 mb-3">
+    <div className="bg-white rounded-2xl shadow-lg p-4 mb-3 border" style={{ borderColor: '#bac9d0' }}>
       <div className="flex items-start justify-between mb-3">
         <div className="min-w-0 flex-1">
-          <h3 className="text-base font-semibold text-gray-900 truncate">{user.name}</h3>
+          <h3 className="text-base font-semibold truncate" style={{ color: '#044465' }}>{user.name}</h3>
           <div className="flex items-center text-sm text-gray-500 mt-1">
             <Mail className="w-3.5 h-3.5 mr-1 flex-shrink-0" />
             <span className="truncate">{user.email}</span>
@@ -263,7 +263,7 @@ export default function AdminUsersPage() {
         </div>
       </div>
       {actions && (
-        <div className="pt-3 border-t flex flex-wrap gap-2">
+        <div className="pt-3 border-t flex flex-wrap gap-2" style={{ borderColor: '#bac9d0' }}>
           {actions}
         </div>
       )}
@@ -277,8 +277,8 @@ export default function AdminUsersPage() {
   return (
     <div>
       {/* 検索とフィルター */}
-      <div className="mb-4 sm:mb-6 bg-white rounded-lg shadow p-3 sm:p-4">
-        <h3 className="text-sm font-semibold text-gray-700 mb-3">検索・フィルター</h3>
+      <div className="mb-4 sm:mb-6 bg-white rounded-2xl shadow-lg p-4 sm:p-6 border" style={{ borderColor: '#bac9d0' }}>
+        <h3 className="text-sm font-semibold mb-3" style={{ color: '#044465' }}>検索・フィルター</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
           {/* 検索 */}
           <div>
@@ -329,35 +329,38 @@ export default function AdminUsersPage() {
       </div>
 
       {/* Tab Navigation */}
-      <div className="mb-4 sm:mb-6 border-b overflow-x-auto">
-        <div className="flex gap-2 sm:gap-4 min-w-max">
+      <div className="mb-4 sm:mb-6 bg-white rounded-2xl shadow-lg p-2 border" style={{ borderColor: '#bac9d0' }}>
+        <div className="flex gap-2 overflow-x-auto">
           <button
             onClick={() => setActiveTab("pending")}
-            className={`px-3 sm:px-4 py-2 font-medium border-b-2 transition-colors whitespace-nowrap text-sm sm:text-base ${
+            className={`px-4 py-2 font-medium rounded-xl transition-colors whitespace-nowrap text-sm sm:text-base ${
               activeTab === "pending"
-                ? "border-blue-500 text-blue-600"
-                : "border-transparent text-gray-500 hover:text-gray-700"
+                ? "text-white shadow-md"
+                : "text-gray-600 hover:bg-gray-100"
             }`}
+            style={activeTab === "pending" ? { background: 'linear-gradient(to right, #044465, #055a7a)' } : {}}
           >
             承認待ち ({pendingUsers.length})
           </button>
           <button
             onClick={() => setActiveTab("staff")}
-            className={`px-3 sm:px-4 py-2 font-medium border-b-2 transition-colors whitespace-nowrap text-sm sm:text-base ${
+            className={`px-4 py-2 font-medium rounded-xl transition-colors whitespace-nowrap text-sm sm:text-base ${
               activeTab === "staff"
-                ? "border-blue-500 text-blue-600"
-                : "border-transparent text-gray-500 hover:text-gray-700"
+                ? "text-white shadow-md"
+                : "text-gray-600 hover:bg-gray-100"
             }`}
+            style={activeTab === "staff" ? { background: 'linear-gradient(to right, #044465, #055a7a)' } : {}}
           >
             スタッフ ({staffUsers.length})
           </button>
           <button
             onClick={() => setActiveTab("users")}
-            className={`px-3 sm:px-4 py-2 font-medium border-b-2 transition-colors whitespace-nowrap text-sm sm:text-base ${
+            className={`px-4 py-2 font-medium rounded-xl transition-colors whitespace-nowrap text-sm sm:text-base ${
               activeTab === "users"
-                ? "border-blue-500 text-blue-600"
-                : "border-transparent text-gray-500 hover:text-gray-700"
+                ? "text-white shadow-md"
+                : "text-gray-600 hover:bg-gray-100"
             }`}
+            style={activeTab === "users" ? { background: 'linear-gradient(to right, #044465, #055a7a)' } : {}}
           >
             ユーザー ({regularUsers.length})
           </button>
@@ -365,12 +368,14 @@ export default function AdminUsersPage() {
       </div>
 
       {loading ? (
-        <div className="text-center py-12 text-gray-500">読み込み中...</div>
+        <div className="bg-white rounded-2xl shadow-lg p-12 text-center border" style={{ borderColor: '#bac9d0' }}>
+          <div className="text-gray-500">読み込み中...</div>
+        </div>
       ) : activeTab === "pending" ? (
         /* 承認待ちユーザー */
         pendingUsers.length === 0 ? (
-          <div className="bg-white rounded-lg shadow p-8 text-center text-gray-500">
-            承認待ちのユーザーはいません
+          <div className="bg-white rounded-2xl shadow-lg p-8 text-center border" style={{ borderColor: '#bac9d0' }}>
+            <p className="text-gray-500">承認待ちのユーザーはいません</p>
           </div>
         ) : (
           <>
@@ -404,41 +409,41 @@ export default function AdminUsersPage() {
               ))}
             </div>
             {/* デスクトップ: テーブル表示 */}
-            <div className="hidden sm:block bg-white rounded-lg shadow overflow-hidden">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+            <div className="hidden sm:block bg-white rounded-2xl shadow-lg overflow-hidden border" style={{ borderColor: '#bac9d0' }}>
+              <table className="min-w-full divide-y" style={{ borderColor: '#bac9d0' }}>
+                <thead style={{ background: 'linear-gradient(to right, #044465, #055a7a)' }}>
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                       名前
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                       メールアドレス
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                       校舎
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                       登録日時
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                       操作
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white divide-y" style={{ borderColor: '#e5e7eb' }}>
                   {pendingUsers.map((user) => (
-                    <tr key={user.id}>
+                    <tr key={user.id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">{user.name}</div>
+                        <div className="text-sm font-medium" style={{ color: '#044465' }}>{user.name}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500">{user.email}</div>
+                        <div className="text-sm text-gray-600">{user.email}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500">{user.campus || "-"}</div>
+                        <div className="text-sm text-gray-600">{user.campus || "-"}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500">
+                        <div className="text-sm text-gray-600">
                           {new Date(user.createdAt).toLocaleString('ja-JP')}
                         </div>
                       </td>
@@ -447,7 +452,7 @@ export default function AdminUsersPage() {
                           <button
                             onClick={() => handleApprove(user.id)}
                             disabled={processing === user.id}
-                            className="inline-flex items-center px-3 py-1.5 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 transition-colors"
+                            className="inline-flex items-center px-3 py-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 transition-colors"
                           >
                             <CheckCircle className="w-4 h-4 mr-1" />
                             承認
@@ -455,7 +460,7 @@ export default function AdminUsersPage() {
                           <button
                             onClick={() => handleReject(user.id)}
                             disabled={processing === user.id}
-                            className="inline-flex items-center px-3 py-1.5 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50 transition-colors"
+                            className="inline-flex items-center px-3 py-1.5 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition-colors"
                           >
                             <XCircle className="w-4 h-4 mr-1" />
                             拒否
@@ -472,8 +477,8 @@ export default function AdminUsersPage() {
       ) : activeTab === "staff" ? (
         /* スタッフユーザー */
         staffUsers.length === 0 ? (
-          <div className="bg-white rounded-lg shadow p-8 text-center text-gray-500">
-            スタッフユーザーはいません
+          <div className="bg-white rounded-2xl shadow-lg p-8 text-center border" style={{ borderColor: '#bac9d0' }}>
+            <p className="text-gray-500">スタッフユーザーはいません</p>
           </div>
         ) : (
           <>
@@ -499,43 +504,43 @@ export default function AdminUsersPage() {
               ))}
             </div>
             {/* デスクトップ: テーブル表示 */}
-            <div className="hidden sm:block bg-white rounded-lg shadow overflow-hidden">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+            <div className="hidden sm:block bg-white rounded-2xl shadow-lg overflow-hidden border" style={{ borderColor: '#bac9d0' }}>
+              <table className="min-w-full divide-y" style={{ borderColor: '#bac9d0' }}>
+                <thead style={{ background: 'linear-gradient(to right, #044465, #055a7a)' }}>
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                       名前
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                       メールアドレス
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                       校舎
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                       権限
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                       登録日時
                     </th>
                     {isSuperAdmin && (
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                         操作
                       </th>
                     )}
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white divide-y" style={{ borderColor: '#e5e7eb' }}>
                   {staffUsers.map((user) => (
-                    <tr key={user.id}>
+                    <tr key={user.id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">{user.name}</div>
+                        <div className="text-sm font-medium" style={{ color: '#044465' }}>{user.name}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500">{user.email}</div>
+                        <div className="text-sm text-gray-600">{user.email}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500">{user.campus || "-"}</div>
+                        <div className="text-sm text-gray-600">{user.campus || "-"}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`px-2 py-1 text-xs font-medium rounded-full ${getRoleBadgeClass(user.role)}`}>
@@ -543,7 +548,7 @@ export default function AdminUsersPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500">
+                        <div className="text-sm text-gray-600">
                           {new Date(user.createdAt).toLocaleString('ja-JP')}
                         </div>
                       </td>
@@ -553,7 +558,7 @@ export default function AdminUsersPage() {
                             <button
                               onClick={() => handleDemoteToUser(user.id)}
                               disabled={processing === user.id}
-                              className="inline-flex items-center px-3 py-1.5 bg-orange-600 text-white rounded-md hover:bg-orange-700 disabled:opacity-50 transition-colors"
+                              className="inline-flex items-center px-3 py-1.5 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50 transition-colors"
                             >
                               <UserMinus className="w-4 h-4 mr-1" />
                               ユーザーに降格
@@ -571,8 +576,8 @@ export default function AdminUsersPage() {
       ) : (
         /* 一般ユーザー */
         regularUsers.length === 0 ? (
-          <div className="bg-white rounded-lg shadow p-8 text-center text-gray-500">
-            ユーザーはいません
+          <div className="bg-white rounded-2xl shadow-lg p-8 text-center border" style={{ borderColor: '#bac9d0' }}>
+            <p className="text-gray-500">ユーザーはいません</p>
           </div>
         ) : (
           <>
@@ -598,43 +603,43 @@ export default function AdminUsersPage() {
               ))}
             </div>
             {/* デスクトップ: テーブル表示 */}
-            <div className="hidden sm:block bg-white rounded-lg shadow overflow-hidden">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+            <div className="hidden sm:block bg-white rounded-2xl shadow-lg overflow-hidden border" style={{ borderColor: '#bac9d0' }}>
+              <table className="min-w-full divide-y" style={{ borderColor: '#bac9d0' }}>
+                <thead style={{ background: 'linear-gradient(to right, #044465, #055a7a)' }}>
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                       名前
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                       メールアドレス
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                       校舎
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                       権限
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                       登録日時
                     </th>
                     {isSuperAdmin && (
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                         操作
                       </th>
                     )}
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white divide-y" style={{ borderColor: '#e5e7eb' }}>
                   {regularUsers.map((user) => (
-                    <tr key={user.id}>
+                    <tr key={user.id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">{user.name}</div>
+                        <div className="text-sm font-medium" style={{ color: '#044465' }}>{user.name}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500">{user.email}</div>
+                        <div className="text-sm text-gray-600">{user.email}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500">{user.campus || "-"}</div>
+                        <div className="text-sm text-gray-600">{user.campus || "-"}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className="px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-800">
@@ -642,7 +647,7 @@ export default function AdminUsersPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500">
+                        <div className="text-sm text-gray-600">
                           {new Date(user.createdAt).toLocaleString('ja-JP')}
                         </div>
                       </td>
@@ -651,7 +656,8 @@ export default function AdminUsersPage() {
                           <button
                             onClick={() => handlePromoteToStaff(user.id)}
                             disabled={processing === user.id}
-                            className="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                            className="inline-flex items-center px-3 py-1.5 text-white rounded-lg disabled:opacity-50 transition-colors"
+                            style={{ background: 'linear-gradient(to right, #044465, #055a7a)' }}
                           >
                             <Shield className="w-4 h-4 mr-1" />
                             スタッフに昇格
