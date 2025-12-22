@@ -5,13 +5,13 @@ import { prisma } from "@/lib/prisma"
 // POST /api/admin/users/[userId]/change-manager - ユーザーをマネージャーに変更（SUPER_ADMINのみ）
 export async function POST(
   request: NextRequest,
-  { params }: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) {
   try {
     // SUPER_ADMINのみが実行可能
     await requireRole(["SUPER_ADMIN"])
 
-    const { userId } = params
+    const { userId } = await params
     const body = await request.json()
     const { toManager } = body // true: マネージャーにする, false: USERに戻す
 

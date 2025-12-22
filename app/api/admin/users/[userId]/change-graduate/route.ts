@@ -5,13 +5,13 @@ import { prisma } from "@/lib/prisma"
 // POST /api/admin/users/[userId]/change-graduate - ユーザーを卒塾生に変更
 export async function POST(
   request: NextRequest,
-  { params }: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) {
   try {
     // SUPER_ADMIN、ADMIN、STAFFのみが実行可能
     await requireRole(["SUPER_ADMIN", "MANAGER", "ADMIN", "STAFF"])
 
-    const { userId } = params
+    const { userId } = await params
     const body = await request.json()
     const { toGraduate } = body // true: 卒塾生にする, false: USERに戻す
 
