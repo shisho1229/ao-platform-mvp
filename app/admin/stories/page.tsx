@@ -34,6 +34,11 @@ export default function AdminStoriesPage() {
   const [loading, setLoading] = useState(true)
   const [processing, setProcessing] = useState<string | null>(null)
   const [filter, setFilter] = useState<"all" | "pending_review" | "needs_revision" | "published" | "unpublished">("pending_review")
+  const [universityFilter, setUniversityFilter] = useState("")
+  const [facultyFilter, setFacultyFilter] = useState("")
+  const [yearFilter, setYearFilter] = useState("")
+  const [campusFilter, setCampusFilter] = useState("")
+  const [admissionResultFilter, setAdmissionResultFilter] = useState("")
   const [showDocumentsModal, setShowDocumentsModal] = useState<string | null>(null)
   const [showEditRequestModal, setShowEditRequestModal] = useState<string | null>(null)
   const [documentsUrl, setDocumentsUrl] = useState("")
@@ -52,7 +57,7 @@ export default function AdminStoriesPage() {
     }
 
     fetchStories()
-  }, [session, router, filter])
+  }, [session, router, filter, universityFilter, facultyFilter, yearFilter, campusFilter, admissionResultFilter])
 
   const fetchStories = async () => {
     try {
@@ -67,6 +72,13 @@ export default function AdminStoriesPage() {
         params.append("published", "false")
       }
 
+      // 詳細フィルター
+      if (universityFilter) params.append("university", universityFilter)
+      if (facultyFilter) params.append("faculty", facultyFilter)
+      if (yearFilter) params.append("year", yearFilter)
+      if (campusFilter) params.append("campus", campusFilter)
+      if (admissionResultFilter) params.append("admissionResult", admissionResultFilter)
+
       const response = await fetch(`/api/admin/stories?${params.toString()}`)
       if (response.ok) {
         const data = await response.json()
@@ -77,6 +89,14 @@ export default function AdminStoriesPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const clearFilters = () => {
+    setUniversityFilter("")
+    setFacultyFilter("")
+    setYearFilter("")
+    setCampusFilter("")
+    setAdmissionResultFilter("")
   }
 
   const handleTogglePublish = async (storyId: string, currentStatus: boolean) => {
@@ -308,6 +328,107 @@ export default function AdminStoriesPage() {
           >
             すべて
           </button>
+        </div>
+
+        {/* 詳細フィルター */}
+        <div className="mt-4 bg-white rounded-lg shadow p-4">
+          <h3 className="text-sm font-semibold text-gray-700 mb-3">詳細フィルター</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            {/* 大学 */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">
+                大学
+              </label>
+              <input
+                type="text"
+                value={universityFilter}
+                onChange={(e) => setUniversityFilter(e.target.value)}
+                placeholder="例: 慶應義塾大学"
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+
+            {/* 学部 */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">
+                学部
+              </label>
+              <input
+                type="text"
+                value={facultyFilter}
+                onChange={(e) => setFacultyFilter(e.target.value)}
+                placeholder="例: 総合政策学部"
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+
+            {/* 年度 */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">
+                年度
+              </label>
+              <select
+                value={yearFilter}
+                onChange={(e) => setYearFilter(e.target.value)}
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="">すべて</option>
+                {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i).map(year => (
+                  <option key={year} value={year}>{year}年</option>
+                ))}
+              </select>
+            </div>
+
+            {/* 所属校舎 */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">
+                所属校舎
+              </label>
+              <select
+                value={campusFilter}
+                onChange={(e) => setCampusFilter(e.target.value)}
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="">すべて</option>
+                <option value="代々木">代々木</option>
+                <option value="渋谷">渋谷</option>
+                <option value="自由が丘">自由が丘</option>
+                <option value="吉祥寺">吉祥寺</option>
+                <option value="横浜">横浜</option>
+                <option value="藤沢">藤沢</option>
+                <option value="たまプラーザ">たまプラーザ</option>
+                <option value="武蔵小杉">武蔵小杉</option>
+              </select>
+            </div>
+
+            {/* 合否情報 */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">
+                合否情報
+              </label>
+              <select
+                value={admissionResultFilter}
+                onChange={(e) => setAdmissionResultFilter(e.target.value)}
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="">すべて</option>
+                <option value="first_pass">書類合格（一次のみ）</option>
+                <option value="final_pass">最終合格</option>
+              </select>
+            </div>
+          </div>
+
+          {/* フィルタークリアボタン */}
+          {(universityFilter || facultyFilter || yearFilter || campusFilter || admissionResultFilter) && (
+            <div className="mt-3 flex justify-end">
+              <button
+                onClick={clearFilters}
+                className="px-4 py-2 text-sm text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+              >
+                フィルターをクリア
+              </button>
+            </div>
+          )}
         </div>
       </div>
 

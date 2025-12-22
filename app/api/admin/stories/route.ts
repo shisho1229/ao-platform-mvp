@@ -10,6 +10,11 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams
     const published = searchParams.get("published")
     const status = searchParams.get("status")
+    const university = searchParams.get("university")
+    const faculty = searchParams.get("faculty")
+    const year = searchParams.get("year")
+    const campus = searchParams.get("campus")
+    const admissionResult = searchParams.get("admissionResult") // "first_pass" or "final_pass"
 
     const where: any = {}
 
@@ -23,6 +28,35 @@ export async function GET(request: NextRequest) {
       where.published = true
     } else if (published === "false") {
       where.published = false
+    }
+
+    // 大学フィルター
+    if (university) {
+      where.university = { contains: university }
+    }
+
+    // 学部フィルター
+    if (faculty) {
+      where.faculty = { contains: faculty }
+    }
+
+    // 年度フィルター
+    if (year) {
+      where.year = parseInt(year)
+    }
+
+    // 校舎フィルター
+    if (campus) {
+      where.campus = campus
+    }
+
+    // 合否情報フィルター
+    if (admissionResult === "first_pass") {
+      // 一次合格のみ（二次は不合格または未記入）
+      where.firstRoundResult = { in: ["合格", "AB合格", "A合格", "B合格"] }
+    } else if (admissionResult === "final_pass") {
+      // 最終合格（二次合格）
+      where.secondRoundResult = { in: ["合格", "AB合格", "A合格", "B合格"] }
     }
 
     const stories = await prisma.graduateStory.findMany({
