@@ -39,7 +39,7 @@ export default function HomePage() {
     fetch('/api/stories')
       .then(res => res.json())
       .then(data => {
-        const stories = Array.isArray(data) ? data : [];
+        const stories = Array.isArray(data) ? data : (data.stories || []);
         setStories(stories.slice(0, 10)); // 最新10件
         setLoading(false);
       })
@@ -99,8 +99,86 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #044465 0%, #055a7a 40%, #0891b2 100%)' }}>
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="flex gap-8">
+      <div className="max-w-7xl mx-auto px-4 py-6 sm:py-8">
+        {/* モバイル: タイトルセクション（上部） */}
+        <section className="lg:hidden mb-6">
+          <h1 className="text-2xl sm:text-3xl font-bold mb-3 text-center" style={{ color: '#f0f4f8' }}>
+            Loohcs志塾 合格者体験記
+          </h1>
+          <p className="text-lg sm:text-xl mb-3 font-bold text-center" style={{ color: '#FFD700' }}>
+            志を抱く、場所となる。
+          </p>
+          <p className="text-sm sm:text-base text-center leading-relaxed" style={{ color: '#e8eef5' }}>
+            先輩の体験から学び、自分だけの合格ストーリーを描こう
+          </p>
+        </section>
+
+        {/* モバイル: ナビゲーションボタン（横スクロール） */}
+        <div className="lg:hidden mb-6 -mx-4 px-4 overflow-x-auto pb-2">
+          <div className="flex gap-3 min-w-max">
+            <Link href="/stories" className="flex-shrink-0 bg-white p-4 rounded-xl shadow-lg w-36">
+              <BookOpen className="w-8 h-8 mb-2" style={{ color: '#044465' }} />
+              <h3 className="text-sm font-bold" style={{ color: '#044465' }}>体験記一覧</h3>
+            </Link>
+
+            <Link href="/search" className="flex-shrink-0 bg-white p-4 rounded-xl shadow-lg w-36">
+              <Search className="w-8 h-8 mb-2" style={{ color: '#044465' }} />
+              <h3 className="text-sm font-bold" style={{ color: '#044465' }}>類似検索</h3>
+            </Link>
+
+            <Link href="/favorites" className="flex-shrink-0 bg-white p-4 rounded-xl shadow-lg w-36">
+              <Heart className="w-8 h-8 mb-2" style={{ color: '#044465' }} />
+              <h3 className="text-sm font-bold" style={{ color: '#044465' }}>お気に入り</h3>
+            </Link>
+
+            {session?.user && (
+              <Link
+                href="/stories/new"
+                className="flex-shrink-0 p-4 rounded-xl shadow-lg w-36"
+                style={{ background: 'linear-gradient(135deg, #064e3b 0%, #047857 50%, #059669 100%)' }}
+              >
+                <Award className="w-8 h-8 mb-2 text-white" />
+                <h3 className="text-sm font-bold text-white">体験記を投稿</h3>
+              </Link>
+            )}
+          </div>
+        </div>
+
+        {/* モバイル: 合格実績 */}
+        <div className="lg:hidden mb-6">
+          <div className="rounded-xl p-4 shadow-xl" style={{ background: 'linear-gradient(135deg, #044465 0%, #055a7a 50%, #0891b2 100%)' }}>
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-amber-500 rounded-lg flex items-center justify-center shadow-md">
+                <Award className="w-5 h-5 text-white" />
+              </div>
+              <h3 className="text-base font-bold text-white">2026年度合格実績</h3>
+            </div>
+            <div className="bg-white/95 backdrop-blur-sm rounded-lg p-3 shadow-md">
+              <div className="flex gap-4 items-center">
+                <div className="flex-1">
+                  <p className="text-xs font-bold mb-1" style={{ color: '#044465' }}>14年連続</p>
+                  <p className="text-sm font-bold" style={{ color: '#044465' }}>
+                    慶應義塾大学合格者
+                    <span className="text-2xl font-extrabold ml-1" style={{ color: '#044465' }}>100名</span>超え
+                  </p>
+                </div>
+                <div className="flex-1">
+                  <div className="space-y-1">
+                    <p className="text-sm font-bold" style={{ color: '#044465' }}>
+                      法学部：<span className="text-xl font-extrabold" style={{ color: '#044465' }}>64名</span>
+                    </p>
+                    <p className="text-sm font-bold" style={{ color: '#044465' }}>
+                      SFC：<span className="text-xl font-extrabold" style={{ color: '#044465' }}>46名</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* デスクトップ: 2カラムレイアウト */}
+        <div className="hidden lg:flex gap-8">
           {/* 左側: ナビゲーションボタン（縦並び） */}
           <div className="w-80 flex-shrink-0 space-y-4">
             <Link href="/stories" className="block bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
@@ -201,7 +279,7 @@ export default function HomePage() {
               </div>
             </section>
 
-            {/* 下部: 最新の体験記一覧 */}
+            {/* 下部: 最新の体験記一覧（デスクトップ） */}
             <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-6">
               <h3 className="text-2xl font-bold mb-6" style={{ color: '#044465' }}>最新の体験記</h3>
               {loading ? (
@@ -300,6 +378,95 @@ export default function HomePage() {
                 </div>
               )}
             </div>
+          </div>
+        </div>
+
+        {/* モバイル: 最新の体験記一覧 */}
+        <div className="lg:hidden">
+          <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-4">
+            <h3 className="text-xl font-bold mb-4" style={{ color: '#044465' }}>最新の体験記</h3>
+            {loading ? (
+              <div className="text-center py-8">
+                <div className="inline-block animate-spin rounded-full h-10 w-10 border-4 border-t-transparent" style={{ borderColor: '#044465', borderTopColor: 'transparent' }}></div>
+                <p className="text-gray-600 mt-3 text-sm">読み込み中...</p>
+              </div>
+            ) : stories.length === 0 ? (
+              <div className="text-center py-8 text-gray-500 text-sm">
+                まだ体験記が投稿されていません
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {stories.slice(0, 6).map((story) => (
+                  <Link
+                    key={story.id}
+                    href={`/stories/${story.id}`}
+                    className="block bg-white rounded-xl shadow-md overflow-hidden border border-gray-100"
+                  >
+                    {/* カードヘッダー - グラデーション背景 */}
+                    <div className="p-3 relative overflow-hidden" style={{ background: getUniversityColor(story.university) }}>
+                      <div className="absolute top-0 right-0 w-16 h-16 bg-white opacity-10 rounded-full -mr-8 -mt-8"></div>
+                      <div className="relative flex items-start justify-between">
+                        <div className="flex-1 min-w-0">
+                          <h2 className="text-base font-bold text-white mb-0.5 leading-tight truncate">
+                            {story.university}
+                          </h2>
+                          <p className="text-xs font-medium leading-tight truncate" style={{ color: '#bac9d0' }}>{story.faculty}</p>
+                        </div>
+                        <div className="flex flex-col gap-1 ml-2">
+                          <div className="inline-block px-2 py-0.5 bg-orange-500 text-white text-xs font-semibold rounded-full text-center">
+                            {story.admissionType}
+                          </div>
+                          {(() => {
+                            const result = getAdmissionResult(story.admissionType, story.firstRoundResult, story.secondRoundResult);
+                            return result ? (
+                              <div className={`inline-block px-2 py-0.5 ${result.color} text-white text-xs font-semibold rounded-full text-center`}>
+                                {result.label}
+                              </div>
+                            ) : null;
+                          })()}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* カードボディ */}
+                    <div className="p-3">
+                      <div className="flex items-center gap-3 text-xs text-gray-600">
+                        {story.highSchoolName && (
+                          <div className="flex items-center gap-1">
+                            <GraduationCap className="w-3 h-3" style={{ color: '#044465' }} />
+                            <span className="truncate max-w-[120px]">{story.highSchoolName}</span>
+                          </div>
+                        )}
+                        {story.campus && (
+                          <div className="flex items-center gap-1">
+                            <BookOpen className="w-3 h-3" style={{ color: '#044465' }} />
+                            <span>{story.campus}</span>
+                          </div>
+                        )}
+                        {story.year && (
+                          <span className="text-gray-400">{story.year}年度</span>
+                        )}
+                      </div>
+                      {story.researchTheme && (
+                        <p className="mt-2 text-sm text-gray-700 line-clamp-1">
+                          <span className="font-semibold" style={{ color: '#044465' }}>志：</span>
+                          {story.researchTheme}
+                        </p>
+                      )}
+                    </div>
+                  </Link>
+                ))}
+
+                {/* もっと見るボタン */}
+                <Link
+                  href="/stories"
+                  className="block text-center py-3 text-sm font-semibold rounded-lg transition-colors"
+                  style={{ color: '#044465', backgroundColor: '#f0f4f5' }}
+                >
+                  すべての体験記を見る →
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>
