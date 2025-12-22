@@ -2,11 +2,135 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import { Plus, X } from "lucide-react"
 
 interface ExplorationTheme {
   id: number
   name: string
   description: string
+}
+
+// 大学リスト
+const UNIVERSITIES = [
+  "慶應義塾大学",
+  "早稲田大学",
+  "上智大学",
+  "青山学院大学",
+  "明治大学",
+  "立教大学",
+  "中央大学",
+  "学習院大学",
+]
+
+// 大学ごとの学部リスト
+const FACULTY_OPTIONS: Record<string, string[]> = {
+  "慶應義塾大学": [
+    "法学部政治学科",
+    "法学部法律学科",
+    "総合政策学部",
+    "環境情報学部",
+    "文学部",
+    "経済学部",
+    "商学部",
+    "理工学部",
+    "医学部",
+    "薬学部",
+    "看護医療学部",
+  ],
+  "早稲田大学": [
+    "政治経済学部",
+    "法学部",
+    "文学部",
+    "文化構想学部",
+    "教育学部",
+    "商学部",
+    "社会科学部",
+    "人間科学部",
+    "スポーツ科学部",
+    "国際教養学部",
+    "基幹理工学部",
+    "創造理工学部",
+    "先進理工学部",
+  ],
+  "上智大学": [
+    "神学部",
+    "文学部",
+    "総合人間科学部",
+    "法学部",
+    "経済学部",
+    "外国語学部",
+    "総合グローバル学部",
+    "国際教養学部",
+    "理工学部",
+  ],
+  "青山学院大学": [
+    "文学部",
+    "教育人間科学部",
+    "経済学部",
+    "法学部",
+    "経営学部",
+    "国際政治経済学部",
+    "総合文化政策学部",
+    "理工学部",
+    "社会情報学部",
+    "地球社会共生学部",
+    "コミュニティ人間科学部",
+  ],
+  "明治大学": [
+    "法学部",
+    "商学部",
+    "政治経済学部",
+    "文学部",
+    "理工学部",
+    "農学部",
+    "経営学部",
+    "情報コミュニケーション学部",
+    "国際日本学部",
+    "総合数理学部",
+  ],
+  "立教大学": [
+    "文学部",
+    "異文化コミュニケーション学部",
+    "経済学部",
+    "経営学部",
+    "理学部",
+    "社会学部",
+    "法学部",
+    "観光学部",
+    "コミュニティ福祉学部",
+    "現代心理学部",
+    "スポーツウエルネス学部",
+    "グローバル・リベラルアーツ・プログラム",
+  ],
+  "中央大学": [
+    "法学部",
+    "経済学部",
+    "商学部",
+    "理工学部",
+    "文学部",
+    "総合政策学部",
+    "国際経営学部",
+    "国際情報学部",
+  ],
+  "学習院大学": [
+    "法学部",
+    "経済学部",
+    "文学部",
+    "理学部",
+    "国際社会科学部",
+  ],
+}
+
+// 大学ごとの入試方式
+const ADMISSION_TYPE_OPTIONS: Record<string, string[]> = {
+  "慶應義塾大学": ["FIT入試", "春AO", "夏秋AO", "自己推薦入試"],
+  "早稲田大学": ["AO入試", "指定校推薦", "自己推薦入試", "グローバル入試"],
+  "上智大学": ["公募制推薦入試", "カトリック高等学校対象特別入試", "海外就学経験者入試", "国際バカロレア入試"],
+  "青山学院大学": ["自己推薦入試", "スポーツ推薦入試", "海外就学経験者入試"],
+  "明治大学": ["AO入試", "自己推薦特別入試", "公募制特別入試", "スポーツ特別入試"],
+  "立教大学": ["自由選抜入試", "アスリート選抜入試", "国際コース選抜入試"],
+  "中央大学": ["自己推薦入試", "スポーツ推薦入試", "英語運用能力特別入試"],
+  "学習院大学": ["公募制推薦入試", "AO入試"],
 }
 
 export default function NewStoryPage() {
@@ -20,6 +144,7 @@ export default function NewStoryPage() {
   // フォームデータ
   const [formData, setFormData] = useState({
     authorName: "",
+    isAnonymous: false,
     gender: "",
     highSchoolLevel: "LEVEL_2",
     highSchoolName: "",
@@ -45,7 +170,6 @@ export default function NewStoryPage() {
     leaderExperienceDetails: "",
     hasContestAchievement: false,
     contestAchievementDetails: "",
-    interviewQuestions: "",
     // 選考フロー
     selectionFlowType: "",
     firstRoundResult: "",
@@ -55,6 +179,10 @@ export default function NewStoryPage() {
     materials: "",
     adviceToJuniors: "",
   })
+
+  // 面接質問（個別入力）
+  const [interviewQuestions, setInterviewQuestions] = useState<string[]>([])
+  const [newQuestion, setNewQuestion] = useState("")
 
   const [concurrentApplications, setConcurrentApplications] = useState<
     Array<{ university: string; faculty: string; result: string }>
@@ -73,6 +201,7 @@ export default function NewStoryPage() {
         const draft = JSON.parse(savedDraft)
         setFormData(draft.formData || formData)
         setConcurrentApplications(draft.concurrentApplications || [])
+        setInterviewQuestions(draft.interviewQuestions || [])
       } catch (error) {
         console.error("下書きの復元に失敗しました:", error)
       }
@@ -85,13 +214,14 @@ export default function NewStoryPage() {
       const draft = {
         formData,
         concurrentApplications,
+        interviewQuestions,
         savedAt: new Date().toISOString()
       }
       localStorage.setItem(STORAGE_KEY, JSON.stringify(draft))
     }, 1000) // 1秒のデバウンス
 
     return () => clearTimeout(saveTimer)
-  }, [formData, concurrentApplications])
+  }, [formData, concurrentApplications, interviewQuestions])
 
   const fetchThemes = async () => {
     try {
@@ -137,6 +267,19 @@ export default function NewStoryPage() {
     setConcurrentApplications(updated)
   }
 
+  // 面接質問の追加
+  const addInterviewQuestion = () => {
+    if (newQuestion.trim()) {
+      setInterviewQuestions([...interviewQuestions, newQuestion.trim()])
+      setNewQuestion("")
+    }
+  }
+
+  // 面接質問の削除
+  const removeInterviewQuestion = (index: number) => {
+    setInterviewQuestions(interviewQuestions.filter((_, i) => i !== index))
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
@@ -156,8 +299,20 @@ export default function NewStoryPage() {
       return
     }
 
+    if (!formData.highSchoolName?.trim()) {
+      setError("高校名を入力してください")
+      setIsLoading(false)
+      return
+    }
+
     if (!formData.campus?.trim()) {
       setError("所属校舎を選択してください")
+      setIsLoading(false)
+      return
+    }
+
+    if (!formData.university?.trim()) {
+      setError("受験大学を選択してください")
       setIsLoading(false)
       return
     }
@@ -188,6 +343,12 @@ export default function NewStoryPage() {
 
     if (!formData.targetProfessor?.trim()) {
       setError("大学で学びたい教授を入力してください")
+      setIsLoading(false)
+      return
+    }
+
+    if (interviewQuestions.length === 0) {
+      setError("面接で聞かれた質問を少なくとも1つ入力してください")
       setIsLoading(false)
       return
     }
@@ -233,6 +394,8 @@ export default function NewStoryPage() {
     try {
       const payload = {
         ...formData,
+        // 面接質問をJSON文字列として保存
+        interviewQuestions: JSON.stringify(interviewQuestions),
         concurrentApplications:
           concurrentApplications.length > 0 ? concurrentApplications : undefined,
       }
@@ -273,6 +436,7 @@ export default function NewStoryPage() {
       const payload = {
         ...formData,
         status: "DRAFT", // 下書きステータスで保存
+        interviewQuestions: JSON.stringify(interviewQuestions),
         concurrentApplications:
           concurrentApplications.length > 0 ? concurrentApplications : undefined,
       }
@@ -301,6 +465,11 @@ export default function NewStoryPage() {
       setIsSavingDraft(false)
     }
   }
+
+  // 選択された大学の学部リスト
+  const facultyOptions = formData.university ? FACULTY_OPTIONS[formData.university] || [] : []
+  // 選択された大学の入試方式リスト
+  const admissionTypeOptions = formData.university ? ADMISSION_TYPE_OPTIONS[formData.university] || [] : []
 
   return (
     <div className="min-h-screen bg-gray-50 py-4 sm:py-8">
@@ -340,6 +509,29 @@ export default function NewStoryPage() {
                   setFormData({ ...formData, authorName: e.target.value })
                 }
               />
+            </div>
+
+            {/* 匿名表示オプション */}
+            <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+              <label className="flex items-start space-x-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={formData.isAnonymous}
+                  onChange={(e) =>
+                    setFormData({ ...formData, isAnonymous: e.target.checked })
+                  }
+                  className="mt-1 h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <div>
+                  <span className="text-sm font-medium text-gray-900">
+                    匿名での表示を希望する
+                  </span>
+                  <p className="text-xs text-gray-500 mt-1">
+                    チェックすると、体験記の公開時に名前が「匿名」と表示されます。<br />
+                    ※管理者のデータベースには本名が記録されます。
+                  </p>
+                </div>
+              </label>
             </div>
 
             <div>
@@ -382,12 +574,13 @@ export default function NewStoryPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                高校名（任意）
+                高校名 *
               </label>
               <input
                 type="text"
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
                 placeholder="例：〇〇高等学校"
+                required
                 value={formData.highSchoolName}
                 onChange={(e) =>
                   setFormData({ ...formData, highSchoolName: e.target.value })
@@ -450,12 +643,13 @@ export default function NewStoryPage() {
                 }
               >
                 <option value="">選択してください</option>
-                <option value="慶應義塾大学">慶應義塾大学</option>
-                <option value="その他">その他</option>
+                {UNIVERSITIES.map((uni) => (
+                  <option key={uni} value={uni}>{uni}</option>
+                ))}
               </select>
             </div>
 
-            {formData.university === "慶應義塾大学" && (
+            {formData.university && (
               <div>
                 <label className="block text-sm font-medium text-gray-700">
                   学部 *
@@ -469,34 +663,14 @@ export default function NewStoryPage() {
                   }
                 >
                   <option value="">選択してください</option>
-                  <option value="法学部政治学科">法学部政治学科</option>
-                  <option value="法学部法律学科">法学部法律学科</option>
-                  <option value="総合政策学部">総合政策学部</option>
-                  <option value="環境情報学部">環境情報学部</option>
-                  <option value="文学部">文学部</option>
+                  {facultyOptions.map((fac) => (
+                    <option key={fac} value={fac}>{fac}</option>
+                  ))}
                 </select>
               </div>
             )}
 
-            {formData.university === "その他" && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  学部 *
-                </label>
-                <input
-                  type="text"
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
-                  placeholder="例：政治経済学部"
-                  required
-                  value={formData.faculty}
-                  onChange={(e) =>
-                    setFormData({ ...formData, faculty: e.target.value })
-                  }
-                />
-              </div>
-            )}
-
-            {formData.university === "慶應義塾大学" && formData.faculty && (
+            {formData.university && formData.faculty && (
               <div>
                 <label className="block text-sm font-medium text-gray-700">
                   入試方式 *
@@ -510,29 +684,10 @@ export default function NewStoryPage() {
                   }
                 >
                   <option value="">選択してください</option>
-                  <option value="FIT入試">FIT入試</option>
-                  <option value="春AO">春AO</option>
-                  <option value="夏秋AO">夏秋AO</option>
-                  <option value="自己推薦入試">自己推薦入試</option>
+                  {admissionTypeOptions.map((type) => (
+                    <option key={type} value={type}>{type}</option>
+                  ))}
                 </select>
-              </div>
-            )}
-
-            {formData.university === "その他" && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  入試方式 *
-                </label>
-                <input
-                  type="text"
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
-                  placeholder="例：総合型選抜、学校推薦型選抜"
-                  required
-                  value={formData.admissionType}
-                  onChange={(e) =>
-                    setFormData({ ...formData, admissionType: e.target.value })
-                  }
-                />
               </div>
             )}
 
@@ -559,7 +714,7 @@ export default function NewStoryPage() {
               <div className="space-y-4 border-l-4 border-green-500 pl-3 sm:pl-4">
                 <h3 className="text-base sm:text-lg font-medium text-gray-900">合否情報</h3>
 
-                {formData.admissionType === "FIT入試" ? (
+                {formData.university === "慶應義塾大学" && formData.admissionType === "FIT入試" ? (
                   <>
                     <div>
                       <label className="block text-sm font-medium text-gray-700">
@@ -1007,103 +1162,64 @@ export default function NewStoryPage() {
           <div className="space-y-4">
             <h2 className="text-lg sm:text-xl font-semibold text-gray-900">選考情報</h2>
 
-            {/* 選考フロー */}
-            {(formData.admissionType === "春AO" || formData.admissionType === "夏秋AO" || formData.admissionType === "自己推薦入試") && (
-              <div className="space-y-4 border-l-4 border-blue-500 pl-3 sm:pl-4">
-                <h3 className="text-base sm:text-lg font-medium text-gray-900">選考フロー</h3>
-
-                {(formData.admissionType === "春AO" || formData.admissionType === "夏秋AO") && (
-                  <>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">
-                        一次選考（書類選考）の結果 *
-                      </label>
-                      <select
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
-                        required
-                        value={formData.firstRoundResult}
-                        onChange={(e) =>
-                          setFormData({ ...formData, firstRoundResult: e.target.value })
-                        }
-                      >
-                        <option value="">選択してください</option>
-                        <option value="合格">合格</option>
-                        <option value="不合格">不合格</option>
-                      </select>
-                    </div>
-
-                    {formData.firstRoundResult === "合格" && (
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">
-                          二次選考（面接）の結果 *
-                        </label>
-                        <select
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
-                          required
-                          value={formData.secondRoundResult}
-                          onChange={(e) =>
-                            setFormData({ ...formData, secondRoundResult: e.target.value })
-                          }
-                        >
-                          <option value="">選択してください</option>
-                          <option value="合格">合格</option>
-                          <option value="不合格">不合格</option>
-                        </select>
-                      </div>
-                    )}
-                  </>
-                )}
-
-                {formData.admissionType === "自己推薦入試" && (
-                  <>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">
-                        書類提出
-                      </label>
-                      <p className="mt-1 text-sm text-gray-500">
-                        書類を提出しました
-                      </p>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">
-                        論述試験の結果 *
-                      </label>
-                      <select
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
-                        required
-                        value={formData.secondRoundResult}
-                        onChange={(e) =>
-                          setFormData({ ...formData, secondRoundResult: e.target.value })
-                        }
-                      >
-                        <option value="">選択してください</option>
-                        <option value="合格">合格</option>
-                        <option value="不合格">不合格</option>
-                      </select>
-                    </div>
-                  </>
-                )}
-              </div>
-            )}
-
+            {/* 面接で聞かれた質問 - 個別入力形式 */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                面接で聞かれた内容 *
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                面接で聞かれた質問 *
               </label>
-              <textarea
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
-                rows={4}
-                placeholder="面接での質問内容を教えてください"
-                required
-                value={formData.interviewQuestions}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    interviewQuestions: e.target.value,
-                  })
-                }
-              />
+              <p className="text-xs text-gray-500 mb-3">
+                面接で聞かれた質問を1つずつ追加してください
+              </p>
+
+              {/* 追加済みの質問リスト */}
+              {interviewQuestions.length > 0 && (
+                <div className="space-y-2 mb-4">
+                  {interviewQuestions.map((question, index) => (
+                    <div
+                      key={index}
+                      className="flex items-start gap-2 p-3 bg-gray-50 rounded-lg border"
+                    >
+                      <span className="flex-shrink-0 w-6 h-6 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center text-xs font-bold">
+                        {index + 1}
+                      </span>
+                      <p className="flex-1 text-sm text-gray-700">{question}</p>
+                      <button
+                        type="button"
+                        onClick={() => removeInterviewQuestion(index)}
+                        className="flex-shrink-0 p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* 新しい質問の入力 */}
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={newQuestion}
+                  onChange={(e) => setNewQuestion(e.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault()
+                      addInterviewQuestion()
+                    }
+                  }}
+                  className="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
+                  placeholder="例：なぜこの学部を志望しましたか？"
+                />
+                <button
+                  type="button"
+                  onClick={addInterviewQuestion}
+                  disabled={!newQuestion.trim()}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span className="hidden sm:inline">追加</span>
+                </button>
+              </div>
             </div>
           </div>
 

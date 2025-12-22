@@ -13,6 +13,7 @@ interface Story {
   faculty: string
   authorId: string
   authorName?: string
+  isAnonymous?: boolean
   gender: string | null
   highSchoolLevel: string
   highSchoolName?: string
@@ -386,7 +387,9 @@ export default function StoryDetailPage() {
                     {story.authorName && (
                       <div className="flex items-center gap-2">
                         <Users className="w-5 h-5" style={{ color: '#055a7a' }} />
-                        <span className="font-semibold" style={{ color: '#044465' }}>{story.authorName}</span>
+                        <span className="font-semibold" style={{ color: '#044465' }}>
+                          {story.isAnonymous ? "匿名" : story.authorName}
+                        </span>
                       </div>
                     )}
                   </div>
@@ -630,9 +633,33 @@ export default function StoryDetailPage() {
                 </h2>
                 <div>
                   <h3 className="font-semibold mb-2" style={{ color: '#055a7a' }}>面接で聞かれた内容</h3>
-                  <p className="text-gray-700 whitespace-pre-wrap bg-gray-50 p-4 rounded-lg">
-                    {story.interviewQuestions}
-                  </p>
+                  {(() => {
+                    // JSONとして保存されている場合はパースして表示
+                    try {
+                      const questions = JSON.parse(story.interviewQuestions)
+                      if (Array.isArray(questions) && questions.length > 0) {
+                        return (
+                          <ol className="space-y-2 bg-gray-50 p-4 rounded-lg">
+                            {questions.map((q: string, index: number) => (
+                              <li key={index} className="flex gap-3 text-gray-700">
+                                <span className="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full text-sm font-semibold" style={{ backgroundColor: '#044465', color: 'white' }}>
+                                  {index + 1}
+                                </span>
+                                <span>{q}</span>
+                              </li>
+                            ))}
+                          </ol>
+                        )
+                      }
+                    } catch {
+                      // JSONでない場合は従来通りテキスト表示
+                    }
+                    return (
+                      <p className="text-gray-700 whitespace-pre-wrap bg-gray-50 p-4 rounded-lg">
+                        {story.interviewQuestions}
+                      </p>
+                    )
+                  })()}
                 </div>
               </div>
             )}

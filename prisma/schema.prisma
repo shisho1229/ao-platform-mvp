@@ -42,11 +42,12 @@ model GraduateStory {
   authorId        String
   author          User      @relation(fields: [authorId], references: [id])
   authorName      String?   // 投稿者名（投稿時に入力）
+  isAnonymous     Boolean   @default(false) // 匿名表示を希望
 
   // 基礎属性
   gender          Gender?
   highSchoolLevel HighSchoolLevel
-  highSchoolName  String?   // 高校名
+  highSchoolName  String    // 高校名（必須）
   gradeAverage    GradeAverage
   campus          String?   // 所属校舎
   admissionType   String    // 入試方式（総合型選抜、学校推薦型選抜など）
