@@ -37,6 +37,8 @@ export default function AdminStoriesPage() {
   const [showEditRequestModal, setShowEditRequestModal] = useState<string | null>(null)
   const [documentsUrl, setDocumentsUrl] = useState("")
   const [editRequestMessage, setEditRequestMessage] = useState("")
+  const [selectedStories, setSelectedStories] = useState<string[]>([])
+  const [bulkProcessing, setBulkProcessing] = useState(false)
 
   const isStaffOrAdmin = session?.user?.role === "SUPER_ADMIN" ||
                          session?.user?.role === "ADMIN" ||
@@ -192,6 +194,58 @@ export default function AdminStoriesPage() {
     setEditRequestMessage("")
   }
 
+  const toggleSelectAll = () => {
+    if (selectedStories.length === stories.length) {
+      setSelectedStories([])
+    } else {
+      setSelectedStories(stories.map(s => s.id))
+    }
+  }
+
+  const toggleSelectStory = (storyId: string) => {
+    setSelectedStories(prev =>
+      prev.includes(storyId)
+        ? prev.filter(id => id !== storyId)
+        : [...prev, storyId]
+    )
+  }
+
+  const handleBulkOperation = async (action: "publish" | "unpublish" | "approve" | "delete") => {
+    if (selectedStories.length === 0) {
+      alert("体験記を選択してください")
+      return
+    }
+
+    const actionLabel = action === "publish" ? "公開" : action === "unpublish" ? "非公開" : action === "approve" ? "承認" : "削除"
+    if (!confirm(`選択した${selectedStories.length}件の体験記を${actionLabel}しますか？`)) {
+      return
+    }
+
+    setBulkProcessing(true)
+    try {
+      const response = await fetch("/api/admin/stories/bulk", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action, storyIds: selectedStories })
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        alert(data.message)
+        setSelectedStories([])
+        fetchStories()
+      } else {
+        const error = await response.json()
+        alert(error.error || "一括操作に失敗しました")
+      }
+    } catch (error) {
+      console.error("一括操作エラー:", error)
+      alert("一括操作に失敗しました")
+    } finally {
+      setBulkProcessing(false)
+    }
+  }
+
   if (!isStaffOrAdmin) {
     return null
   }
@@ -260,6 +314,45 @@ export default function AdminStoriesPage() {
         </div>
       </div>
 
+      {/* 一括操作ボタン */}
+      {selectedStories.length > 0 && (
+        <div className="mb-4 p-4 bg-blue-50 rounded-lg flex items-center justify-between">
+          <span className="font-semibold text-blue-900">
+            {selectedStories.length}件選択中
+          </span>
+          <div className="flex gap-2">
+            <button
+              onClick={() => handleBulkOperation("approve")}
+              disabled={bulkProcessing}
+              className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50"
+            >
+              一括承認
+            </button>
+            <button
+              onClick={() => handleBulkOperation("publish")}
+              disabled={bulkProcessing}
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+            >
+              一括公開
+            </button>
+            <button
+              onClick={() => handleBulkOperation("unpublish")}
+              disabled={bulkProcessing}
+              className="px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700 disabled:opacity-50"
+            >
+              一括非公開
+            </button>
+            <button
+              onClick={() => handleBulkOperation("delete")}
+              disabled={bulkProcessing}
+              className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50"
+            >
+              一括削除
+            </button>
+          </div>
+        </div>
+      )}
+
       {loading ? (
         <div className="text-center py-12 text-gray-500">読み込み中...</div>
       ) : filteredStories.length === 0 ? (
@@ -271,6 +364,14 @@ export default function AdminStoriesPage() {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
+                <th className="px-6 py-3 text-left">
+                  <input
+                    type="checkbox"
+                    checked={selectedStories.length === stories.length && stories.length > 0}
+                    onChange={toggleSelectAll}
+                    className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                  />
+                </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   大学・学部
                 </th>
@@ -297,6 +398,14 @@ export default function AdminStoriesPage() {
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredStories.map((story) => (
                 <tr key={story.id}>
+                  <td className="px-6 py-4">
+                    <input
+                      type="checkbox"
+                      checked={selectedStories.includes(story.id)}
+                      onChange={() => toggleSelectStory(story.id)}
+                      className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                    />
+                  </td>
                   <td className="px-6 py-4">
                     <div className="text-sm font-medium text-gray-900">
                       {story.university}
