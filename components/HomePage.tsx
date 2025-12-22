@@ -14,6 +14,7 @@ interface Story {
   campus?: string;
   highSchoolName?: string;
   authorName?: string;
+  isAnonymous?: boolean;
   researchTheme?: string;
   firstRoundResult?: string;
   secondRoundResult?: string;
@@ -232,7 +233,7 @@ export default function HomePage() {
                           {/* 公開通知 */}
                           {story.authorName && (
                             <div className="mb-1 text-xs text-green-200 font-medium">
-                              {story.authorName}さんの体験記が公開されました
+                              {story.isAnonymous ? "匿名" : story.authorName}さんの体験記が公開されました
                             </div>
                           )}
                           {/* 大学名と学部を縦に並べる */}

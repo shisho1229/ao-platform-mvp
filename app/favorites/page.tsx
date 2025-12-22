@@ -18,6 +18,7 @@ interface Favorite {
     firstRoundResult?: string
     secondRoundResult?: string
     authorName?: string
+    isAnonymous?: boolean
     highSchoolName?: string
     explorationThemes: Array<{
       theme: {
@@ -245,7 +246,7 @@ export default function FavoritesPage() {
                         <div className="flex items-center gap-2">
                           <Users className="w-4 h-4 flex-shrink-0" style={{ color: '#055a7a' }} />
                           <p className="text-sm" style={{ color: '#044465' }}>
-                            {favorite.story.authorName}
+                            {favorite.story.isAnonymous ? "匿名" : favorite.story.authorName}
                           </p>
                         </div>
                       )}

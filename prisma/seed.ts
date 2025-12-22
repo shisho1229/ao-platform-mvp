@@ -97,6 +97,7 @@ async function main() {
       authorId: user1.id,
       gender: 'FEMALE',
       highSchoolLevel: 'LEVEL_3',
+      highSchoolName: '〇〇高等学校',
       gradeAverage: 'RANGE_4',
       admissionType: '総合型選抜',
       university: '早稲田大学',
@@ -113,11 +114,13 @@ async function main() {
       leaderExperienceDetails: '生徒会副会長（高3）',
       hasContestAchievement: true,
       contestAchievementDetails: '地域活性化コンテストで優秀賞を受賞',
-      interviewQuestions: `- 志望理由を3分で説明してください
-- 活動報告書の地域ボランティアについて詳しく教えてください
-- 入学後にやりたいことは具体的に何ですか?
-- なぜ慶應ではなく早稲田なのですか?
-- 卒業後はどのような進路を考えていますか?`,
+      interviewQuestions: [
+        "志望理由を3分で説明してください",
+        "活動報告書の地域ボランティアについて詳しく教えてください",
+        "入学後にやりたいことは具体的に何ですか?",
+        "なぜ慶應ではなく早稲田なのですか?",
+        "卒業後はどのような進路を考えていますか?"
+      ],
       documentPreparation: `志望理由書は夏休みから準備を始め、4回の添削を受けました。特に第2段落のエピソードの書き方を変えたことで、説得力が格段に上がりました。`,
       secondRoundPreparation: `面接対策は予想質問を50個作り、すべてに対する回答を準備しました。塾の先生と週1回模擬面接を実施。`,
       materials: '参考書：「総合型選抜の教科書」「政治経済入門」\n添削：塾での4回の添削指導',
@@ -147,6 +150,7 @@ async function main() {
       authorId: user2.id,
       gender: 'MALE',
       highSchoolLevel: 'LEVEL_4',
+      highSchoolName: '△△高等学校',
       gradeAverage: 'RANGE_5',
       admissionType: '総合型選抜（AO入試）',
       university: '慶應義塾大学',
@@ -166,11 +170,13 @@ async function main() {
       leaderExperienceDetails: 'サッカー部キャプテン（高3）',
       hasContestAchievement: true,
       contestAchievementDetails: 'U-22プログラミングコンテストでファイナリスト',
-      interviewQuestions: `- あなたの研究テーマについて5分でプレゼンしてください
-- このテーマを選んだ理由は?
-- SFCで何を学びたいですか?
-- 先行研究は調べましたか?
-- 技術的な課題はどう解決しましたか?`,
+      interviewQuestions: [
+        "あなたの研究テーマについて5分でプレゼンしてください",
+        "このテーマを選んだ理由は?",
+        "SFCで何を学びたいですか?",
+        "先行研究は調べましたか?",
+        "技術的な課題はどう解決しましたか?"
+      ],
       documentPreparation: `研究計画書は3ヶ月かけて作成し、10回以上のブラッシュアップを重ねました。`,
       secondRoundPreparation: `プレゼン資料の作成に2週間かけました。何度も練習して、5分ぴったりに収まるように調整しました。`,
       materials: '参考書：「データサイエンス入門」「AO入試完全ガイド」\nオンライン講座：Coursera「Machine Learning」',

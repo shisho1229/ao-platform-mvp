@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
           { studyAbroadDetails: { contains: keyword, mode: 'insensitive' } },
           { leaderExperienceDetails: { contains: keyword, mode: 'insensitive' } },
           { contestAchievementDetails: { contains: keyword, mode: 'insensitive' } },
-          { interviewQuestions: { contains: keyword, mode: 'insensitive' } },
+          // { interviewQuestions: { contains: keyword, mode: 'insensitive' } }, // 配列フィールドのため検索から除外
           { documentPreparation: { contains: keyword, mode: 'insensitive' } },
           { secondRoundPreparation: { contains: keyword, mode: 'insensitive' } },
           { materials: { contains: keyword, mode: 'insensitive' } },
@@ -169,6 +169,7 @@ export async function POST(request: NextRequest) {
     const {
       status,
       authorName,
+      isAnonymous,
       gender,
       highSchoolLevel,
       highSchoolName,
@@ -194,7 +195,7 @@ export async function POST(request: NextRequest) {
       leaderExperienceDetails,
       hasContestAchievement,
       contestAchievementDetails,
-      interviewQuestions,
+      interviewQuestions = [],
       selectionFlowType,
       firstRoundResult,
       secondRoundResult,
@@ -221,6 +222,7 @@ export async function POST(request: NextRequest) {
       data: {
         authorId: user.id,
         authorName: authorName || null,
+        isAnonymous: isAnonymous || false,
         gender: gender || null,
         highSchoolLevel: highSchoolLevel || "LEVEL_2",
         highSchoolName: highSchoolName || null,

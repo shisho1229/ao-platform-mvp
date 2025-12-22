@@ -12,6 +12,7 @@ interface Story {
   faculty: string
   authorId: string
   authorName?: string
+  isAnonymous?: boolean
   gender: string | null
   highSchoolLevel: string
   highSchoolName?: string
@@ -383,7 +384,9 @@ export default function StoryDetailPage() {
                     {story.authorName && (
                       <div className="flex items-center gap-2">
                         <Users className="w-5 h-5" style={{ color: '#055a7a' }} />
-                        <span className="font-semibold" style={{ color: '#044465' }}>{story.authorName}</span>
+                        <span className="font-semibold" style={{ color: '#044465' }}>
+                          {story.isAnonymous ? "匿名" : story.authorName}
+                        </span>
                       </div>
                     )}
                   </div>

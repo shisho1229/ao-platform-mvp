@@ -19,6 +19,7 @@ export default function NewStoryPage() {
 
   // フォームデータ
   const [formData, setFormData] = useState({
+    isAnonymous: false,
     authorName: "",
     gender: "",
     highSchoolLevel: "LEVEL_2",
@@ -45,7 +46,7 @@ export default function NewStoryPage() {
     leaderExperienceDetails: "",
     hasContestAchievement: false,
     contestAchievementDetails: "",
-    interviewQuestions: "",
+    interviewQuestions: [] as string[],
     // 選考フロー
     selectionFlowType: "",
     firstRoundResult: "",
@@ -162,6 +163,12 @@ export default function NewStoryPage() {
       return
     }
 
+    if (!formData.highSchoolName?.trim()) {
+      setError("高校名を入力してください")
+      setIsLoading(false)
+      return
+    }
+
     if (formData.explorationThemeIds.length === 0) {
       setError("探究テーマを少なくとも1つ選択してください")
       setIsLoading(false)
@@ -228,6 +235,19 @@ export default function NewStoryPage() {
       setError("コンテスト実績の詳細を入力してください")
       setIsLoading(false)
       return
+
+    if (formData.interviewQuestions.length === 0) {
+      setError("面接で聞かれた質問を少なくとも1つ追加してください")
+      setIsLoading(false)
+      return
+    }
+
+    // 空の質問がないかチェック
+    if (formData.interviewQuestions.some(q => !q.trim())) {
+      setError("空の質問があります。すべての質問に内容を入力してください")
+      setIsLoading(false)
+      return
+    }
     }
 
     try {
@@ -342,6 +362,22 @@ export default function NewStoryPage() {
               />
             </div>
 
+            <div className="mt-4">
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={formData.isAnonymous}
+                  onChange={(e) =>
+                    setFormData({ ...formData, isAnonymous: e.target.checked })
+                  }
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <span className="text-sm text-gray-700">
+                  体験記を匿名で表示する（管理者には本名が表示されます）
+                </span>
+              </label>
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 性別（任意）
@@ -382,11 +418,12 @@ export default function NewStoryPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                高校名（任意）
+                高校名 *
               </label>
               <input
                 type="text"
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                required
                 placeholder="例：〇〇高等学校"
                 value={formData.highSchoolName}
                 onChange={(e) =>
@@ -451,6 +488,13 @@ export default function NewStoryPage() {
               >
                 <option value="">選択してください</option>
                 <option value="慶應義塾大学">慶應義塾大学</option>
+                <option value="早稲田大学">早稲田大学</option>
+                <option value="上智大学">上智大学</option>
+                <option value="青山学院大学">青山学院大学</option>
+                <option value="明治大学">明治大学</option>
+                <option value="立教大学">立教大学</option>
+                <option value="中央大学">中央大学</option>
+                <option value="学習院大学">学習院大学</option>
                 <option value="その他">その他</option>
               </select>
             </div>
@@ -1088,22 +1132,53 @@ export default function NewStoryPage() {
             )}
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 面接で聞かれた内容 *
               </label>
-              <textarea
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                rows={4}
-                placeholder="面接での質問内容を教えてください"
-                required
-                value={formData.interviewQuestions}
-                onChange={(e) =>
+              <p className="text-sm text-gray-500 mb-3">
+                面接で聞かれた質問を1つずつ追加してください
+              </p>
+              {formData.interviewQuestions.map((question, index) => (
+                <div key={index} className="flex gap-2 mb-2">
+                  <input
+                    type="text"
+                    className="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    placeholder={'質問' + (index + 1)}
+                    value={question}
+                    onChange={(e) => {
+                      const newQuestions = [...formData.interviewQuestions]
+                      newQuestions[index] = e.target.value
+                      setFormData({ ...formData, interviewQuestions: newQuestions })
+                    }}
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const newQuestions = formData.interviewQuestions.filter((_, i) => i !== index)
+                      setFormData({ ...formData, interviewQuestions: newQuestions })
+                    }}
+                    className="px-3 py-2 text-sm text-red-600 hover:text-red-800"
+                  >
+                    削除
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() => {
                   setFormData({
                     ...formData,
-                    interviewQuestions: e.target.value,
+                    interviewQuestions: [...formData.interviewQuestions, ""]
                   })
-                }
-              />
+                }}
+                className="mt-2 text-sm text-blue-600 hover:text-blue-800"
+              >
+                + 質問を追加
+              </button>
+              {formData.interviewQuestions.length === 0 && (
+                <p className="text-sm text-red-600 mt-1">少なくとも1つの質問を追加してください</p>
+              )}
             </div>
           </div>
 

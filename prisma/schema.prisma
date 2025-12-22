@@ -43,11 +43,12 @@ model GraduateStory {
   authorId        String
   author          User      @relation(fields: [authorId], references: [id])
   authorName      String?   // 投稿者名（投稿時に入力）
+  isAnonymous     Boolean   @default(false) // 匿名表示希望フラグ
 
   // 基礎属性
   gender          Gender?
   highSchoolLevel HighSchoolLevel
-  highSchoolName  String?   // 高校名
+  highSchoolName  String    // 高校名（必須）
   gradeAverage    GradeAverage
   campus          String?   // 所属校舎
   admissionType   String    // 入試方式（総合型選抜、学校推薦型選抜など）
@@ -76,7 +77,7 @@ model GraduateStory {
   contestAchievementDetails String? @db.Text // コンテスト実績の詳細
 
   // 選考情報
-  interviewQuestions String?  @db.Text
+  interviewQuestions String[] // 面接で聞かれた質問（配列で複数保存）
 
   // 選考フロー（入試方式により異なる）
   firstRoundResult   String?   // 一次選考結果（合格/不合格）

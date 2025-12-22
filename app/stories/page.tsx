@@ -19,6 +19,7 @@ interface Story {
   firstRoundResult?: string
   secondRoundResult?: string
   authorName?: string
+  isAnonymous?: boolean
   researchTheme?: string
   author: {
     name: string
@@ -402,7 +403,7 @@ export default function StoriesPage() {
                       <div className="flex items-center gap-1.5">
                         <Users className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#055a7a' }} />
                         <p className="text-xs leading-tight" style={{ color: '#044465' }}>
-                          {story.authorName}
+                          {story.isAnonymous ? "匿名" : story.authorName}
                         </p>
                       </div>
                     )}
