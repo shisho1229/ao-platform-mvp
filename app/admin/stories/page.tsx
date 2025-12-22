@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { Eye, EyeOff, Trash2, Link as LinkIcon, Mail, ExternalLink, Edit } from "lucide-react"
+import { Eye, EyeOff, Trash2, Link as LinkIcon, Mail, ExternalLink, Edit, ChevronDown, X, MapPin, Calendar, User } from "lucide-react"
 import { useToast } from "@/components/ui/Toast"
 import { useConfirm } from "@/components/ui/ConfirmModal"
 
@@ -49,6 +49,7 @@ export default function AdminStoriesPage() {
   const [editRequestMessage, setEditRequestMessage] = useState("")
   const [selectedStories, setSelectedStories] = useState<string[]>([])
   const [bulkProcessing, setBulkProcessing] = useState(false)
+  const [showFilters, setShowFilters] = useState(false)
 
   const isStaffOrAdmin = session?.user?.role === "SUPER_ADMIN" ||
                          session?.user?.role === "ADMIN" ||
@@ -287,20 +288,145 @@ export default function AdminStoriesPage() {
     }
   }
 
+  const getStatusBadge = (story: Story) => {
+    const className = story.status === "PENDING_REVIEW"
+      ? "bg-yellow-100 text-yellow-800"
+      : story.status === "NEEDS_REVISION"
+      ? "bg-orange-100 text-orange-800"
+      : story.published
+      ? "bg-green-100 text-green-800"
+      : "bg-red-100 text-red-800"
+
+    const label = story.status === "PENDING_REVIEW"
+      ? "添削待ち"
+      : story.status === "NEEDS_REVISION"
+      ? "修正依頼中"
+      : story.published
+      ? "公開中"
+      : "非公開"
+
+    return { className, label }
+  }
+
+  const getResultBadge = (story: Story) => {
+    if (story.secondRoundResult && ["合格", "AB合格", "A合格", "B合格"].includes(story.secondRoundResult)) {
+      return { label: "合格", color: "bg-green-500 text-white" }
+    }
+    if (story.firstRoundResult && ["合格", "AB合格", "A合格", "B合格"].includes(story.firstRoundResult)) {
+      return { label: "一次合格", color: "bg-blue-500 text-white" }
+    }
+    if (story.secondRoundResult && ["不合格"].includes(story.secondRoundResult)) {
+      return { label: "不合格", color: "bg-gray-500 text-white" }
+    }
+    return { label: "未記入", color: "bg-gray-200 text-gray-600" }
+  }
+
+  // モバイル用カードコンポーネント
+  const StoryCard = ({ story }: { story: Story }) => {
+    const status = getStatusBadge(story)
+    const result = getResultBadge(story)
+
+    return (
+      <div className="bg-white rounded-lg shadow p-4 mb-3">
+        <div className="flex items-start justify-between mb-3">
+          <div className="flex items-start gap-3">
+            <input
+              type="checkbox"
+              checked={selectedStories.includes(story.id)}
+              onChange={() => toggleSelectStory(story.id)}
+              className="mt-1 w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+            />
+            <div className="min-w-0">
+              <h3 className="text-base font-semibold text-gray-900">{story.university}</h3>
+              <p className="text-sm text-gray-600">{story.faculty}</p>
+              <p className="text-xs text-gray-500">{story.admissionType}</p>
+            </div>
+          </div>
+          <span className={`px-2 py-1 text-xs font-medium rounded-full flex-shrink-0 ${status.className}`}>
+            {status.label}
+          </span>
+        </div>
+
+        <div className="flex flex-wrap gap-2 text-sm text-gray-500 mb-3">
+          {story.year && (
+            <div className="flex items-center">
+              <Calendar className="w-3.5 h-3.5 mr-1" />
+              {story.year}年
+            </div>
+          )}
+          {story.campus && (
+            <div className="flex items-center">
+              <MapPin className="w-3.5 h-3.5 mr-1" />
+              {story.campus}
+            </div>
+          )}
+          <span className={`px-2 py-0.5 text-xs font-semibold rounded-full ${result.color}`}>
+            {result.label}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-2 text-sm text-gray-600 mb-3 pb-3 border-b">
+          <User className="w-3.5 h-3.5" />
+          <span className="truncate">{story.author.name}</span>
+          <span className="text-gray-400 truncate">({story.author.email})</span>
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={() => router.push(`/admin/stories/${story.id}/edit`)}
+            className="flex-1 inline-flex items-center justify-center gap-1 px-3 py-2 bg-indigo-600 text-white rounded text-xs hover:bg-indigo-700"
+          >
+            <Edit className="w-3 h-3" />
+            編集
+          </button>
+
+          <button
+            onClick={() => handleTogglePublish(story.id, story.published)}
+            disabled={processing === story.id}
+            className={`flex-1 inline-flex items-center justify-center gap-1 px-3 py-2 rounded text-white text-xs disabled:opacity-50 ${
+              story.published ? "bg-orange-600 hover:bg-orange-700" : "bg-green-600 hover:bg-green-700"
+            }`}
+          >
+            {story.published ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+            {story.published ? "非公開" : "公開"}
+          </button>
+
+          <a
+            href={`/stories/${story.id}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-1 px-3 py-2 bg-gray-600 text-white rounded text-xs hover:bg-gray-700"
+          >
+            <ExternalLink className="w-3 h-3" />
+          </a>
+
+          <button
+            onClick={() => handleDelete(story.id)}
+            disabled={processing === story.id}
+            className="inline-flex items-center justify-center gap-1 px-3 py-2 bg-red-600 text-white rounded text-xs hover:bg-red-700 disabled:opacity-50"
+          >
+            <Trash2 className="w-3 h-3" />
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   if (!isStaffOrAdmin) {
     return null
   }
 
   const filteredStories = stories
+  const hasActiveFilters = universityFilter || facultyFilter || yearFilter || campusFilter || admissionResultFilter
 
   return (
     <div>
-      <div className="mb-6">
-        {/* Filter Buttons */}
-        <div className="flex gap-2">
+      <div className="mb-4 sm:mb-6">
+        {/* Filter Buttons - Scrollable on mobile */}
+        <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
           <button
             onClick={() => setFilter("pending_review")}
-            className={`px-4 py-2 rounded-lg transition-colors ${
+            className={`px-3 sm:px-4 py-2 rounded-lg transition-colors whitespace-nowrap text-sm ${
               filter === "pending_review"
                 ? "bg-yellow-600 text-white"
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
@@ -310,7 +436,7 @@ export default function AdminStoriesPage() {
           </button>
           <button
             onClick={() => setFilter("needs_revision")}
-            className={`px-4 py-2 rounded-lg transition-colors ${
+            className={`px-3 sm:px-4 py-2 rounded-lg transition-colors whitespace-nowrap text-sm ${
               filter === "needs_revision"
                 ? "bg-orange-600 text-white"
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
@@ -320,7 +446,7 @@ export default function AdminStoriesPage() {
           </button>
           <button
             onClick={() => setFilter("published")}
-            className={`px-4 py-2 rounded-lg transition-colors ${
+            className={`px-3 sm:px-4 py-2 rounded-lg transition-colors whitespace-nowrap text-sm ${
               filter === "published"
                 ? "bg-green-600 text-white"
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
@@ -330,7 +456,7 @@ export default function AdminStoriesPage() {
           </button>
           <button
             onClick={() => setFilter("unpublished")}
-            className={`px-4 py-2 rounded-lg transition-colors ${
+            className={`px-3 sm:px-4 py-2 rounded-lg transition-colors whitespace-nowrap text-sm ${
               filter === "unpublished"
                 ? "bg-red-600 text-white"
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
@@ -340,7 +466,7 @@ export default function AdminStoriesPage() {
           </button>
           <button
             onClick={() => setFilter("all")}
-            className={`px-4 py-2 rounded-lg transition-colors ${
+            className={`px-3 sm:px-4 py-2 rounded-lg transition-colors whitespace-nowrap text-sm ${
               filter === "all"
                 ? "bg-blue-600 text-white"
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
@@ -350,141 +476,133 @@ export default function AdminStoriesPage() {
           </button>
         </div>
 
-        {/* 詳細フィルター */}
-        <div className="mt-4 bg-white rounded-lg shadow p-4">
-          <h3 className="text-sm font-semibold text-gray-700 mb-3">詳細フィルター</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-            {/* 大学 */}
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                大学
-              </label>
-              <input
-                type="text"
-                value={universityFilter}
-                onChange={(e) => setUniversityFilter(e.target.value)}
-                placeholder="例: 慶應義塾大学"
-                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
+        {/* 詳細フィルター - Collapsible on mobile */}
+        <div className="mt-4">
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className="sm:hidden w-full flex items-center justify-between px-4 py-3 bg-white rounded-lg shadow text-sm font-medium text-gray-700"
+          >
+            <span>詳細フィルター {hasActiveFilters && `(${[universityFilter, facultyFilter, yearFilter, campusFilter, admissionResultFilter].filter(Boolean).length})`}</span>
+            <ChevronDown className={`w-5 h-5 transition-transform ${showFilters ? 'rotate-180' : ''}`} />
+          </button>
+
+          <div className={`${showFilters ? 'block' : 'hidden'} sm:block mt-2 sm:mt-0 bg-white rounded-lg shadow p-4`}>
+            <h3 className="hidden sm:block text-sm font-semibold text-gray-700 mb-3">詳細フィルター</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">大学</label>
+                <input
+                  type="text"
+                  value={universityFilter}
+                  onChange={(e) => setUniversityFilter(e.target.value)}
+                  placeholder="例: 慶應義塾大学"
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">学部</label>
+                <input
+                  type="text"
+                  value={facultyFilter}
+                  onChange={(e) => setFacultyFilter(e.target.value)}
+                  placeholder="例: 総合政策学部"
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">年度</label>
+                <select
+                  value={yearFilter}
+                  onChange={(e) => setYearFilter(e.target.value)}
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="">すべて</option>
+                  {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i).map(year => (
+                    <option key={year} value={year}>{year}年</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">所属校舎</label>
+                <select
+                  value={campusFilter}
+                  onChange={(e) => setCampusFilter(e.target.value)}
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="">すべて</option>
+                  <option value="武蔵小杉">武蔵小杉</option>
+                  <option value="下北沢">下北沢</option>
+                  <option value="自由が丘">自由が丘</option>
+                  <option value="渋谷">渋谷</option>
+                  <option value="オンライン">オンライン</option>
+                  <option value="青葉台">青葉台</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">合否情報</label>
+                <select
+                  value={admissionResultFilter}
+                  onChange={(e) => setAdmissionResultFilter(e.target.value)}
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="">すべて</option>
+                  <option value="first_pass">書類合格（一次のみ）</option>
+                  <option value="final_pass">最終合格</option>
+                </select>
+              </div>
             </div>
 
-            {/* 学部 */}
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                学部
-              </label>
-              <input
-                type="text"
-                value={facultyFilter}
-                onChange={(e) => setFacultyFilter(e.target.value)}
-                placeholder="例: 総合政策学部"
-                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
-
-            {/* 年度 */}
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                年度
-              </label>
-              <select
-                value={yearFilter}
-                onChange={(e) => setYearFilter(e.target.value)}
-                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="">すべて</option>
-                {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i).map(year => (
-                  <option key={year} value={year}>{year}年</option>
-                ))}
-              </select>
-            </div>
-
-            {/* 所属校舎 */}
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                所属校舎
-              </label>
-              <select
-                value={campusFilter}
-                onChange={(e) => setCampusFilter(e.target.value)}
-                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="">すべて</option>
-                <option value="武蔵小杉">武蔵小杉</option>
-                <option value="下北沢">下北沢</option>
-                <option value="自由が丘">自由が丘</option>
-                <option value="渋谷">渋谷</option>
-                <option value="オンライン">オンライン</option>
-                <option value="青葉台">青葉台</option>
-              </select>
-            </div>
-
-            {/* 合否情報 */}
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                合否情報
-              </label>
-              <select
-                value={admissionResultFilter}
-                onChange={(e) => setAdmissionResultFilter(e.target.value)}
-                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="">すべて</option>
-                <option value="first_pass">書類合格（一次のみ）</option>
-                <option value="final_pass">最終合格</option>
-              </select>
-            </div>
+            {hasActiveFilters && (
+              <div className="mt-3 flex justify-end">
+                <button
+                  onClick={clearFilters}
+                  className="px-4 py-2 text-sm text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  フィルターをクリア
+                </button>
+              </div>
+            )}
           </div>
-
-          {/* フィルタークリアボタン */}
-          {(universityFilter || facultyFilter || yearFilter || campusFilter || admissionResultFilter) && (
-            <div className="mt-3 flex justify-end">
-              <button
-                onClick={clearFilters}
-                className="px-4 py-2 text-sm text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-              >
-                フィルターをクリア
-              </button>
-            </div>
-          )}
         </div>
       </div>
 
       {/* 一括操作ボタン */}
       {selectedStories.length > 0 && (
-        <div className="mb-4 p-4 bg-blue-50 rounded-lg flex items-center justify-between">
-          <span className="font-semibold text-blue-900">
-            {selectedStories.length}件選択中
-          </span>
-          <div className="flex gap-2">
-            <button
-              onClick={() => handleBulkOperation("approve")}
-              disabled={bulkProcessing}
-              className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50"
-            >
-              一括承認
-            </button>
-            <button
-              onClick={() => handleBulkOperation("publish")}
-              disabled={bulkProcessing}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
-            >
-              一括公開
-            </button>
-            <button
-              onClick={() => handleBulkOperation("unpublish")}
-              disabled={bulkProcessing}
-              className="px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700 disabled:opacity-50"
-            >
-              一括非公開
-            </button>
-            <button
-              onClick={() => handleBulkOperation("delete")}
-              disabled={bulkProcessing}
-              className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50"
-            >
-              一括削除
-            </button>
+        <div className="mb-4 p-3 sm:p-4 bg-blue-50 rounded-lg">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <span className="font-semibold text-blue-900 text-sm sm:text-base">
+              {selectedStories.length}件選択中
+            </span>
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => handleBulkOperation("approve")}
+                disabled={bulkProcessing}
+                className="px-3 py-1.5 bg-green-600 text-white rounded text-xs sm:text-sm hover:bg-green-700 disabled:opacity-50"
+              >
+                一括承認
+              </button>
+              <button
+                onClick={() => handleBulkOperation("publish")}
+                disabled={bulkProcessing}
+                className="px-3 py-1.5 bg-blue-600 text-white rounded text-xs sm:text-sm hover:bg-blue-700 disabled:opacity-50"
+              >
+                一括公開
+              </button>
+              <button
+                onClick={() => handleBulkOperation("unpublish")}
+                disabled={bulkProcessing}
+                className="px-3 py-1.5 bg-yellow-600 text-white rounded text-xs sm:text-sm hover:bg-yellow-700 disabled:opacity-50"
+              >
+                一括非公開
+              </button>
+              <button
+                onClick={() => handleBulkOperation("delete")}
+                disabled={bulkProcessing}
+                className="px-3 py-1.5 bg-red-600 text-white rounded text-xs sm:text-sm hover:bg-red-700 disabled:opacity-50"
+              >
+                一括削除
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -496,197 +614,167 @@ export default function AdminStoriesPage() {
           体験記がありません
         </div>
       ) : (
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left">
-                  <input
-                    type="checkbox"
-                    checked={selectedStories.length === stories.length && stories.length > 0}
-                    onChange={toggleSelectAll}
-                    className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-                  />
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  大学・学部
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  入試方式
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  所属校舎
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  最終結果
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  投稿者
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  状態
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  操作
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {filteredStories.map((story) => (
-                <tr key={story.id}>
-                  <td className="px-6 py-4">
+        <>
+          {/* モバイル: カード表示 */}
+          <div className="sm:hidden">
+            <div className="mb-3 flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={selectedStories.length === stories.length && stories.length > 0}
+                onChange={toggleSelectAll}
+                className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+              />
+              <span className="text-sm text-gray-600">すべて選択</span>
+            </div>
+            {filteredStories.map((story) => (
+              <StoryCard key={story.id} story={story} />
+            ))}
+          </div>
+
+          {/* デスクトップ: テーブル表示 */}
+          <div className="hidden sm:block bg-white rounded-lg shadow overflow-hidden overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-4 py-3 text-left">
                     <input
                       type="checkbox"
-                      checked={selectedStories.includes(story.id)}
-                      onChange={() => toggleSelectStory(story.id)}
+                      checked={selectedStories.length === stories.length && stories.length > 0}
+                      onChange={toggleSelectAll}
                       className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
                     />
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="text-sm font-medium text-gray-900">
-                      {story.university}
-                    </div>
-                    <div className="text-sm text-gray-500">{story.faculty}</div>
-                    {story.year && (
-                      <div className="text-xs text-gray-400">{story.year}年</div>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{story.admissionType}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">
-                      {story.campus || <span className="text-gray-400">未記入</span>}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {(() => {
-                      const getResult = (firstRound?: string, secondRound?: string) => {
-                        if (secondRound && ["合格", "AB合格", "A合格", "B合格"].includes(secondRound)) {
-                          return { label: "合格", color: "bg-green-500 text-white" }
-                        }
-                        if (firstRound && ["合格", "AB合格", "A合格", "B合格"].includes(firstRound)) {
-                          return { label: "一次合格", color: "bg-blue-500 text-white" }
-                        }
-                        if (secondRound && ["不合格"].includes(secondRound)) {
-                          return { label: "不合格", color: "bg-gray-500 text-white" }
-                        }
-                        return { label: "未記入", color: "bg-gray-200 text-gray-600" }
-                      }
-                      const result = getResult(story.firstRoundResult, story.secondRoundResult)
-                      return (
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    大学・学部
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    入試方式
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    校舎
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    結果
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    投稿者
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    状態
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    操作
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {filteredStories.map((story) => {
+                  const status = getStatusBadge(story)
+                  const result = getResultBadge(story)
+                  return (
+                    <tr key={story.id}>
+                      <td className="px-4 py-4">
+                        <input
+                          type="checkbox"
+                          checked={selectedStories.includes(story.id)}
+                          onChange={() => toggleSelectStory(story.id)}
+                          className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                        />
+                      </td>
+                      <td className="px-4 py-4">
+                        <div className="text-sm font-medium text-gray-900">{story.university}</div>
+                        <div className="text-sm text-gray-500">{story.faculty}</div>
+                        {story.year && <div className="text-xs text-gray-400">{story.year}年</div>}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">{story.admissionType}</div>
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">
+                          {story.campus || <span className="text-gray-400">未記入</span>}
+                        </div>
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap">
                         <span className={`px-2 py-1 text-xs font-semibold rounded-full ${result.color}`}>
                           {result.label}
                         </span>
-                      )
-                    })()}
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="text-sm font-medium text-gray-900">
-                      {story.author.name}
-                    </div>
-                    <div className="text-sm text-gray-500">{story.author.email}</div>
-                    {story.author.campus && (
-                      <div className="text-xs text-gray-400">{story.author.campus}</div>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex flex-col gap-1">
-                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                        story.status === "PENDING_REVIEW"
-                          ? "bg-yellow-100 text-yellow-800"
-                          : story.status === "NEEDS_REVISION"
-                          ? "bg-orange-100 text-orange-800"
-                          : story.published
-                          ? "bg-green-100 text-green-800"
-                          : "bg-red-100 text-red-800"
-                      }`}>
-                        {story.status === "PENDING_REVIEW"
-                          ? "添削待ち"
-                          : story.status === "NEEDS_REVISION"
-                          ? "修正依頼中"
-                          : story.published
-                          ? "公開中"
-                          : "非公開"}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">
-                    <div className="flex gap-1.5">
-                      <button
-                        onClick={() => router.push(`/admin/stories/${story.id}/edit`)}
-                        className="inline-flex items-center gap-1 px-2 py-1 bg-indigo-600 text-white rounded text-xs hover:bg-indigo-700"
-                        title="編集"
-                      >
-                        <Edit className="w-3 h-3" />
-                        <span>編集</span>
-                      </button>
-
-                      <button
-                        onClick={() => handleTogglePublish(story.id, story.published)}
-                        disabled={processing === story.id}
-                        className={`inline-flex items-center gap-1 px-2 py-1 rounded text-white text-xs disabled:opacity-50 ${
-                          story.published ? "bg-orange-600 hover:bg-orange-700" : "bg-green-600 hover:bg-green-700"
-                        }`}
-                        title={story.published ? "非公開にする" : "公開する"}
-                      >
-                        {story.published ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
-                        <span>{story.published ? "非公開" : "公開"}</span>
-                      </button>
-
-                      <button
-                        onClick={() => openDocumentsModal(story)}
-                        disabled={processing === story.id}
-                        className="inline-flex items-center gap-1 px-2 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700 disabled:opacity-50"
-                        title="書類URL"
-                      >
-                        <LinkIcon className="w-3 h-3" />
-                        <span>書類</span>
-                      </button>
-
-                      <button
-                        onClick={() => openEditRequestModal(story.id)}
-                        disabled={processing === story.id}
-                        className="inline-flex items-center gap-1 px-2 py-1 bg-purple-600 text-white rounded text-xs hover:bg-purple-700 disabled:opacity-50"
-                        title="編集依頼"
-                      >
-                        <Mail className="w-3 h-3" />
-                        <span>依頼</span>
-                      </button>
-
-                      <a
-                        href={`/stories/${story.id}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 px-2 py-1 bg-gray-600 text-white rounded text-xs hover:bg-gray-700"
-                        title="詳細を見る"
-                      >
-                        <ExternalLink className="w-3 h-3" />
-                        <span>詳細</span>
-                      </a>
-
-                      <button
-                        onClick={() => handleDelete(story.id)}
-                        disabled={processing === story.id}
-                        className="inline-flex items-center gap-1 px-2 py-1 bg-red-600 text-white rounded text-xs hover:bg-red-700 disabled:opacity-50"
-                        title="削除"
-                      >
-                        <Trash2 className="w-3 h-3" />
-                        <span>削除</span>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                      </td>
+                      <td className="px-4 py-4">
+                        <div className="text-sm font-medium text-gray-900">{story.author.name}</div>
+                        <div className="text-sm text-gray-500">{story.author.email}</div>
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap">
+                        <span className={`px-2 py-1 text-xs font-medium rounded-full ${status.className}`}>
+                          {status.label}
+                        </span>
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-sm">
+                        <div className="flex gap-1.5">
+                          <button
+                            onClick={() => router.push(`/admin/stories/${story.id}/edit`)}
+                            className="inline-flex items-center gap-1 px-2 py-1 bg-indigo-600 text-white rounded text-xs hover:bg-indigo-700"
+                            title="編集"
+                          >
+                            <Edit className="w-3 h-3" />
+                          </button>
+                          <button
+                            onClick={() => handleTogglePublish(story.id, story.published)}
+                            disabled={processing === story.id}
+                            className={`inline-flex items-center gap-1 px-2 py-1 rounded text-white text-xs disabled:opacity-50 ${
+                              story.published ? "bg-orange-600 hover:bg-orange-700" : "bg-green-600 hover:bg-green-700"
+                            }`}
+                            title={story.published ? "非公開" : "公開"}
+                          >
+                            {story.published ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                          </button>
+                          <button
+                            onClick={() => openDocumentsModal(story)}
+                            disabled={processing === story.id}
+                            className="inline-flex items-center px-2 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700 disabled:opacity-50"
+                            title="書類URL"
+                          >
+                            <LinkIcon className="w-3 h-3" />
+                          </button>
+                          <button
+                            onClick={() => openEditRequestModal(story.id)}
+                            disabled={processing === story.id}
+                            className="inline-flex items-center px-2 py-1 bg-purple-600 text-white rounded text-xs hover:bg-purple-700 disabled:opacity-50"
+                            title="編集依頼"
+                          >
+                            <Mail className="w-3 h-3" />
+                          </button>
+                          <a
+                            href={`/stories/${story.id}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center px-2 py-1 bg-gray-600 text-white rounded text-xs hover:bg-gray-700"
+                            title="詳細"
+                          >
+                            <ExternalLink className="w-3 h-3" />
+                          </a>
+                          <button
+                            onClick={() => handleDelete(story.id)}
+                            disabled={processing === story.id}
+                            className="inline-flex items-center px-2 py-1 bg-red-600 text-white rounded text-xs hover:bg-red-700 disabled:opacity-50"
+                            title="削除"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
 
       {/* Documents URL Modal */}
       {showDocumentsModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-lg w-full mx-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-6 max-w-lg w-full">
             <h3 className="text-lg font-bold mb-4">合格書類URL</h3>
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -727,8 +815,8 @@ export default function AdminStoriesPage() {
 
       {/* Edit Request Modal */}
       {showEditRequestModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-lg w-full mx-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-6 max-w-lg w-full">
             <h3 className="text-lg font-bold mb-4">編集依頼</h3>
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">

@@ -303,9 +303,9 @@ export default function NewStoryPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 py-4 sm:py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 sm:mb-8">
           合格体験記を投稿
         </h1>
 
@@ -321,10 +321,10 @@ export default function NewStoryPage() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-8 bg-white p-8 rounded-lg shadow">
+        <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8 bg-white p-4 sm:p-8 rounded-lg shadow">
           {/* 基礎属性 */}
-          <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-gray-900">基礎属性</h2>
+          <div className="space-y-4 sm:space-y-6">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900">基礎属性</h2>
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
@@ -332,7 +332,7 @@ export default function NewStoryPage() {
               </label>
               <input
                 type="text"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
                 placeholder="例：山田 太郎"
                 required
                 value={formData.authorName}
@@ -347,7 +347,7 @@ export default function NewStoryPage() {
                 性別（任意）
               </label>
               <select
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
                 value={formData.gender}
                 onChange={(e) =>
                   setFormData({ ...formData, gender: e.target.value })
@@ -366,7 +366,7 @@ export default function NewStoryPage() {
                 出身高校の偏差値帯 *
               </label>
               <select
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
                 required
                 value={formData.highSchoolLevel}
                 onChange={(e) =>
@@ -386,7 +386,7 @@ export default function NewStoryPage() {
               </label>
               <input
                 type="text"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
                 placeholder="例：〇〇高等学校"
                 value={formData.highSchoolName}
                 onChange={(e) =>
@@ -400,7 +400,7 @@ export default function NewStoryPage() {
                 所属校舎 *
               </label>
               <select
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
                 required
                 value={formData.campus}
                 onChange={(e) =>
@@ -422,7 +422,7 @@ export default function NewStoryPage() {
                 評定平均レンジ *
               </label>
               <select
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
                 required
                 value={formData.gradeAverage}
                 onChange={(e) =>
@@ -442,7 +442,7 @@ export default function NewStoryPage() {
                 受験大学 *
               </label>
               <select
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
                 required
                 value={formData.university}
                 onChange={(e) =>
@@ -461,7 +461,7 @@ export default function NewStoryPage() {
                   学部 *
                 </label>
                 <select
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
                   required
                   value={formData.faculty}
                   onChange={(e) =>
@@ -485,7 +485,7 @@ export default function NewStoryPage() {
                 </label>
                 <input
                   type="text"
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
                   placeholder="例：政治経済学部"
                   required
                   value={formData.faculty}
@@ -502,7 +502,7 @@ export default function NewStoryPage() {
                   入試方式 *
                 </label>
                 <select
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
                   required
                   value={formData.admissionType}
                   onChange={(e) =>
@@ -525,7 +525,7 @@ export default function NewStoryPage() {
                 </label>
                 <input
                   type="text"
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
                   placeholder="例：総合型選抜、学校推薦型選抜"
                   required
                   value={formData.admissionType}
@@ -542,7 +542,7 @@ export default function NewStoryPage() {
               </label>
               <input
                 type="number"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
                 placeholder="例：2024"
                 min="2000"
                 max="2030"
@@ -556,8 +556,8 @@ export default function NewStoryPage() {
 
             {/* 合否情報 */}
             {formData.admissionType && (
-              <div className="space-y-4 border-l-4 border-green-500 pl-4">
-                <h3 className="text-lg font-medium text-gray-900">合否情報</h3>
+              <div className="space-y-4 border-l-4 border-green-500 pl-3 sm:pl-4">
+                <h3 className="text-base sm:text-lg font-medium text-gray-900">合否情報</h3>
 
                 {formData.admissionType === "FIT入試" ? (
                   <>
@@ -566,7 +566,7 @@ export default function NewStoryPage() {
                         一次選考 *
                       </label>
                       <select
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
                         required
                         value={formData.firstRoundResult}
                         onChange={(e) =>
@@ -587,7 +587,7 @@ export default function NewStoryPage() {
                           最終選考 *
                         </label>
                         <select
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
                           required
                           value={formData.secondRoundResult}
                           onChange={(e) =>
@@ -610,7 +610,7 @@ export default function NewStoryPage() {
                         一次選考 *
                       </label>
                       <select
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
                         required
                         value={formData.firstRoundResult}
                         onChange={(e) =>
@@ -630,7 +630,7 @@ export default function NewStoryPage() {
                           最終選考 *
                         </label>
                         <select
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
                           required
                           value={formData.secondRoundResult}
                           onChange={(e) =>
@@ -651,7 +651,7 @@ export default function NewStoryPage() {
 
           {/* 実績 */}
           <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-gray-900">実績</h2>
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900">実績</h2>
 
             {/* スポーツ実績 */}
             <div className="space-y-3">
@@ -667,21 +667,21 @@ export default function NewStoryPage() {
                       sportsAchievements: e.target.checked ? formData.sportsAchievements : [],
                     })
                   }
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                 />
                 <span className="text-sm font-medium text-gray-700">
                   スポーツ実績あり
                 </span>
               </label>
               {formData.hasSportsAchievement && (
-                <div className="ml-6 space-y-3">
+                <div className="ml-4 sm:ml-6 space-y-3">
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
                       競技名 *
                     </label>
                     <input
                       type="text"
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
                       placeholder="例：サッカー、バスケットボール"
                       value={formData.sportsDetails}
                       onChange={(e) =>
@@ -697,7 +697,7 @@ export default function NewStoryPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       実績（複数選択可）*
                     </label>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       {[
                         "都道府県ベスト8",
                         "都道府県優勝・準優勝",
@@ -754,19 +754,19 @@ export default function NewStoryPage() {
                       englishQualification: e.target.checked ? formData.englishQualification : "",
                     })
                   }
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                 />
                 <span className="text-sm font-medium text-gray-700">
                   英語資格あり
                 </span>
               </label>
               {formData.hasEnglishQualification && (
-                <div className="ml-6">
+                <div className="ml-4 sm:ml-6">
                   <label className="block text-sm font-medium text-gray-700">
                     資格内容 *
                   </label>
                   <textarea
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
                     rows={2}
                     placeholder="例：英検準1級（高2取得）、TOEFL iBT 85点（高3取得）"
                     value={formData.englishQualification}
@@ -795,19 +795,19 @@ export default function NewStoryPage() {
                       studyAbroadDetails: e.target.checked ? formData.studyAbroadDetails : "",
                     })
                   }
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                 />
                 <span className="text-sm font-medium text-gray-700">
                   留学経験あり
                 </span>
               </label>
               {formData.hasStudyAbroad && (
-                <div className="ml-6">
+                <div className="ml-4 sm:ml-6">
                   <label className="block text-sm font-medium text-gray-700">
                     留学先と期間 *
                   </label>
                   <textarea
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
                     rows={2}
                     placeholder="例：アメリカ・カリフォルニア州（高1夏休み、3週間）"
                     value={formData.studyAbroadDetails}
@@ -836,19 +836,19 @@ export default function NewStoryPage() {
                       leaderExperienceDetails: e.target.checked ? formData.leaderExperienceDetails : "",
                     })
                   }
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                 />
                 <span className="text-sm font-medium text-gray-700">
                   リーダー経験あり
                 </span>
               </label>
               {formData.hasLeaderExperience && (
-                <div className="ml-6">
+                <div className="ml-4 sm:ml-6">
                   <label className="block text-sm font-medium text-gray-700">
                     詳細 *
                   </label>
                   <textarea
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
                     rows={2}
                     placeholder="例：生徒会副会長（高3）、サッカー部キャプテン（高3）"
                     value={formData.leaderExperienceDetails}
@@ -877,19 +877,19 @@ export default function NewStoryPage() {
                       contestAchievementDetails: e.target.checked ? formData.contestAchievementDetails : "",
                     })
                   }
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                 />
                 <span className="text-sm font-medium text-gray-700">
                   コンテスト実績あり
                 </span>
               </label>
               {formData.hasContestAchievement && (
-                <div className="ml-6">
+                <div className="ml-4 sm:ml-6">
                   <label className="block text-sm font-medium text-gray-700">
                     詳細 *
                   </label>
                   <textarea
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
                     rows={3}
                     placeholder="例：U-22プログラミングコンテストでファイナリスト、科学オリンピック銀メダル"
                     value={formData.contestAchievementDetails}
@@ -908,26 +908,26 @@ export default function NewStoryPage() {
 
           {/* 探究テーマ */}
           <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-gray-900">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
               探究テーマ（複数選択可）*
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
               {themes.map((theme) => (
                 <label
                   key={theme.id}
-                  className="flex items-center space-x-3 p-3 border rounded-md hover:bg-gray-50 cursor-pointer"
+                  className="flex items-start space-x-3 p-3 border rounded-md hover:bg-gray-50 cursor-pointer"
                 >
                   <input
                     type="checkbox"
                     checked={formData.explorationThemeIds.includes(theme.id)}
                     onChange={() => handleThemeToggle(theme.id)}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    className="h-5 w-5 mt-0.5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded flex-shrink-0"
                   />
-                  <div>
+                  <div className="min-w-0">
                     <span className="text-sm font-medium text-gray-900">
                       {theme.name}
                     </span>
-                    <p className="text-xs text-gray-500">{theme.description}</p>
+                    <p className="text-xs text-gray-500 mt-0.5">{theme.description}</p>
                   </div>
                 </label>
               ))}
@@ -936,14 +936,14 @@ export default function NewStoryPage() {
 
           {/* 探究・活動 */}
           <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-gray-900">探究・活動</h2>
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900">探究・活動</h2>
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 志 *
               </label>
               <textarea
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
                 rows={3}
                 placeholder="あなたの志を教えてください"
                 required
@@ -959,7 +959,7 @@ export default function NewStoryPage() {
                 きっかけ *
               </label>
               <textarea
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
                 rows={3}
                 placeholder="そのテーマに興味を持ったきっかけを教えてください"
                 required
@@ -975,7 +975,7 @@ export default function NewStoryPage() {
                 探究活動の詳細 *
               </label>
               <textarea
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
                 rows={4}
                 placeholder="どのような方法で探究活動を行いましたか？具体的に記述してください"
                 required
@@ -991,7 +991,7 @@ export default function NewStoryPage() {
                 大学で学びたい教授 *
               </label>
               <textarea
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
                 rows={2}
                 placeholder="大学でどの教授のもとで学びたいかを教えてください"
                 required
@@ -1005,12 +1005,12 @@ export default function NewStoryPage() {
 
           {/* 選考情報 */}
           <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-gray-900">選考情報</h2>
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900">選考情報</h2>
 
             {/* 選考フロー */}
             {(formData.admissionType === "春AO" || formData.admissionType === "夏秋AO" || formData.admissionType === "自己推薦入試") && (
-              <div className="space-y-4 border-l-4 border-blue-500 pl-4">
-                <h3 className="text-lg font-medium text-gray-900">選考フロー</h3>
+              <div className="space-y-4 border-l-4 border-blue-500 pl-3 sm:pl-4">
+                <h3 className="text-base sm:text-lg font-medium text-gray-900">選考フロー</h3>
 
                 {(formData.admissionType === "春AO" || formData.admissionType === "夏秋AO") && (
                   <>
@@ -1019,7 +1019,7 @@ export default function NewStoryPage() {
                         一次選考（書類選考）の結果 *
                       </label>
                       <select
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
                         required
                         value={formData.firstRoundResult}
                         onChange={(e) =>
@@ -1038,7 +1038,7 @@ export default function NewStoryPage() {
                           二次選考（面接）の結果 *
                         </label>
                         <select
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
                           required
                           value={formData.secondRoundResult}
                           onChange={(e) =>
@@ -1070,7 +1070,7 @@ export default function NewStoryPage() {
                         論述試験の結果 *
                       </label>
                       <select
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
                         required
                         value={formData.secondRoundResult}
                         onChange={(e) =>
@@ -1092,7 +1092,7 @@ export default function NewStoryPage() {
                 面接で聞かれた内容 *
               </label>
               <textarea
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
                 rows={4}
                 placeholder="面接での質問内容を教えてください"
                 required
@@ -1109,14 +1109,14 @@ export default function NewStoryPage() {
 
           {/* 併願校 */}
           <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-gray-900">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
               併願校（任意）
             </h2>
             {concurrentApplications.map((app, index) => (
-              <div key={index} className="flex gap-4 items-start">
+              <div key={index} className="space-y-2 sm:space-y-0 sm:flex sm:gap-4 sm:items-start p-3 sm:p-0 bg-gray-50 sm:bg-transparent rounded-lg sm:rounded-none">
                 <input
                   type="text"
-                  className="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  className="w-full sm:flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
                   placeholder="大学名"
                   value={app.university}
                   onChange={(e) =>
@@ -1125,31 +1125,33 @@ export default function NewStoryPage() {
                 />
                 <input
                   type="text"
-                  className="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  className="w-full sm:flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
                   placeholder="学部"
                   value={app.faculty}
                   onChange={(e) =>
                     updateConcurrentApplication(index, "faculty", e.target.value)
                   }
                 />
-                <select
-                  className="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                  value={app.result}
-                  onChange={(e) =>
-                    updateConcurrentApplication(index, "result", e.target.value)
-                  }
-                >
-                  <option value="ACCEPTED">合格</option>
-                  <option value="REJECTED">不合格</option>
-                  <option value="PENDING">結果待ち</option>
-                </select>
-                <button
-                  type="button"
-                  onClick={() => removeConcurrentApplication(index)}
-                  className="px-3 py-2 text-sm text-red-600 hover:text-red-800"
-                >
-                  削除
-                </button>
+                <div className="flex gap-2 sm:gap-4 items-center">
+                  <select
+                    className="flex-1 sm:flex-none rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
+                    value={app.result}
+                    onChange={(e) =>
+                      updateConcurrentApplication(index, "result", e.target.value)
+                    }
+                  >
+                    <option value="ACCEPTED">合格</option>
+                    <option value="REJECTED">不合格</option>
+                    <option value="PENDING">結果待ち</option>
+                  </select>
+                  <button
+                    type="button"
+                    onClick={() => removeConcurrentApplication(index)}
+                    className="px-3 py-2 text-sm text-red-600 hover:text-red-800 whitespace-nowrap"
+                  >
+                    削除
+                  </button>
+                </div>
               </div>
             ))}
             <button
@@ -1163,14 +1165,14 @@ export default function NewStoryPage() {
 
           {/* 対策 */}
           <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-gray-900">対策</h2>
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900">対策</h2>
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 書類対策 *
               </label>
               <textarea
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
                 rows={4}
                 placeholder="志望理由書や活動報告書などの書類対策について教えてください"
                 required
@@ -1189,7 +1191,7 @@ export default function NewStoryPage() {
                 二次対策 *
               </label>
               <textarea
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
                 rows={4}
                 placeholder="面接や論述試験などの二次対策について教えてください"
                 required
@@ -1208,7 +1210,7 @@ export default function NewStoryPage() {
                 使用教材・参考書 *
               </label>
               <textarea
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
                 rows={3}
                 placeholder="役に立った教材や参考書"
                 required
@@ -1224,7 +1226,7 @@ export default function NewStoryPage() {
                 後輩へのアドバイス *
               </label>
               <textarea
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
                 rows={4}
                 placeholder="後輩に伝えたいことを自由に書いてください"
                 required
@@ -1245,14 +1247,14 @@ export default function NewStoryPage() {
                   type="checkbox"
                   checked={agreedToTerms}
                   onChange={(e) => setAgreedToTerms(e.target.checked)}
-                  className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300"
+                  className="w-5 h-5 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300"
                 />
               </div>
               <div className="ml-3 text-sm">
                 <label htmlFor="agree-terms" className="font-medium text-gray-700">
                   体験記の提供および広報活用に関する同意 *
                 </label>
-                <p className="text-gray-500 mt-1">
+                <p className="text-gray-500 mt-1 text-xs sm:text-sm">
                   私は、私が提供する体験記・コメント・受験を通じた感想等について、loohcs志塾のWebサイト、SNS、パンフレット等の広報活動に活用されることに同意します。<br />
                   なお、広報において氏名・出身校・進学先・学年等の個人情報を使用する場合には、事前に本人の同意を得た上で、同意された範囲内でのみ使用されることを確認しています。<br />
                   本フォームを通じて提供される情報は、上記目的の範囲内で適切に管理されます。
@@ -1261,27 +1263,28 @@ export default function NewStoryPage() {
             </div>
           </div>
 
-          <div className="flex justify-between items-center">
+          {/* ボタンエリア */}
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
             <button
               type="button"
               onClick={handleSaveDraft}
               disabled={isSavingDraft || isLoading}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full sm:w-auto px-4 py-3 sm:py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed order-2 sm:order-1"
             >
               {isSavingDraft ? "保存中..." : "下書き保存"}
             </button>
-            <div className="flex space-x-4">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 order-1 sm:order-2">
               <button
                 type="button"
                 onClick={() => router.back()}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+                className="w-full sm:w-auto px-4 py-3 sm:py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
               >
                 キャンセル
               </button>
               <button
                 type="submit"
                 disabled={isLoading || isSavingDraft || formData.explorationThemeIds.length === 0 || !agreedToTerms}
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full sm:w-auto px-4 py-3 sm:py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? "投稿中..." : "投稿する"}
               </button>

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { CheckCircle, XCircle, UserPlus, Shield, UserMinus } from "lucide-react"
+import { CheckCircle, XCircle, UserPlus, Shield, UserMinus, Mail, MapPin, Calendar } from "lucide-react"
 import { useToast } from "@/components/ui/Toast"
 import { useConfirm } from "@/components/ui/ConfirmModal"
 
@@ -222,6 +222,54 @@ export default function AdminUsersPage() {
     }
   }
 
+  const getRoleBadgeClass = (role: string) => {
+    switch (role) {
+      case "SUPER_ADMIN":
+        return "bg-purple-100 text-purple-800"
+      case "ADMIN":
+        return "bg-blue-100 text-blue-800"
+      case "STAFF":
+        return "bg-green-100 text-green-800"
+      default:
+        return "bg-gray-100 text-gray-800"
+    }
+  }
+
+  // モバイル用カードコンポーネント
+  const UserCard = ({ user, actions }: { user: User, actions?: React.ReactNode }) => (
+    <div className="bg-white rounded-lg shadow p-4 mb-3">
+      <div className="flex items-start justify-between mb-3">
+        <div className="min-w-0 flex-1">
+          <h3 className="text-base font-semibold text-gray-900 truncate">{user.name}</h3>
+          <div className="flex items-center text-sm text-gray-500 mt-1">
+            <Mail className="w-3.5 h-3.5 mr-1 flex-shrink-0" />
+            <span className="truncate">{user.email}</span>
+          </div>
+        </div>
+        <span className={`ml-2 px-2 py-1 text-xs font-medium rounded-full flex-shrink-0 ${getRoleBadgeClass(user.role)}`}>
+          {getRoleLabel(user.role)}
+        </span>
+      </div>
+      <div className="flex flex-wrap gap-3 text-sm text-gray-500 mb-3">
+        {user.campus && (
+          <div className="flex items-center">
+            <MapPin className="w-3.5 h-3.5 mr-1" />
+            {user.campus}
+          </div>
+        )}
+        <div className="flex items-center">
+          <Calendar className="w-3.5 h-3.5 mr-1" />
+          {new Date(user.createdAt).toLocaleDateString('ja-JP')}
+        </div>
+      </div>
+      {actions && (
+        <div className="pt-3 border-t flex flex-wrap gap-2">
+          {actions}
+        </div>
+      )}
+    </div>
+  )
+
   if (!isStaffOrAdmin) {
     return null
   }
@@ -229,9 +277,9 @@ export default function AdminUsersPage() {
   return (
     <div>
       {/* 検索とフィルター */}
-      <div className="mb-6 bg-white rounded-lg shadow p-4">
+      <div className="mb-4 sm:mb-6 bg-white rounded-lg shadow p-3 sm:p-4">
         <h3 className="text-sm font-semibold text-gray-700 mb-3">検索・フィルター</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
           {/* 検索 */}
           <div>
             <label className="block text-xs font-medium text-gray-700 mb-1">
@@ -281,11 +329,11 @@ export default function AdminUsersPage() {
       </div>
 
       {/* Tab Navigation */}
-      <div className="mb-6 border-b">
-        <div className="flex gap-4">
+      <div className="mb-4 sm:mb-6 border-b overflow-x-auto">
+        <div className="flex gap-2 sm:gap-4 min-w-max">
           <button
             onClick={() => setActiveTab("pending")}
-            className={`px-4 py-2 font-medium border-b-2 transition-colors ${
+            className={`px-3 sm:px-4 py-2 font-medium border-b-2 transition-colors whitespace-nowrap text-sm sm:text-base ${
               activeTab === "pending"
                 ? "border-blue-500 text-blue-600"
                 : "border-transparent text-gray-500 hover:text-gray-700"
@@ -295,7 +343,7 @@ export default function AdminUsersPage() {
           </button>
           <button
             onClick={() => setActiveTab("staff")}
-            className={`px-4 py-2 font-medium border-b-2 transition-colors ${
+            className={`px-3 sm:px-4 py-2 font-medium border-b-2 transition-colors whitespace-nowrap text-sm sm:text-base ${
               activeTab === "staff"
                 ? "border-blue-500 text-blue-600"
                 : "border-transparent text-gray-500 hover:text-gray-700"
@@ -305,7 +353,7 @@ export default function AdminUsersPage() {
           </button>
           <button
             onClick={() => setActiveTab("users")}
-            className={`px-4 py-2 font-medium border-b-2 transition-colors ${
+            className={`px-3 sm:px-4 py-2 font-medium border-b-2 transition-colors whitespace-nowrap text-sm sm:text-base ${
               activeTab === "users"
                 ? "border-blue-500 text-blue-600"
                 : "border-transparent text-gray-500 hover:text-gray-700"
@@ -325,69 +373,101 @@ export default function AdminUsersPage() {
             承認待ちのユーザーはいません
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow overflow-hidden">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    名前
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    メールアドレス
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    校舎
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    登録日時
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    操作
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {pendingUsers.map((user) => (
-                  <tr key={user.id}>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{user.name}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-500">{user.email}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-500">{user.campus || "-"}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-500">
-                        {new Date(user.createdAt).toLocaleString('ja-JP')}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => handleApprove(user.id)}
-                          disabled={processing === user.id}
-                          className="inline-flex items-center px-3 py-1.5 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 transition-colors"
-                        >
-                          <CheckCircle className="w-4 h-4 mr-1" />
-                          承認
-                        </button>
-                        <button
-                          onClick={() => handleReject(user.id)}
-                          disabled={processing === user.id}
-                          className="inline-flex items-center px-3 py-1.5 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50 transition-colors"
-                        >
-                          <XCircle className="w-4 h-4 mr-1" />
-                          拒否
-                        </button>
-                      </div>
-                    </td>
+          <>
+            {/* モバイル: カード表示 */}
+            <div className="sm:hidden">
+              {pendingUsers.map((user) => (
+                <UserCard
+                  key={user.id}
+                  user={user}
+                  actions={
+                    <>
+                      <button
+                        onClick={() => handleApprove(user.id)}
+                        disabled={processing === user.id}
+                        className="flex-1 inline-flex items-center justify-center px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 transition-colors text-sm"
+                      >
+                        <CheckCircle className="w-4 h-4 mr-1" />
+                        承認
+                      </button>
+                      <button
+                        onClick={() => handleReject(user.id)}
+                        disabled={processing === user.id}
+                        className="flex-1 inline-flex items-center justify-center px-3 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50 transition-colors text-sm"
+                      >
+                        <XCircle className="w-4 h-4 mr-1" />
+                        拒否
+                      </button>
+                    </>
+                  }
+                />
+              ))}
+            </div>
+            {/* デスクトップ: テーブル表示 */}
+            <div className="hidden sm:block bg-white rounded-lg shadow overflow-hidden">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      名前
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      メールアドレス
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      校舎
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      登録日時
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      操作
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {pendingUsers.map((user) => (
+                    <tr key={user.id}>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm font-medium text-gray-900">{user.name}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-500">{user.email}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-500">{user.campus || "-"}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-500">
+                          {new Date(user.createdAt).toLocaleString('ja-JP')}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleApprove(user.id)}
+                            disabled={processing === user.id}
+                            className="inline-flex items-center px-3 py-1.5 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 transition-colors"
+                          >
+                            <CheckCircle className="w-4 h-4 mr-1" />
+                            承認
+                          </button>
+                          <button
+                            onClick={() => handleReject(user.id)}
+                            disabled={processing === user.id}
+                            className="inline-flex items-center px-3 py-1.5 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50 transition-colors"
+                          >
+                            <XCircle className="w-4 h-4 mr-1" />
+                            拒否
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )
       ) : activeTab === "staff" ? (
         /* スタッフユーザー */
@@ -396,78 +476,97 @@ export default function AdminUsersPage() {
             スタッフユーザーはいません
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow overflow-hidden">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    名前
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    メールアドレス
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    校舎
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    権限
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    登録日時
-                  </th>
-                  {isSuperAdmin && (
+          <>
+            {/* モバイル: カード表示 */}
+            <div className="sm:hidden">
+              {staffUsers.map((user) => (
+                <UserCard
+                  key={user.id}
+                  user={user}
+                  actions={
+                    isSuperAdmin && user.role === "STAFF" ? (
+                      <button
+                        onClick={() => handleDemoteToUser(user.id)}
+                        disabled={processing === user.id}
+                        className="w-full inline-flex items-center justify-center px-3 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 disabled:opacity-50 transition-colors text-sm"
+                      >
+                        <UserMinus className="w-4 h-4 mr-1" />
+                        ユーザーに降格
+                      </button>
+                    ) : undefined
+                  }
+                />
+              ))}
+            </div>
+            {/* デスクトップ: テーブル表示 */}
+            <div className="hidden sm:block bg-white rounded-lg shadow overflow-hidden">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      操作
+                      名前
                     </th>
-                  )}
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {staffUsers.map((user) => (
-                  <tr key={user.id}>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{user.name}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-500">{user.email}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-500">{user.campus || "-"}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                        user.role === "SUPER_ADMIN" ? "bg-purple-100 text-purple-800" :
-                        user.role === "ADMIN" ? "bg-blue-100 text-blue-800" :
-                        user.role === "STAFF" ? "bg-green-100 text-green-800" :
-                        "bg-gray-100 text-gray-800"
-                      }`}>
-                        {getRoleLabel(user.role)}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-500">
-                        {new Date(user.createdAt).toLocaleString('ja-JP')}
-                      </div>
-                    </td>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      メールアドレス
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      校舎
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      権限
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      登録日時
+                    </th>
                     {isSuperAdmin && (
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        {user.role === "STAFF" && (
-                          <button
-                            onClick={() => handleDemoteToUser(user.id)}
-                            disabled={processing === user.id}
-                            className="inline-flex items-center px-3 py-1.5 bg-orange-600 text-white rounded-md hover:bg-orange-700 disabled:opacity-50 transition-colors"
-                          >
-                            <UserMinus className="w-4 h-4 mr-1" />
-                            ユーザーに降格
-                          </button>
-                        )}
-                      </td>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        操作
+                      </th>
                     )}
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {staffUsers.map((user) => (
+                    <tr key={user.id}>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm font-medium text-gray-900">{user.name}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-500">{user.email}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-500">{user.campus || "-"}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`px-2 py-1 text-xs font-medium rounded-full ${getRoleBadgeClass(user.role)}`}>
+                          {getRoleLabel(user.role)}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-500">
+                          {new Date(user.createdAt).toLocaleString('ja-JP')}
+                        </div>
+                      </td>
+                      {isSuperAdmin && (
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          {user.role === "STAFF" && (
+                            <button
+                              onClick={() => handleDemoteToUser(user.id)}
+                              disabled={processing === user.id}
+                              className="inline-flex items-center px-3 py-1.5 bg-orange-600 text-white rounded-md hover:bg-orange-700 disabled:opacity-50 transition-colors"
+                            >
+                              <UserMinus className="w-4 h-4 mr-1" />
+                              ユーザーに降格
+                            </button>
+                          )}
+                        </td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )
       ) : (
         /* 一般ユーザー */
@@ -476,71 +575,95 @@ export default function AdminUsersPage() {
             ユーザーはいません
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow overflow-hidden">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    名前
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    メールアドレス
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    校舎
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    権限
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    登録日時
-                  </th>
-                  {isSuperAdmin && (
+          <>
+            {/* モバイル: カード表示 */}
+            <div className="sm:hidden">
+              {regularUsers.map((user) => (
+                <UserCard
+                  key={user.id}
+                  user={user}
+                  actions={
+                    isSuperAdmin ? (
+                      <button
+                        onClick={() => handlePromoteToStaff(user.id)}
+                        disabled={processing === user.id}
+                        className="w-full inline-flex items-center justify-center px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors text-sm"
+                      >
+                        <Shield className="w-4 h-4 mr-1" />
+                        スタッフに昇格
+                      </button>
+                    ) : undefined
+                  }
+                />
+              ))}
+            </div>
+            {/* デスクトップ: テーブル表示 */}
+            <div className="hidden sm:block bg-white rounded-lg shadow overflow-hidden">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      操作
+                      名前
                     </th>
-                  )}
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {regularUsers.map((user) => (
-                  <tr key={user.id}>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{user.name}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-500">{user.email}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-500">{user.campus || "-"}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-800">
-                        {getRoleLabel(user.role)}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-500">
-                        {new Date(user.createdAt).toLocaleString('ja-JP')}
-                      </div>
-                    </td>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      メールアドレス
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      校舎
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      権限
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      登録日時
+                    </th>
                     {isSuperAdmin && (
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <button
-                          onClick={() => handlePromoteToStaff(user.id)}
-                          disabled={processing === user.id}
-                          className="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors"
-                        >
-                          <Shield className="w-4 h-4 mr-1" />
-                          スタッフに昇格
-                        </button>
-                      </td>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        操作
+                      </th>
                     )}
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {regularUsers.map((user) => (
+                    <tr key={user.id}>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm font-medium text-gray-900">{user.name}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-500">{user.email}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-500">{user.campus || "-"}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-800">
+                          {getRoleLabel(user.role)}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-500">
+                          {new Date(user.createdAt).toLocaleString('ja-JP')}
+                        </div>
+                      </td>
+                      {isSuperAdmin && (
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <button
+                            onClick={() => handlePromoteToStaff(user.id)}
+                            disabled={processing === user.id}
+                            className="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                          >
+                            <Shield className="w-4 h-4 mr-1" />
+                            スタッフに昇格
+                          </button>
+                        </td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )
       )}
     </div>
