@@ -3,9 +3,15 @@ import Credentials from "next-auth/providers/credentials"
 import { prisma } from "./lib/prisma"
 import bcrypt from "bcryptjs"
 import { UserRole } from "@prisma/client"
+import { checkRateLimit } from "./lib/security"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  session: { strategy: "jwt" },
+  // セッション設定（セキュリティ強化）
+  session: {
+    strategy: "jwt",
+    maxAge: 24 * 60 * 60, // 24時間でセッション期限切れ
+    updateAge: 60 * 60, // 1時間ごとにトークンを更新
+  },
   pages: {
     signIn: "/auth/signin",
   },
@@ -21,13 +27,23 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return null
         }
 
+        const email = (credentials.email as string).toLowerCase().trim()
+
+        // ログイン試行のレート制限（15分間に10回まで）
+        const rateLimit = checkRateLimit(`login:${email}`, 10, 15 * 60 * 1000)
+        if (!rateLimit.allowed) {
+          throw new Error("ログイン試行回数が上限に達しました。15分後に再試行してください。")
+        }
+
         const user = await prisma.user.findUnique({
           where: {
-            email: credentials.email as string,
+            email: email,
           },
         })
 
         if (!user) {
+          // タイミング攻撃対策: ユーザーが存在しなくても同様の処理時間をかける
+          await bcrypt.compare(credentials.password as string, "$2a$10$dummy.hash.for.timing.attack.prevention")
           return null
         }
 
@@ -56,8 +72,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   callbacks: {
     async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id
+      if (user && user.id) {
+        token.id = user.id as string
         token.role = user.role as UserRole
       }
       return token

@@ -99,8 +99,11 @@ export async function GET(request: NextRequest) {
       hasLeaderExperience: searchParams.get("hasLeaderExperience") === "true",
     }
 
-    // 全ての体験記を取得
+    // 公開済みの体験記のみ取得（セキュリティ: 未公開記事の漏洩防止）
     const stories = await prisma.graduateStory.findMany({
+      where: {
+        published: true,
+      },
       include: {
         author: {
           select: {
