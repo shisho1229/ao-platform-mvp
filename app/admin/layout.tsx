@@ -1,7 +1,8 @@
 import { redirect } from "next/navigation"
 import { auth } from "@/auth"
 import Link from "next/link"
-import { Users, FileText, Home } from "lucide-react"
+import { Home } from "lucide-react"
+import AdminNav from "./_components/AdminNav"
 
 export default async function AdminLayout({
   children,
@@ -51,26 +52,9 @@ export default async function AdminLayout({
       </header>
 
       {/* Navigation */}
-      <nav className="bg-white shadow-sm border-b">
-        <div className="container mx-auto px-6">
-          <div className="flex gap-6">
-            <Link
-              href="/admin/users"
-              className="px-4 py-3 flex items-center gap-2 hover:bg-gray-50 border-b-2 border-transparent hover:border-blue-500 transition-colors"
-            >
-              <Users className="w-5 h-5" />
-              ユーザー管理
-            </Link>
-            <Link
-              href="/admin/stories"
-              className="px-4 py-3 flex items-center gap-2 hover:bg-gray-50 border-b-2 border-transparent hover:border-blue-500 transition-colors"
-            >
-              <FileText className="w-5 h-5" />
-              投稿管理
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <div className="py-4">
+        <AdminNav />
+      </div>
 
       {/* Main Content */}
       <main className="container mx-auto px-6 py-8">

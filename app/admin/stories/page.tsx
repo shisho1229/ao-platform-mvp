@@ -256,28 +256,6 @@ export default function AdminStoriesPage() {
   return (
     <div>
       <div className="mb-6">
-        {/* 管理ナビゲーション */}
-        <div className="mb-6 flex gap-3">
-          <Link
-            href="/admin/dashboard"
-            className="px-6 py-3 bg-white text-gray-700 rounded-lg hover:bg-gray-100 transition-colors font-semibold border border-gray-300"
-          >
-            📊 ダッシュボード
-          </Link>
-          <Link
-            href="/admin/stories"
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
-          >
-            📝 投稿管理
-          </Link>
-          <Link
-            href="/admin/users"
-            className="px-6 py-3 bg-white text-gray-700 rounded-lg hover:bg-gray-100 transition-colors font-semibold border border-gray-300"
-          >
-            👥 ユーザー管理
-          </Link>
-        </div>
-
         {/* Filter Buttons */}
         <div className="flex gap-2">
           <button
