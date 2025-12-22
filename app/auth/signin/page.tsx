@@ -21,14 +21,15 @@ export default function SignInPage() {
       const result = await signIn("credentials", {
         email,
         password,
-        callbackUrl: "/",
+        redirect: false,
       })
 
-      // signInがcallbackUrlを使うのでここには来ない想定
-      // エラーがあった場合のみ処理
       if (result?.error) {
         setError("メールアドレスまたはパスワードが正しくありません")
         setIsLoading(false)
+      } else if (result?.ok) {
+        // ログイン成功 - ページをリロード
+        window.location.href = "/"
       }
     } catch (error) {
       setError("ログインに失敗しました")
