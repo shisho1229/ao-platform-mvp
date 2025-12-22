@@ -1,10 +1,20 @@
 import { NextRequest, NextResponse } from "next/server"
 import { requireRole } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
+import { auth } from "@/auth"
 
 // GET /api/stories - 合格体験記一覧取得
 export async function GET(request: NextRequest) {
   try {
+    // 卒塾生は閲覧不可
+    const session = await auth()
+    if (session?.user?.role === "GRADUATE") {
+      return NextResponse.json(
+        { error: "卒塾生は体験記を閲覧できません" },
+        { status: 403 }
+      )
+    }
+
     const searchParams = request.nextUrl.searchParams
     const keyword = searchParams.get("keyword")
     const university = searchParams.get("university")
@@ -144,10 +154,10 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/stories - 合格体験記投稿（ユーザー専用）
+// POST /api/stories - 合格体験記投稿（ユーザーと卒塾生専用）
 export async function POST(request: NextRequest) {
   try {
-    const user = await requireRole(["USER"])
+    const user = await requireRole(["USER", "GRADUATE"])
     const body = await request.json()
 
     console.log("受信したデータ:", {

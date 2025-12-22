@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { CheckCircle, XCircle, UserPlus, Shield, UserMinus } from "lucide-react"
+import { CheckCircle, XCircle, UserPlus, Shield, UserMinus, GraduationCap } from "lucide-react"
 
 interface User {
   id: string
@@ -22,9 +22,10 @@ export default function AdminUsersPage() {
   const [pendingUsers, setPendingUsers] = useState<User[]>([])
   const [staffUsers, setStaffUsers] = useState<User[]>([])
   const [regularUsers, setRegularUsers] = useState<User[]>([])
+  const [graduateUsers, setGraduateUsers] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
   const [processing, setProcessing] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState<"pending" | "staff" | "users">("pending")
+  const [activeTab, setActiveTab] = useState<"pending" | "staff" | "users" | "graduates">("pending")
   const [searchQuery, setSearchQuery] = useState("")
   const [campusFilter, setCampusFilter] = useState("")
 
@@ -64,14 +65,16 @@ export default function AdminUsersPage() {
       if (approvedResponse.ok) {
         const data = await approvedResponse.json()
 
-        // スタッフと一般ユーザーに分離
+        // スタッフ、一般ユーザー、卒塾生に分離
         const staff = data.filter((u: User) =>
           u.role === "SUPER_ADMIN" || u.role === "ADMIN" || u.role === "STAFF"
         )
         const users = data.filter((u: User) => u.role === "USER")
+        const graduates = data.filter((u: User) => u.role === "GRADUATE")
 
         setStaffUsers(staff)
         setRegularUsers(users)
+        setGraduateUsers(graduates)
       }
     } catch (error) {
       console.error("ユーザー取得エラー:", error)
@@ -179,6 +182,33 @@ export default function AdminUsersPage() {
     }
   }
 
+  const handleChangeToGraduate = async (userId: string, toGraduate: boolean) => {
+    if (!confirm(toGraduate ? "このユーザーを卒塾生に変更しますか？" : "このユーザーを一般ユーザーに戻しますか？")) return
+
+    setProcessing(userId)
+    try {
+      const response = await fetch(`/api/admin/users/${userId}/change-graduate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ toGraduate })
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        alert(data.message)
+        fetchUsers()
+      } else {
+        const error = await response.json()
+        alert(error.error || "変更に失敗しました")
+      }
+    } catch (error) {
+      console.error("卒塾生変更エラー:", error)
+      alert("変更に失敗しました")
+    } finally {
+      setProcessing(null)
+    }
+  }
+
   const getRoleLabel = (role: string) => {
     switch (role) {
       case "SUPER_ADMIN":
@@ -189,6 +219,8 @@ export default function AdminUsersPage() {
         return "スタッフ"
       case "USER":
         return "ユーザー"
+      case "GRADUATE":
+        return "卒塾生"
       default:
         return role
     }
@@ -284,6 +316,16 @@ export default function AdminUsersPage() {
             }`}
           >
             ユーザー ({regularUsers.length})
+          </button>
+          <button
+            onClick={() => setActiveTab("graduates")}
+            className={`px-4 py-2 font-medium border-b-2 transition-colors ${
+              activeTab === "graduates"
+                ? "border-blue-500 text-blue-600"
+                : "border-transparent text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            卒塾生 ({graduateUsers.length})
           </button>
         </div>
       </div>
@@ -467,7 +509,7 @@ export default function AdminUsersPage() {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     登録日時
                   </th>
-                  {isSuperAdmin && (
+                  {isStaffOrAdmin && (
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       操作
                     </th>
@@ -496,15 +538,100 @@ export default function AdminUsersPage() {
                         {new Date(user.createdAt).toLocaleString('ja-JP')}
                       </div>
                     </td>
-                    {isSuperAdmin && (
+                    {isStaffOrAdmin && (
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div className="flex gap-2">
+                          {isSuperAdmin && (
+                            <button
+                              onClick={() => handlePromoteToStaff(user.id)}
+                              disabled={processing === user.id}
+                              className="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                            >
+                              <Shield className="w-4 h-4 mr-1" />
+                              スタッフに昇格
+                            </button>
+                          )}
+                          <button
+                            onClick={() => handleChangeToGraduate(user.id, true)}
+                            disabled={processing === user.id}
+                            className="inline-flex items-center px-3 py-1.5 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50 transition-colors"
+                          >
+                            <GraduationCap className="w-4 h-4 mr-1" />
+                            卒塾生に変更
+                          </button>
+                        </div>
+                      </td>
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )
+      ) : activeTab === "graduates" ? (
+        /* 卒塾生 */
+        graduateUsers.length === 0 ? (
+          <div className="bg-white rounded-lg shadow p-8 text-center text-gray-500">
+            卒塾生はいません
+          </div>
+        ) : (
+          <div className="bg-white rounded-lg shadow overflow-hidden">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    名前
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    メールアドレス
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    校舎
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    権限
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    登録日時
+                  </th>
+                  {isStaffOrAdmin && (
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      操作
+                    </th>
+                  )}
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {graduateUsers.map((user) => (
+                  <tr key={user.id}>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">{user.name}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-500">{user.email}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-500">{user.campus || "-"}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="px-2 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-800">
+                        {getRoleLabel(user.role)}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-500">
+                        {new Date(user.createdAt).toLocaleString('ja-JP')}
+                      </div>
+                    </td>
+                    {isStaffOrAdmin && (
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <button
-                          onClick={() => handlePromoteToStaff(user.id)}
+                          onClick={() => handleChangeToGraduate(user.id, false)}
                           disabled={processing === user.id}
-                          className="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                          className="inline-flex items-center px-3 py-1.5 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 transition-colors"
                         >
-                          <Shield className="w-4 h-4 mr-1" />
-                          スタッフに昇格
+                          <UserPlus className="w-4 h-4 mr-1" />
+                          ユーザーに戻す
                         </button>
                       </td>
                     )}
@@ -514,7 +641,7 @@ export default function AdminUsersPage() {
             </table>
           </div>
         )
-      )}
+      ) : null}
     </div>
   )
 }
