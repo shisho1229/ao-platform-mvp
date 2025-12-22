@@ -26,13 +26,13 @@ export default function SignInPage() {
 
       if (result?.error) {
         setError("メールアドレスまたはパスワードが正しくありません")
+        setIsLoading(false)
       } else {
-        router.push("/")
-        router.refresh()
+        // ログイン成功 - 完全リロードでセッションを確実に更新
+        window.location.href = "/"
       }
     } catch (error) {
       setError("ログインに失敗しました")
-    } finally {
       setIsLoading(false)
     }
   }

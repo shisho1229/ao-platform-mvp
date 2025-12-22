@@ -9,6 +9,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
   const [isTimeout, setIsTimeout] = useState(false)
+  const [hasRedirected, setHasRedirected] = useState(false)
 
   // タイムアウト処理（10秒）
   useEffect(() => {
@@ -31,17 +32,25 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
       return
     }
 
+    // 既にリダイレクト済みの場合は何もしない
+    if (hasRedirected) {
+      return
+    }
+
     // タイムアウトまたは未認証の場合、公開ルート以外はサインインページにリダイレクト
     if ((isTimeout || !session) && !isPublicRoute) {
-      router.push("/auth/signin")
+      setHasRedirected(true)
+      // window.location.hrefを使って確実にリダイレクト
+      window.location.href = "/auth/signin"
       return
     }
 
     // ログイン済みでサインインページにアクセスした場合はホームにリダイレクト
     if (session && pathname === "/auth/signin") {
-      router.push("/")
+      setHasRedirected(true)
+      window.location.href = "/"
     }
-  }, [session, status, pathname, router, isTimeout])
+  }, [session, status, pathname, isTimeout, hasRedirected])
 
   // ローディング中（タイムアウト前）
   if (status === "loading" && !isTimeout) {
@@ -50,6 +59,18 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-4"></div>
           <p className="text-gray-500">読み込み中...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // リダイレクト中は何も表示しない
+  if (hasRedirected) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-4"></div>
+          <p className="text-gray-500">リダイレクト中...</p>
         </div>
       </div>
     )
