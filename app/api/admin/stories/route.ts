@@ -54,6 +54,10 @@ export async function GET(request: NextRequest) {
     if (admissionResult === "first_pass") {
       // 一次合格のみ（二次は不合格または未記入）
       where.firstRoundResult = { in: ["合格", "AB合格", "A合格", "B合格"] }
+      // 最終合格者を除外
+      where.NOT = {
+        secondRoundResult: { in: ["合格", "AB合格", "A合格", "B合格"] }
+      }
     } else if (admissionResult === "final_pass") {
       // 最終合格（二次合格）
       where.secondRoundResult = { in: ["合格", "AB合格", "A合格", "B合格"] }

@@ -390,14 +390,12 @@ export default function AdminStoriesPage() {
                 className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="">すべて</option>
-                <option value="代々木">代々木</option>
-                <option value="渋谷">渋谷</option>
-                <option value="自由が丘">自由が丘</option>
-                <option value="吉祥寺">吉祥寺</option>
-                <option value="横浜">横浜</option>
-                <option value="藤沢">藤沢</option>
-                <option value="たまプラーザ">たまプラーザ</option>
                 <option value="武蔵小杉">武蔵小杉</option>
+                <option value="下北沢">下北沢</option>
+                <option value="自由が丘">自由が丘</option>
+                <option value="渋谷">渋谷</option>
+                <option value="オンライン">オンライン</option>
+                <option value="青葉台">青葉台</option>
               </select>
             </div>
 
