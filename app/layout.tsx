@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Providers from "@/components/Providers";
-import Navbar from "@/components/Navbar";
-import AuthGuard from "@/components/AuthGuard";
+import ConditionalNavbar from "@/components/ConditionalNavbar";
 
 export const metadata: Metadata = {
   title: "Loohcs志塾 合格者体験記",
@@ -18,10 +17,8 @@ export default function RootLayout({
     <html lang="ja">
       <body className="antialiased">
         <Providers>
-          <AuthGuard>
-            <Navbar />
-            {children}
-          </AuthGuard>
+          <ConditionalNavbar />
+          {children}
         </Providers>
       </body>
     </html>
