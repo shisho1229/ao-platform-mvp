@@ -185,24 +185,26 @@ export default function AdminUsersPage() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold" style={{ color: '#044465' }}>
-          ユーザー管理
-        </h1>
-        <div className="flex gap-3">
-          <Link
-            href="/admin/dashboard"
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            📊 ダッシュボード
-          </Link>
-          <Link
-            href="/admin/stories"
-            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-          >
-            📝 投稿管理
-          </Link>
-        </div>
+      {/* 管理ナビゲーション */}
+      <div className="mb-8 flex gap-3">
+        <Link
+          href="/admin/dashboard"
+          className="px-6 py-3 bg-white text-gray-700 rounded-lg hover:bg-gray-100 transition-colors font-semibold border border-gray-300"
+        >
+          📊 ダッシュボード
+        </Link>
+        <Link
+          href="/admin/stories"
+          className="px-6 py-3 bg-white text-gray-700 rounded-lg hover:bg-gray-100 transition-colors font-semibold border border-gray-300"
+        >
+          📝 投稿管理
+        </Link>
+        <Link
+          href="/admin/users"
+          className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+        >
+          👥 ユーザー管理
+        </Link>
       </div>
 
       {/* Tab Navigation */}
