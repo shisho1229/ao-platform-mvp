@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
-import Link from "next/link"
-import { CheckCircle, XCircle, UserPlus, Shield, UserMinus, Mail, MapPin, Calendar } from "lucide-react"
+import { CheckCircle, XCircle, Mail, MapPin, Calendar } from "lucide-react"
 import { useToast } from "@/components/ui/Toast"
 import { useConfirm } from "@/components/ui/ConfirmModal"
 
@@ -202,6 +201,44 @@ export default function AdminUsersPage() {
     } catch (error) {
       console.error("降格エラー:", error)
       showToast("降格に失敗しました", "error")
+    } finally {
+      setProcessing(null)
+    }
+  }
+
+  const handleRoleChange = async (userId: string, newRole: string) => {
+    const roleLabels: Record<string, string> = {
+      USER: "一般ユーザー",
+      STAFF: "スタッフ",
+      SUPER_ADMIN: "最高管理者",
+    }
+
+    const confirmed = await confirm({
+      title: "ロール変更",
+      message: `このユーザーを「${roleLabels[newRole]}」に変更しますか？`,
+      confirmText: "変更",
+      variant: newRole === "SUPER_ADMIN" ? "warning" : "info",
+    })
+    if (!confirmed) return
+
+    setProcessing(userId)
+    try {
+      const response = await fetch(`/api/admin/users/${userId}/update-role`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ role: newRole }),
+      })
+
+      if (response.ok) {
+        showToast(`${roleLabels[newRole]}に変更しました`, "success")
+        fetchUsers()
+      } else {
+        const error = await response.json()
+        showToast(error.error || "ロール変更に失敗しました", "error")
+      }
+    } catch (error) {
+      console.error("ロール変更エラー:", error)
+      showToast("ロール変更に失敗しました", "error")
     } finally {
       setProcessing(null)
     }
@@ -489,15 +526,17 @@ export default function AdminUsersPage() {
                   key={user.id}
                   user={user}
                   actions={
-                    isSuperAdmin && user.role === "STAFF" ? (
-                      <button
-                        onClick={() => handleDemoteToUser(user.id)}
+                    isSuperAdmin && user.id !== session?.user?.id ? (
+                      <select
+                        value={user.role}
+                        onChange={(e) => handleRoleChange(user.id, e.target.value)}
                         disabled={processing === user.id}
-                        className="w-full inline-flex items-center justify-center px-3 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 disabled:opacity-50 transition-colors text-sm"
+                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50"
                       >
-                        <UserMinus className="w-4 h-4 mr-1" />
-                        ユーザーに降格
-                      </button>
+                        <option value="USER">一般ユーザー</option>
+                        <option value="STAFF">スタッフ</option>
+                        <option value="SUPER_ADMIN">最高管理者</option>
+                      </select>
                     ) : undefined
                   }
                 />
@@ -554,15 +593,19 @@ export default function AdminUsersPage() {
                       </td>
                       {isSuperAdmin && (
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          {user.role === "STAFF" && (
-                            <button
-                              onClick={() => handleDemoteToUser(user.id)}
+                          {user.id !== session?.user?.id ? (
+                            <select
+                              value={user.role}
+                              onChange={(e) => handleRoleChange(user.id, e.target.value)}
                               disabled={processing === user.id}
-                              className="inline-flex items-center px-3 py-1.5 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50 transition-colors"
+                              className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50"
                             >
-                              <UserMinus className="w-4 h-4 mr-1" />
-                              ユーザーに降格
-                            </button>
+                              <option value="USER">一般ユーザー</option>
+                              <option value="STAFF">スタッフ</option>
+                              <option value="SUPER_ADMIN">最高管理者</option>
+                            </select>
+                          ) : (
+                            <span className="text-gray-400 text-xs">自分自身</span>
                           )}
                         </td>
                       )}
@@ -589,14 +632,16 @@ export default function AdminUsersPage() {
                   user={user}
                   actions={
                     isSuperAdmin ? (
-                      <button
-                        onClick={() => handlePromoteToStaff(user.id)}
+                      <select
+                        value={user.role}
+                        onChange={(e) => handleRoleChange(user.id, e.target.value)}
                         disabled={processing === user.id}
-                        className="w-full inline-flex items-center justify-center px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors text-sm"
+                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50"
                       >
-                        <Shield className="w-4 h-4 mr-1" />
-                        スタッフに昇格
-                      </button>
+                        <option value="USER">一般ユーザー</option>
+                        <option value="STAFF">スタッフ</option>
+                        <option value="SUPER_ADMIN">最高管理者</option>
+                      </select>
                     ) : undefined
                   }
                 />
@@ -653,15 +698,16 @@ export default function AdminUsersPage() {
                       </td>
                       {isSuperAdmin && (
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <button
-                            onClick={() => handlePromoteToStaff(user.id)}
+                          <select
+                            value={user.role}
+                            onChange={(e) => handleRoleChange(user.id, e.target.value)}
                             disabled={processing === user.id}
-                            className="inline-flex items-center px-3 py-1.5 text-white rounded-lg disabled:opacity-50 transition-colors"
-                            style={{ background: 'linear-gradient(to right, #044465, #055a7a)' }}
+                            className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50"
                           >
-                            <Shield className="w-4 h-4 mr-1" />
-                            スタッフに昇格
-                          </button>
+                            <option value="USER">一般ユーザー</option>
+                            <option value="STAFF">スタッフ</option>
+                            <option value="SUPER_ADMIN">最高管理者</option>
+                          </select>
                         </td>
                       )}
                     </tr>
