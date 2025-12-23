@@ -65,6 +65,7 @@ export default function Navbar() {
     { name: "体験記を投稿", href: "/stories/new" },
     { name: "マイ投稿", href: "/my-stories" },
     { name: "お気に入り", href: "/favorites" },
+    { name: "設定", href: "/settings" },
     ...(isStaffOrAdmin ? [{ name: "管理画面", href: "/admin/users", badge: unpublishedCount }] : []),
   ]
 
