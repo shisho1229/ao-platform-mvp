@@ -22,7 +22,7 @@ const protectedRoutes = [
 const adminRoutes = ["/admin"]
 
 // 認証済みユーザーがアクセスすべきでないルート
-const authOnlyRoutes = ["/login", "/signup"]
+const authOnlyRoutes = ["/auth/signin", "/auth/signup"]
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
@@ -58,7 +58,7 @@ export async function middleware(request: NextRequest) {
   })
 
   if (isProtectedRoute && !isAuthenticated) {
-    const loginUrl = new URL("/login", request.url)
+    const loginUrl = new URL("/auth/signin", request.url)
     loginUrl.searchParams.set("callbackUrl", pathname)
     return NextResponse.redirect(loginUrl)
   }
@@ -68,7 +68,7 @@ export async function middleware(request: NextRequest) {
 
   if (isAdminRoute) {
     if (!isAuthenticated) {
-      const loginUrl = new URL("/login", request.url)
+      const loginUrl = new URL("/auth/signin", request.url)
       loginUrl.searchParams.set("callbackUrl", pathname)
       return NextResponse.redirect(loginUrl)
     }
