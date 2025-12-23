@@ -5,43 +5,23 @@ import { usePathname, useRouter } from "next/navigation"
 import { useEffect } from "react"
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
-  const { data: session, status } = useSession()
+  const { status } = useSession()
   const pathname = usePathname()
   const router = useRouter()
 
-  // 認証が必要なルート（これらのルートだけを保護）
-  const protectedRoutes = [
-    "/favorites",
-    "/my-stories",
-    "/stories/new",
-    "/profile",
-    "/admin",
-  ]
-
-  // 認証済みユーザーがアクセスすべきでないルート
+  // 認証済みユーザーがアクセスすべきでないルート（ログイン・登録ページ）
   const authOnlyRoutes = ["/auth/signin", "/auth/signup"]
-
-  const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route))
   const isAuthOnlyRoute = authOnlyRoutes.some(route => pathname.startsWith(route))
 
   useEffect(() => {
-    if (status === "loading") {
-      return
-    }
-
-    // ログインしていない場合、保護されたルートはサインインページにリダイレクト
-    if (!session && isProtectedRoute) {
-      router.push("/auth/signin")
-    }
-
-    // ログイン済みでサインインページにアクセスした場合はホームにリダイレクト
-    if (session && isAuthOnlyRoute) {
+    // ログイン済みでサインイン/サインアップページにアクセスした場合はホームにリダイレクト
+    if (status === "authenticated" && isAuthOnlyRoute) {
       router.push("/")
     }
-  }, [session, status, pathname, router, isProtectedRoute, isAuthOnlyRoute])
+  }, [status, pathname, router, isAuthOnlyRoute])
 
-  // ローディング中は保護されたルートのみローディング表示
-  if (status === "loading" && isProtectedRoute) {
+  // 認証ページへのアクセス時、認証済みならリダイレクト中を表示
+  if (status === "authenticated" && isAuthOnlyRoute) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <p className="text-gray-500">読み込み中...</p>
@@ -49,14 +29,6 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     )
   }
 
-  // ログインしていない場合、保護されたルートは何も表示しない（リダイレクト中）
-  if (!session && isProtectedRoute) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-gray-500">読み込み中...</p>
-      </div>
-    )
-  }
-
+  // それ以外は各ページに任せる（各ページで独自の認証チェックを行う）
   return <>{children}</>
 }
