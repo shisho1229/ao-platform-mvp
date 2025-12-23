@@ -37,13 +37,14 @@ async function main() {
 
   const hashedPassword = await bcrypt.hash('password123', 10);
 
-  // Admin
+  // Admin (SUPER_ADMIN)
   const admin = await prisma.user.create({
     data: {
       email: 'admin@example.com',
       name: '管理者',
       password: hashedPassword,
-      role: 'ADMIN',
+      role: 'SUPER_ADMIN',
+      approved: true,
     },
   });
 
@@ -54,6 +55,7 @@ async function main() {
       name: '山田太郎',
       password: hashedPassword,
       role: 'STAFF',
+      approved: true,
     },
   });
 
@@ -64,6 +66,7 @@ async function main() {
       name: '佐藤花子',
       password: hashedPassword,
       role: 'USER',
+      approved: true,
     },
   });
 
@@ -73,6 +76,7 @@ async function main() {
       name: '鈴木一郎',
       password: hashedPassword,
       role: 'USER',
+      approved: true,
     },
   });
 
@@ -83,6 +87,7 @@ async function main() {
       name: '田中次郎',
       password: hashedPassword,
       role: 'USER',
+      approved: true,
     },
   });
 
@@ -494,11 +499,11 @@ async function main() {
   console.log('✅ 追加のダミー体験記10件を作成しました');
   console.log('🎉 シードデータの投入が完了しました!');
   console.log('\n📋 作成されたユーザー:');
-  console.log('  - Admin: admin@example.com / password123');
-  console.log('  - Staff: staff@example.com / password123');
-  console.log('  - User1: user1@example.com / password123');
-  console.log('  - User2: user2@example.com / password123');
-  console.log('  - User3: user3@example.com / password123');
+  console.log('  - SUPER_ADMIN: admin@example.com / password123');
+  console.log('  - STAFF: staff@example.com / password123');
+  console.log('  - USER: user1@example.com / password123');
+  console.log('  - USER: user2@example.com / password123');
+  console.log('  - USER: user3@example.com / password123');
 }
 
 main()
