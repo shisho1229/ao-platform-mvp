@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
-import { Users, BookOpen, Heart, TrendingUp, BarChart3, Award } from "lucide-react"
+import { Users, BookOpen, Heart, TrendingUp, BarChart3, Award, Plus } from "lucide-react"
 
 interface Stats {
   overview: {
@@ -26,6 +26,8 @@ export default function AdminDashboardPage() {
   const router = useRouter()
   const [stats, setStats] = useState<Stats | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [isSeeding, setIsSeeding] = useState(false)
+  const [seedMessage, setSeedMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -56,6 +58,29 @@ export default function AdminDashboardPage() {
       console.error("Error fetching stats:", error)
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const handleSeedDummy = async () => {
+    if (isSeeding) return
+
+    setIsSeeding(true)
+    setSeedMessage(null)
+
+    try {
+      const res = await fetch("/api/admin/seed-dummy", { method: "POST" })
+      const data = await res.json()
+
+      if (res.ok) {
+        setSeedMessage({ type: "success", text: `${data.count}件のダミー投稿を作成しました` })
+        fetchStats() // 統計を再取得
+      } else {
+        setSeedMessage({ type: "error", text: data.error || "エラーが発生しました" })
+      }
+    } catch (error) {
+      setSeedMessage({ type: "error", text: "ネットワークエラーが発生しました" })
+    } finally {
+      setIsSeeding(false)
     }
   }
 
@@ -110,6 +135,38 @@ export default function AdminDashboardPage() {
           プラットフォームの統計情報
         </p>
       </div>
+
+      {/* ダミー投稿作成ボタン（SUPER_ADMINのみ） */}
+      {session?.user?.role === "SUPER_ADMIN" && (
+        <div className="bg-white rounded-2xl shadow-lg p-4 border" style={{ borderColor: '#bac9d0' }}>
+          <div className="flex items-center justify-between flex-wrap gap-3">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-purple-100">
+                <Plus className="w-5 h-5 text-purple-600" />
+              </div>
+              <div>
+                <p className="font-medium" style={{ color: '#044465' }}>開発用ツール</p>
+                <p className="text-xs text-gray-500">テスト用のダミー投稿を作成</p>
+              </div>
+            </div>
+            <button
+              onClick={handleSeedDummy}
+              disabled={isSeeding}
+              className="px-4 py-2 rounded-lg text-white text-sm font-medium transition-all disabled:opacity-50"
+              style={{ background: isSeeding ? '#6b7280' : 'linear-gradient(to bottom right, #044465, #055a7a)' }}
+            >
+              {isSeeding ? "作成中..." : "ダミー投稿を10件作成"}
+            </button>
+          </div>
+          {seedMessage && (
+            <div className={`mt-3 p-3 rounded-lg text-sm ${
+              seedMessage.type === "success" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+            }`}>
+              {seedMessage.text}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* サマリーカード */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
