@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation"
 import { auth } from "@/auth"
 import Link from "next/link"
-import { Home } from "lucide-react"
-import AdminNav from "./_components/AdminNav"
+import { Home, BarChart3, FileText, Users } from "lucide-react"
+import AdminNavLinks from "./_components/AdminNavLinks"
 
 export default async function AdminLayout({
   children,
@@ -22,39 +22,35 @@ export default async function AdminLayout({
     redirect("/")
   }
 
-  const isSuperAdmin = session.user.role === "SUPER_ADMIN"
-
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(to bottom right, #bac9d0, white, #bac9d0)' }}>
-      {/* Header */}
+      {/* Header with Navigation */}
       <header className="shadow-md" style={{ background: 'linear-gradient(to right, #044465, #055a7a)' }}>
-        <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/admin/users" className="flex items-center gap-2 sm:gap-3">
-              <div className="text-white text-lg sm:text-2xl font-bold" style={{ fontFamily: "'Noto Serif JP', serif" }}>
-                管理画面
-              </div>
-            </Link>
-            <div className="flex items-center gap-2 sm:gap-4">
-              <span className="hidden sm:inline text-white text-sm">
-                {session.user.name} ({session.user.role === "SUPER_ADMIN" ? "最高管理者" : session.user.role === "ADMIN" ? "管理者" : "スタッフ"})
-              </span>
-              <Link
-                href="/"
-                className="px-3 sm:px-4 py-1.5 sm:py-2 bg-white text-gray-800 rounded-lg hover:bg-gray-100 transition-colors flex items-center gap-1.5 sm:gap-2 text-sm"
-              >
-                <Home className="w-4 h-4" />
-                <span className="hidden sm:inline">ホームへ</span>
+        <div className="container mx-auto px-4 sm:px-6 py-3">
+          <div className="flex items-center justify-between gap-4">
+            {/* 左側: タイトルとナビゲーション */}
+            <div className="flex items-center gap-4 sm:gap-6 overflow-x-auto">
+              <Link href="/admin/users" className="flex-shrink-0">
+                <span className="text-white text-lg sm:text-xl font-bold" style={{ fontFamily: "'Noto Serif JP', serif" }}>
+                  管理画面
+                </span>
               </Link>
+
+              {/* ナビゲーションリンク */}
+              <AdminNavLinks />
             </div>
+
+            {/* 右側: ホームへボタン */}
+            <Link
+              href="/"
+              className="flex-shrink-0 px-3 py-1.5 bg-white text-gray-800 rounded-lg hover:bg-gray-100 transition-colors flex items-center gap-1.5 text-sm"
+            >
+              <Home className="w-4 h-4" />
+              <span className="hidden sm:inline">ホームへ</span>
+            </Link>
           </div>
         </div>
       </header>
-
-      {/* Navigation */}
-      <div className="py-3 sm:py-4">
-        <AdminNav />
-      </div>
 
       {/* Main Content */}
       <main className="container mx-auto px-4 sm:px-6 py-4 sm:py-8">
