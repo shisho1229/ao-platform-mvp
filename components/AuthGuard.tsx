@@ -9,28 +9,39 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
 
-  useEffect(() => {
-    // 公開ルート
-    const publicRoutes = ["/auth/signin", "/auth/signup"]
-    const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route))
+  // 認証が必要なルート（これらのルートだけを保護）
+  const protectedRoutes = [
+    "/favorites",
+    "/my-stories",
+    "/stories/new",
+    "/profile",
+    "/admin",
+  ]
 
+  // 認証済みユーザーがアクセスすべきでないルート
+  const authOnlyRoutes = ["/auth/signin", "/auth/signup"]
+
+  const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route))
+  const isAuthOnlyRoute = authOnlyRoutes.some(route => pathname.startsWith(route))
+
+  useEffect(() => {
     if (status === "loading") {
       return
     }
 
-    // ログインしていない場合は、公開ルート以外はサインインページにリダイレクト
-    if (!session && !isPublicRoute) {
+    // ログインしていない場合、保護されたルートはサインインページにリダイレクト
+    if (!session && isProtectedRoute) {
       router.push("/auth/signin")
     }
 
     // ログイン済みでサインインページにアクセスした場合はホームにリダイレクト
-    if (session && pathname === "/auth/signin") {
+    if (session && isAuthOnlyRoute) {
       router.push("/")
     }
-  }, [session, status, pathname, router])
+  }, [session, status, pathname, router, isProtectedRoute, isAuthOnlyRoute])
 
-  // ローディング中
-  if (status === "loading") {
+  // ローディング中は保護されたルートのみローディング表示
+  if (status === "loading" && isProtectedRoute) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <p className="text-gray-500">読み込み中...</p>
@@ -38,13 +49,13 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     )
   }
 
-  // 公開ルート
-  const publicRoutes = ["/auth/signin", "/auth/signup"]
-  const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route))
-
-  // ログインしていない場合は何も表示しない（リダイレクト中）
-  if (!session && !isPublicRoute) {
-    return null
+  // ログインしていない場合、保護されたルートは何も表示しない（リダイレクト中）
+  if (!session && isProtectedRoute) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-gray-500">読み込み中...</p>
+      </div>
+    )
   }
 
   return <>{children}</>
