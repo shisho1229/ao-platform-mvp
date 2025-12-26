@@ -11,8 +11,10 @@ export default function SignUpPage() {
   const [confirmPassword, setConfirmPassword] = useState("")
   const [name, setName] = useState("")
   const [campus, setCampus] = useState("")
+  const [role, setRole] = useState("USER")
   const [error, setError] = useState("")
   const [success, setSuccess] = useState(false)
+  const [successMessage, setSuccessMessage] = useState("")
   const [isLoading, setIsLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -33,7 +35,7 @@ export default function SignUpPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password, name, campus }),
+        body: JSON.stringify({ email, password, name, campus, role }),
       })
 
       const data = await response.json()
@@ -41,6 +43,7 @@ export default function SignUpPage() {
       if (!response.ok) {
         setError(data.error || "アカウント登録に失敗しました")
       } else {
+        setSuccessMessage(data.message)
         setSuccess(true)
       }
     } catch (error) {
@@ -60,10 +63,7 @@ export default function SignUpPage() {
             </h2>
             <div className="mb-6">
               <p className="text-gray-700 mb-4">
-                アカウント登録が完了しました。
-              </p>
-              <p className="text-gray-600 mb-6">
-                管理者の承認をお待ちください。承認後、ログインできるようになります。
+                {successMessage}
               </p>
             </div>
             <Link
@@ -150,6 +150,24 @@ export default function SignUpPage() {
                 <option value="渋谷">渋谷</option>
                 <option value="オンライン">オンライン</option>
                 <option value="青葉台">青葉台</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">
+                ロール *
+              </label>
+              <select
+                id="role"
+                name="role"
+                required
+                className="appearance-none relative block w-full px-3 py-2 border border-gray-300 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:border-transparent sm:text-sm"
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                disabled={isLoading}
+              >
+                <option value="USER">一般ユーザー（生徒・卒業生）</option>
+                <option value="STAFF">スタッフ</option>
+                <option value="SUPER_ADMIN">最高管理者</option>
               </select>
             </div>
             <div>

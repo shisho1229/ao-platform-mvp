@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { email, password, name, campus } = await request.json()
+    const { email, password, name, campus, role } = await request.json()
 
     // 基本バリデーション
     if (!email || !password || !name || !campus) {
@@ -26,6 +26,10 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       )
     }
+
+    // ロールのバリデーション
+    const validRoles = ["USER", "STAFF", "SUPER_ADMIN"]
+    const selectedRole = validRoles.includes(role) ? role : "USER"
 
     // メールアドレス形式チェック
     if (!isValidEmail(email)) {
@@ -64,9 +68,11 @@ export async function POST(request: NextRequest) {
     const hashedPassword = await bcrypt.hash(password, 10)
 
     // ロールと承認ステータスを決定
-    const isSuperAdmin = isSuperAdminEmail(email)
-    const userRole = isSuperAdmin ? "SUPER_ADMIN" : "USER"
-    const isApproved = isSuperAdmin // 最高管理者は自動承認
+    // メールドメインで自動判定、または選択されたロールを使用
+    const isSuperAdminByEmail = isSuperAdminEmail(email)
+    const userRole = isSuperAdminByEmail ? "SUPER_ADMIN" : selectedRole
+    // SUPER_ADMIN と STAFF は自動承認、USER は管理者の承認が必要
+    const isApproved = userRole === "SUPER_ADMIN" || userRole === "STAFF"
 
     // ユーザー作成（サニタイズ済みの入力を使用）
     const user = await prisma.user.create({
@@ -80,11 +86,16 @@ export async function POST(request: NextRequest) {
       },
     })
 
+    // ロールに応じたメッセージ
+    const roleMessages: Record<string, string> = {
+      SUPER_ADMIN: "最高管理者アカウントが作成されました。すぐにログインできます。",
+      STAFF: "スタッフアカウントが作成されました。すぐにログインできます。",
+      USER: "アカウント登録が完了しました。管理者の承認をお待ちください。",
+    }
+
     return NextResponse.json(
       {
-        message: isSuperAdmin
-          ? "最高管理者アカウントが作成されました。すぐにログインできます。"
-          : "アカウント登録が完了しました。管理者の承認をお待ちください。",
+        message: roleMessages[userRole],
         user: {
           id: user.id,
           email: user.email,
