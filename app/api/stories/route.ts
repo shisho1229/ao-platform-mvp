@@ -249,7 +249,8 @@ export async function POST(request: NextRequest) {
         targetProfessor,
         hasSportsAchievement,
         sportsDetails,
-        sportsAchievements: sportsAchievements || [],
+        // sportsAchievements は一時的に無効化（DB型の問題）
+        // sportsAchievements: sportsAchievements || [],
         hasEnglishQualification,
         englishQualification,
         hasStudyAbroad,
