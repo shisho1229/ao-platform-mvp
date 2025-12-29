@@ -165,10 +165,10 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/stories - 合格体験記投稿（ユーザー専用）
+// POST /api/stories - 合格体験記投稿
 export async function POST(request: NextRequest) {
   try {
-    const user = await requireRole(["USER"])
+    const user = await requireRole(["SUPER_ADMIN", "ADMIN", "STAFF", "USER"])
     const body = await request.json()
 
     console.log("受信したデータ:", {
