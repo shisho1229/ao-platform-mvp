@@ -310,6 +310,7 @@ export async function POST() {
 
     return NextResponse.json({
       success: true,
+      count: createdStories.length,
       message: `${createdStories.length}件のダミー投稿を作成しました`,
       stories: createdStories.map(s => ({
         id: s.id,

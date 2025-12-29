@@ -37,7 +37,7 @@ export default function AdminDashboardPage() {
 
     if (status === "authenticated") {
       // 管理者権限チェック
-      if (session?.user?.role !== "SUPER_ADMIN" && session?.user?.role !== "STAFF") {
+      if (session?.user?.role !== "SUPER_ADMIN" && session?.user?.role !== "ADMIN" && session?.user?.role !== "STAFF") {
         router.push("/")
         return
       }
