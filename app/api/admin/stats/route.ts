@@ -75,10 +75,13 @@ export async function GET() {
       })
     ])
 
-    // お気に入りが多い体験記トップ5
+    // お気に入りが多い体験記トップ5（必要なフィールドのみ取得）
     const topStories = await prisma.graduateStory.findMany({
       where: { published: true },
-      include: {
+      select: {
+        id: true,
+        university: true,
+        faculty: true,
         favorites: {
           select: { id: true }
         }
