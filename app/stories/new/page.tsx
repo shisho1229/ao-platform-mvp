@@ -394,8 +394,8 @@ export default function NewStoryPage() {
     try {
       const payload = {
         ...formData,
-        // 面接質問をJSON文字列として保存
-        interviewQuestions: JSON.stringify(interviewQuestions),
+        // 面接質問をプレーンテキストとして保存（改行区切り）
+        interviewQuestions: interviewQuestions.map(q => `・${q}`).join('\n'),
         concurrentApplications:
           concurrentApplications.length > 0 ? concurrentApplications : undefined,
       }
@@ -436,7 +436,7 @@ export default function NewStoryPage() {
       const payload = {
         ...formData,
         status: "DRAFT", // 下書きステータスで保存
-        interviewQuestions: JSON.stringify(interviewQuestions),
+        interviewQuestions: interviewQuestions.map(q => `・${q}`).join('\n'),
         concurrentApplications:
           concurrentApplications.length > 0 ? concurrentApplications : undefined,
       }
