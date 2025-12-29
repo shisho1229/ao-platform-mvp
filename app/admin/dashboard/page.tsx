@@ -26,6 +26,7 @@ export default function AdminDashboardPage() {
   const router = useRouter()
   const [stats, setStats] = useState<Stats | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [isSeeding, setIsSeeding] = useState(false)
   const [seedMessage, setSeedMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
 
@@ -51,11 +52,16 @@ export default function AdminDashboardPage() {
       if (res.ok) {
         const data = await res.json()
         setStats(data)
+        setError(null)
       } else if (res.status === 403) {
         router.push("/")
+      } else {
+        const data = await res.json()
+        setError(data.details || data.error || "統計データの取得に失敗しました")
       }
-    } catch (error) {
-      console.error("Error fetching stats:", error)
+    } catch (err) {
+      console.error("Error fetching stats:", err)
+      setError("ネットワークエラーが発生しました")
     } finally {
       setIsLoading(false)
     }
@@ -116,7 +122,22 @@ export default function AdminDashboardPage() {
   if (!stats) {
     return (
       <div className="bg-white rounded-2xl shadow-lg p-12 text-center border" style={{ borderColor: '#bac9d0' }}>
-        <p className="text-gray-600">統計データの読み込みに失敗しました</p>
+        <p className="text-gray-600 mb-2">統計データの読み込みに失敗しました</p>
+        {error && (
+          <p className="text-red-500 text-sm bg-red-50 p-3 rounded-lg mt-4">
+            エラー詳細: {error}
+          </p>
+        )}
+        <button
+          onClick={() => {
+            setIsLoading(true)
+            fetchStats()
+          }}
+          className="mt-4 px-4 py-2 rounded-lg text-white text-sm font-medium"
+          style={{ background: 'linear-gradient(to bottom right, #044465, #055a7a)' }}
+        >
+          再試行
+        </button>
       </div>
     )
   }

@@ -133,7 +133,7 @@ export async function GET() {
     }
 
     return NextResponse.json(
-      { error: "統計データの取得に失敗しました" },
+      { error: "統計データの取得に失敗しました", details: error.message || String(error) },
       { status: 500 }
     )
   }
