@@ -273,8 +273,7 @@ export async function POST() {
         materials: "『ポップカルチャー論』東京大学出版会",
         adviceToJuniors: "好きなことを研究に昇華させよう。熱意があれば道は開ける。",
         hasSportsAchievement: true,
-        sportsDetails: "ダンス",
-        sportsAchievements: ["全国大会出場", "都道府県優勝・準優勝"],
+        sportsDetails: "ダンス（全国大会出場、都道府県優勝）",
         themeIds: [1, 10],
       },
     ]
