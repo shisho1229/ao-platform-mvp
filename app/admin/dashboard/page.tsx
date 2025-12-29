@@ -81,7 +81,10 @@ export default function AdminDashboardPage() {
         setSeedMessage({ type: "success", text: `${data.count}件のダミー投稿を作成しました` })
         fetchStats() // 統計を再取得
       } else {
-        setSeedMessage({ type: "error", text: data.error || "エラーが発生しました" })
+        const errorText = data.details
+          ? `${data.error}: ${data.details}`
+          : (data.error || "エラーが発生しました")
+        setSeedMessage({ type: "error", text: errorText })
       }
     } catch (error) {
       setSeedMessage({ type: "error", text: "ネットワークエラーが発生しました" })
