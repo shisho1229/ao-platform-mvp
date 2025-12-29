@@ -23,11 +23,12 @@ export default function AdminUsersPage() {
   const { showToast } = useToast()
   const { confirm } = useConfirm()
   const [pendingUsers, setPendingUsers] = useState<User[]>([])
+  const [superAdminUsers, setSuperAdminUsers] = useState<User[]>([])
   const [staffUsers, setStaffUsers] = useState<User[]>([])
   const [regularUsers, setRegularUsers] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
   const [processing, setProcessing] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState<"pending" | "staff" | "users">("pending")
+  const [activeTab, setActiveTab] = useState<"pending" | "superadmin" | "staff" | "users">("pending")
   const [searchQuery, setSearchQuery] = useState("")
   const [campusFilter, setCampusFilter] = useState("")
 
@@ -67,12 +68,12 @@ export default function AdminUsersPage() {
       if (approvedResponse.ok) {
         const data = await approvedResponse.json()
 
-        // スタッフと一般ユーザーに分離
-        const staff = data.filter((u: User) =>
-          u.role === "SUPER_ADMIN" || u.role === "ADMIN" || u.role === "STAFF"
-        )
+        // 最高管理者、スタッフ、一般ユーザーに分離
+        const superAdmins = data.filter((u: User) => u.role === "SUPER_ADMIN")
+        const staff = data.filter((u: User) => u.role === "ADMIN" || u.role === "STAFF")
         const users = data.filter((u: User) => u.role === "USER")
 
+        setSuperAdminUsers(superAdmins)
         setStaffUsers(staff)
         setRegularUsers(users)
       }
@@ -380,6 +381,17 @@ export default function AdminUsersPage() {
             承認待ち ({pendingUsers.length})
           </button>
           <button
+            onClick={() => setActiveTab("superadmin")}
+            className={`px-4 py-2 font-medium rounded-xl transition-colors whitespace-nowrap text-sm sm:text-base ${
+              activeTab === "superadmin"
+                ? "text-white shadow-md"
+                : "text-gray-600 hover:bg-gray-100"
+            }`}
+            style={activeTab === "superadmin" ? { background: 'linear-gradient(to right, #044465, #055a7a)' } : {}}
+          >
+            最高管理者 ({superAdminUsers.length})
+          </button>
+          <button
             onClick={() => setActiveTab("staff")}
             className={`px-4 py-2 font-medium rounded-xl transition-colors whitespace-nowrap text-sm sm:text-base ${
               activeTab === "staff"
@@ -504,6 +516,103 @@ export default function AdminUsersPage() {
                           </button>
                         </div>
                       </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )
+      ) : activeTab === "superadmin" ? (
+        /* 最高管理者 */
+        superAdminUsers.length === 0 ? (
+          <div className="bg-white rounded-2xl shadow-lg p-8 text-center border" style={{ borderColor: '#bac9d0' }}>
+            <p className="text-gray-500">最高管理者はいません</p>
+          </div>
+        ) : (
+          <>
+            {/* モバイル: カード表示 */}
+            <div className="sm:hidden">
+              {superAdminUsers.map((user) => (
+                <UserCard
+                  key={user.id}
+                  user={user}
+                  actions={
+                    isSuperAdmin && user.id !== session?.user?.id ? (
+                      <select
+                        value={user.role}
+                        onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                        disabled={processing === user.id}
+                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50"
+                      >
+                        <option value="USER">一般ユーザー</option>
+                        <option value="STAFF">スタッフ</option>
+                        <option value="SUPER_ADMIN">最高管理者</option>
+                      </select>
+                    ) : undefined
+                  }
+                />
+              ))}
+            </div>
+            {/* デスクトップ: テーブル表示 */}
+            <div className="hidden sm:block bg-white rounded-2xl shadow-lg overflow-hidden border" style={{ borderColor: '#bac9d0' }}>
+              <table className="min-w-full divide-y" style={{ borderColor: '#bac9d0' }}>
+                <thead style={{ background: 'linear-gradient(to right, #044465, #055a7a)' }}>
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                      名前
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                      メールアドレス
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                      校舎
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                      登録日時
+                    </th>
+                    {isSuperAdmin && (
+                      <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                        操作
+                      </th>
+                    )}
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y" style={{ borderColor: '#e5e7eb' }}>
+                  {superAdminUsers.map((user) => (
+                    <tr key={user.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm font-medium" style={{ color: '#044465' }}>{user.name}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-600">{user.email}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-600">{user.campus || "-"}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-600">
+                          {new Date(user.createdAt).toLocaleString('ja-JP')}
+                        </div>
+                      </td>
+                      {isSuperAdmin && (
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          {user.id !== session?.user?.id ? (
+                            <select
+                              value={user.role}
+                              onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                              disabled={processing === user.id}
+                              className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50"
+                            >
+                              <option value="USER">一般ユーザー</option>
+                              <option value="STAFF">スタッフ</option>
+                              <option value="SUPER_ADMIN">最高管理者</option>
+                            </select>
+                          ) : (
+                            <span className="text-gray-400 text-xs">自分自身</span>
+                          )}
+                        </td>
+                      )}
                     </tr>
                   ))}
                 </tbody>
