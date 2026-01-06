@@ -171,6 +171,25 @@ export async function POST(request: NextRequest) {
     const user = await requireRole(["SUPER_ADMIN", "ADMIN", "STAFF", "USER"])
     const body = await request.json()
 
+    // デバッグ: 配列のように見えるフィールドを検出
+    const suspiciousFields: string[] = []
+    console.log("=== 投稿データデバッグ ===")
+    for (const [key, value] of Object.entries(body)) {
+      if (typeof value === 'string' && value.startsWith('[')) {
+        console.log(`警告: ${key} が配列文字列の可能性: ${value.substring(0, 50)}...`)
+        suspiciousFields.push(`${key}: "${value.substring(0, 30)}..."`)
+      }
+      if (Array.isArray(value)) {
+        console.log(`配列フィールド: ${key} = ${JSON.stringify(value).substring(0, 100)}`)
+        suspiciousFields.push(`${key}: [配列 ${value.length}件]`)
+      }
+    }
+    console.log("interviewQuestions:", body.interviewQuestions)
+    console.log("=== デバッグ終了 ===")
+
+    // suspiciousFieldsをリクエストに保存（エラー時に使用）
+    ;(request as any).suspiciousFields = suspiciousFields
+
     console.log("受信したデータ:", {
       ...body,
       explorationThemeIds: body.explorationThemeIds,
@@ -312,11 +331,13 @@ export async function POST(request: NextRequest) {
     // Prismaエラーの詳細を返す（開発環境用）
     const errorMessage = err.message || "体験記の投稿に失敗しました"
     const errorDetails = err.code ? ` (Code: ${err.code})` : ""
+    const suspiciousFields = (request as any).suspiciousFields || []
 
     return NextResponse.json(
       {
         error: `体験記の投稿に失敗しました: ${errorMessage}${errorDetails}`,
-        details: process.env.NODE_ENV === 'development' ? err.message : undefined
+        details: err.message,
+        suspiciousFields: suspiciousFields.length > 0 ? suspiciousFields : undefined
       },
       { status: 500 }
     )

@@ -417,7 +417,11 @@ export default function NewStoryPage() {
       } else {
         const data = await res.json()
         console.error("投稿エラー:", data)
-        setError(data.error || data.details || "投稿に失敗しました")
+        let errorMsg = data.error || data.details || "投稿に失敗しました"
+        if (data.suspiciousFields && data.suspiciousFields.length > 0) {
+          errorMsg += ` [問題の可能性があるフィールド: ${data.suspiciousFields.join(', ')}]`
+        }
+        setError(errorMsg)
       }
     } catch (error) {
       console.error("投稿エラー (catch):", error)
