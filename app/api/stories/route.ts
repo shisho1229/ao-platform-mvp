@@ -247,70 +247,88 @@ export async function POST(request: NextRequest) {
     }
 
     // 体験記を作成（下書きまたは添削待ち状態）
-    // まずリレーションなしで作成
-    const story = await prisma.graduateStory.create({
-      data: {
-        authorId: user.id,
-        authorName: authorName || null,
-        gender: gender || null,
-        highSchoolLevel: highSchoolLevel || "LEVEL_2",
-        highSchoolName: highSchoolName || null,
-        gradeAverage: gradeAverage || "RANGE_3",
-        campus: campus || null,
-        admissionType: admissionType || "",
-        university: university || "",
-        faculty: faculty || "",
-        year: year ? parseInt(year) : null,
-        status: isDraft ? "DRAFT" : "PENDING_REVIEW",
-        published: false,
-        researchTheme: researchTheme || null,
-        researchMotivation: researchMotivation || null,
-        researchDetails: researchDetails || null,
-        targetProfessor: targetProfessor || null,
-        hasSportsAchievement: hasSportsAchievement || false,
-        sportsDetails: sportsDetails || null,
-        // sportsAchievements は一時的に無効化（DB型の問題）
-        hasEnglishQualification: hasEnglishQualification || false,
-        englishQualification: englishQualification || null,
-        hasStudyAbroad: hasStudyAbroad || false,
-        studyAbroadDetails: studyAbroadDetails || null,
-        hasLeaderExperience: hasLeaderExperience || false,
-        leaderExperienceDetails: leaderExperienceDetails || null,
-        hasContestAchievement: hasContestAchievement || false,
-        contestAchievementDetails: contestAchievementDetails || null,
-        interviewQuestions: interviewQuestions || null,
-        selectionFlowType: selectionFlowType || null,
-        firstRoundResult: firstRoundResult || null,
-        secondRoundResult: secondRoundResult || null,
-        documentPreparation: documentPreparation || null,
-        secondRoundPreparation: secondRoundPreparation || null,
-        materials: materials || null,
-        adviceToJuniors: adviceToJuniors || null,
-      },
-    })
+    // Raw SQLで直接挿入してPrismaの型変換問題を回避
+    const storyId = crypto.randomUUID()
+    const now = new Date()
+    const storyStatus = isDraft ? "DRAFT" : "PENDING_REVIEW"
+
+    await prisma.$executeRaw`
+      INSERT INTO graduate_stories (
+        id, "authorId", "authorName", gender, "highSchoolLevel", "highSchoolName",
+        "gradeAverage", campus, "admissionType", university, faculty, year,
+        status, published, "researchTheme", "researchMotivation", "researchDetails",
+        "targetProfessor", "hasSportsAchievement", "sportsDetails",
+        "hasEnglishQualification", "englishQualification", "hasStudyAbroad",
+        "studyAbroadDetails", "hasLeaderExperience", "leaderExperienceDetails",
+        "hasContestAchievement", "contestAchievementDetails", "interviewQuestions",
+        "selectionFlowType", "firstRoundResult", "secondRoundResult",
+        "documentPreparation", "secondRoundPreparation", materials, "adviceToJuniors",
+        "createdAt", "updatedAt"
+      ) VALUES (
+        ${storyId},
+        ${user.id},
+        ${authorName || null},
+        ${gender || null}::"Gender",
+        ${highSchoolLevel || "LEVEL_2"}::"HighSchoolLevel",
+        ${highSchoolName || null},
+        ${gradeAverage || "RANGE_3"}::"GradeAverage",
+        ${campus || null},
+        ${admissionType || ""},
+        ${university || ""},
+        ${faculty || ""},
+        ${year ? parseInt(year) : null},
+        ${storyStatus}::"StoryStatus",
+        false,
+        ${researchTheme || null},
+        ${researchMotivation || null},
+        ${researchDetails || null},
+        ${targetProfessor || null},
+        ${hasSportsAchievement || false},
+        ${sportsDetails || null},
+        ${hasEnglishQualification || false},
+        ${englishQualification || null},
+        ${hasStudyAbroad || false},
+        ${studyAbroadDetails || null},
+        ${hasLeaderExperience || false},
+        ${leaderExperienceDetails || null},
+        ${hasContestAchievement || false},
+        ${contestAchievementDetails || null},
+        ${interviewQuestions || null},
+        ${selectionFlowType || null},
+        ${firstRoundResult || null},
+        ${secondRoundResult || null},
+        ${documentPreparation || null},
+        ${secondRoundPreparation || null},
+        ${materials || null},
+        ${adviceToJuniors || null},
+        ${now},
+        ${now}
+      )
+    `
 
     // リレーションを別途追加
     if (explorationThemeIds && explorationThemeIds.length > 0) {
-      await prisma.storyExplorationTheme.createMany({
-        data: explorationThemeIds.map((themeId: number) => ({
-          storyId: story.id,
-          themeId,
-        })),
-      })
+      for (const themeId of explorationThemeIds) {
+        await prisma.$executeRaw`
+          INSERT INTO story_exploration_themes ("storyId", "themeId")
+          VALUES (${storyId}, ${themeId})
+        `
+      }
     }
 
     if (concurrentApplications && concurrentApplications.length > 0) {
-      await prisma.concurrentApplication.createMany({
-        data: concurrentApplications.map((app: any) => ({
-          ...app,
-          storyId: story.id,
-        })),
-      })
+      for (const app of concurrentApplications) {
+        const appId = crypto.randomUUID()
+        await prisma.$executeRaw`
+          INSERT INTO concurrent_applications (id, "storyId", university, faculty, result)
+          VALUES (${appId}, ${storyId}, ${app.university}, ${app.faculty}, ${app.result}::"ApplicationResult")
+        `
+      }
     }
 
-    // 完全なストーリーを取得して返す
+    // 作成したストーリーを取得して返す
     const fullStory = await prisma.graduateStory.findUnique({
-      where: { id: story.id },
+      where: { id: storyId },
       include: {
         explorationThemes: {
           include: {
