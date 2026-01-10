@@ -247,6 +247,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 体験記を作成（下書きまたは添削待ち状態）
+    // まずリレーションなしで作成
     const story = await prisma.graduateStory.create({
       data: {
         authorId: user.id,
@@ -262,43 +263,54 @@ export async function POST(request: NextRequest) {
         year: year ? parseInt(year) : null,
         status: isDraft ? "DRAFT" : "PENDING_REVIEW",
         published: false,
-        researchTheme,
-        researchMotivation,
-        researchDetails,
-        targetProfessor,
-        hasSportsAchievement,
-        sportsDetails,
+        researchTheme: researchTheme || null,
+        researchMotivation: researchMotivation || null,
+        researchDetails: researchDetails || null,
+        targetProfessor: targetProfessor || null,
+        hasSportsAchievement: hasSportsAchievement || false,
+        sportsDetails: sportsDetails || null,
         // sportsAchievements は一時的に無効化（DB型の問題）
-        // sportsAchievements: sportsAchievements || [],
-        hasEnglishQualification,
-        englishQualification,
-        hasStudyAbroad,
-        studyAbroadDetails,
-        hasLeaderExperience,
-        leaderExperienceDetails,
-        hasContestAchievement,
-        contestAchievementDetails,
-        interviewQuestions,
-        selectionFlowType,
-        firstRoundResult,
-        secondRoundResult,
-        documentPreparation,
-        secondRoundPreparation,
-        materials,
-        adviceToJuniors,
-        explorationThemes: explorationThemeIds && explorationThemeIds.length > 0
-          ? {
-              create: explorationThemeIds.map((themeId: number) => ({
-                themeId,
-              })),
-            }
-          : undefined,
-        concurrentApplications: concurrentApplications
-          ? {
-              create: concurrentApplications,
-            }
-          : undefined,
+        hasEnglishQualification: hasEnglishQualification || false,
+        englishQualification: englishQualification || null,
+        hasStudyAbroad: hasStudyAbroad || false,
+        studyAbroadDetails: studyAbroadDetails || null,
+        hasLeaderExperience: hasLeaderExperience || false,
+        leaderExperienceDetails: leaderExperienceDetails || null,
+        hasContestAchievement: hasContestAchievement || false,
+        contestAchievementDetails: contestAchievementDetails || null,
+        interviewQuestions: interviewQuestions || null,
+        selectionFlowType: selectionFlowType || null,
+        firstRoundResult: firstRoundResult || null,
+        secondRoundResult: secondRoundResult || null,
+        documentPreparation: documentPreparation || null,
+        secondRoundPreparation: secondRoundPreparation || null,
+        materials: materials || null,
+        adviceToJuniors: adviceToJuniors || null,
       },
+    })
+
+    // リレーションを別途追加
+    if (explorationThemeIds && explorationThemeIds.length > 0) {
+      await prisma.storyExplorationTheme.createMany({
+        data: explorationThemeIds.map((themeId: number) => ({
+          storyId: story.id,
+          themeId,
+        })),
+      })
+    }
+
+    if (concurrentApplications && concurrentApplications.length > 0) {
+      await prisma.concurrentApplication.createMany({
+        data: concurrentApplications.map((app: any) => ({
+          ...app,
+          storyId: story.id,
+        })),
+      })
+    }
+
+    // 完全なストーリーを取得して返す
+    const fullStory = await prisma.graduateStory.findUnique({
+      where: { id: story.id },
       include: {
         explorationThemes: {
           include: {
@@ -309,7 +321,7 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    return NextResponse.json(story, { status: 201 })
+    return NextResponse.json(fullStory, { status: 201 })
   } catch (error) {
     console.error("Error creating story:", error)
 
