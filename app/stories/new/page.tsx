@@ -392,8 +392,14 @@ export default function NewStoryPage() {
     }
 
     try {
+      // sportsAchievementsを除外（DB型の問題を回避）
+      const { sportsAchievements, ...formDataWithoutSportsAchievements } = formData
       const payload = {
-        ...formData,
+        ...formDataWithoutSportsAchievements,
+        // スポーツ実績は詳細に含める
+        sportsDetails: formData.hasSportsAchievement
+          ? `${formData.sportsDetails}（${sportsAchievements.join('、')}）`
+          : formData.sportsDetails,
         // 面接質問をプレーンテキストとして保存（改行区切り）
         interviewQuestions: interviewQuestions.map(q => `・${q}`).join('\n'),
         concurrentApplications:
@@ -437,9 +443,15 @@ export default function NewStoryPage() {
     setIsSavingDraft(true)
 
     try {
+      // sportsAchievementsを除外（DB型の問題を回避）
+      const { sportsAchievements, ...formDataWithoutSportsAchievements } = formData
       const payload = {
-        ...formData,
+        ...formDataWithoutSportsAchievements,
         status: "DRAFT", // 下書きステータスで保存
+        // スポーツ実績は詳細に含める
+        sportsDetails: formData.hasSportsAchievement
+          ? `${formData.sportsDetails}（${sportsAchievements.join('、')}）`
+          : formData.sportsDetails,
         interviewQuestions: interviewQuestions.map(q => `・${q}`).join('\n'),
         concurrentApplications:
           concurrentApplications.length > 0 ? concurrentApplications : undefined,
