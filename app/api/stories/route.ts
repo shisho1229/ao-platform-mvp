@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
           { studyAbroadDetails: { contains: keyword, mode: 'insensitive' } },
           { leaderExperienceDetails: { contains: keyword, mode: 'insensitive' } },
           { contestAchievementDetails: { contains: keyword, mode: 'insensitive' } },
-          { interviewQuestions: { contains: keyword, mode: 'insensitive' } },
+          // interviewQuestionsはTEXT[]配列型のため検索から除外
           { documentPreparation: { contains: keyword, mode: 'insensitive' } },
           { secondRoundPreparation: { contains: keyword, mode: 'insensitive' } },
           { materials: { contains: keyword, mode: 'insensitive' } },
