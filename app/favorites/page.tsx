@@ -79,6 +79,8 @@ export default function FavoritesPage() {
       return 'linear-gradient(to bottom right, #C65D7B, #D4788F)';
     } else if (university.includes('青山学院大学')) {
       return 'linear-gradient(to bottom right, #1E6B4E, #228B5E)';
+    } else if (university.includes('明治学院大学')) {
+      return 'linear-gradient(to bottom right, #FFA500, #FF8C00)';
     } else if (university.includes('明治大学')) {
       return 'linear-gradient(to bottom right, #6B46C1, #7C3AED)';
     } else if (university.includes('立教大学')) {
