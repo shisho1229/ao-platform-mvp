@@ -110,7 +110,22 @@ export async function GET(request: NextRequest) {
 
     const stories = await prisma.graduateStory.findMany({
       where,
-      include: {
+      select: {
+        id: true,
+        university: true,
+        faculty: true,
+        highSchoolLevel: true,
+        highSchoolName: true,
+        gradeAverage: true,
+        campus: true,
+        admissionType: true,
+        year: true,
+        firstRoundResult: true,
+        secondRoundResult: true,
+        authorName: true,
+        researchTheme: true,
+        createdAt: true,
+        // interviewQuestionsはTEXT[]配列型のため除外
         author: {
           select: {
             name: true,
@@ -122,7 +137,6 @@ export async function GET(request: NextRequest) {
             theme: true,
           }
         },
-        concurrentApplications: true,
         favorites: {
           select: {
             id: true,
