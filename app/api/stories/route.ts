@@ -293,7 +293,7 @@ export async function POST(request: NextRequest) {
         ${leaderExperienceDetails || null},
         ${hasContestAchievement || false},
         ${contestAchievementDetails || null},
-        ${interviewQuestions || null},
+        CASE WHEN ${interviewQuestions || null}::TEXT IS NULL THEN NULL ELSE string_to_array(${interviewQuestions || ''}, E'\n') END,
         ${selectionFlowType || null},
         ${firstRoundResult || null},
         ${secondRoundResult || null},
