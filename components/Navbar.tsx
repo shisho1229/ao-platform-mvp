@@ -55,7 +55,38 @@ export default function Navbar() {
   }, [isMobileMenuOpen])
 
   if (!session?.user) {
-    return null
+    return (
+      <nav style={{ background: '#044465', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16">
+            <div className="flex-shrink-0 flex items-center">
+              <Link href="/" className="flex items-center space-x-2 sm:space-x-3">
+                <img src="/loohcs-logo.svg" alt="Loohcs志塾" className="h-8 w-8 sm:h-10 sm:w-10" />
+                <span className="text-base sm:text-xl font-bold" style={{ color: '#f0f4f8' }}>
+                  <span className="hidden xs:inline">Loohcs志塾 </span>合格者体験記
+                </span>
+              </Link>
+            </div>
+            <div className="flex items-center space-x-4">
+              <Link
+                href="/stories"
+                className="text-sm font-medium"
+                style={{ color: '#e8eef5' }}
+              >
+                体験記一覧
+              </Link>
+              <Link
+                href="/auth/signin"
+                className="text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+                style={{ backgroundColor: '#d4af37', color: '#044465' }}
+              >
+                ログイン
+              </Link>
+            </div>
+          </div>
+        </div>
+      </nav>
+    )
   }
 
   const navigation = [
