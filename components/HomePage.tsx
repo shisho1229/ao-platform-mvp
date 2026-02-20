@@ -68,9 +68,23 @@ export default function HomePage() {
       return 'linear-gradient(to bottom right, #B91C1C, #DC2626)';
     } else if (university.includes('学習院大学')) {
       return 'linear-gradient(to bottom right, #1E40AF, #2563EB)';
+    } else if (university.includes('同志社大学')) {
+      return 'linear-gradient(to bottom right, #92400E, #B45309)';
+    } else if (university.includes('立命館大学')) {
+      return 'linear-gradient(to bottom right, #1E3A5F, #2E4A7F)';
+    } else if (university.includes('関西学院大学')) {
+      return 'linear-gradient(to bottom right, #1a1a6e, #2a2a9e)';
+    } else if (university.includes('関西大学')) {
+      return 'linear-gradient(to bottom right, #7C2D12, #9A3412)';
+    } else if (university.includes('順天堂大学')) {
+      return 'linear-gradient(to bottom right, #065F46, #047857)';
+    } else if (university.includes('APU') || university.includes('アジア太平洋大学')) {
+      return 'linear-gradient(to bottom right, #5B21B6, #6D28D9)';
+    } else if (university.includes('日本女子大学') || university.includes('東京女子大学') || university.includes('津田塾大学')) {
+      return 'linear-gradient(to bottom right, #9D174D, #BE185D)';
     }
-    // デフォルトは慶應の色
-    return 'linear-gradient(to bottom right, #044465, #055a7a)';
+    // その他の大学はグレー系
+    return 'linear-gradient(to bottom right, #374151, #4B5563)';
   };
 
   const getAdmissionResult = (admissionType: string, firstRound?: string, secondRound?: string) => {

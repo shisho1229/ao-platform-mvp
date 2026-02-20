@@ -145,9 +145,23 @@ export default function StoriesPage() {
       return 'linear-gradient(to bottom right, #B91C1C, #DC2626)';
     } else if (university.includes('学習院大学')) {
       return 'linear-gradient(to bottom right, #1E40AF, #2563EB)';
+    } else if (university.includes('同志社大学')) {
+      return 'linear-gradient(to bottom right, #92400E, #B45309)';
+    } else if (university.includes('立命館大学')) {
+      return 'linear-gradient(to bottom right, #1E3A5F, #2E4A7F)';
+    } else if (university.includes('関西学院大学')) {
+      return 'linear-gradient(to bottom right, #1a1a6e, #2a2a9e)';
+    } else if (university.includes('関西大学')) {
+      return 'linear-gradient(to bottom right, #7C2D12, #9A3412)';
+    } else if (university.includes('順天堂大学')) {
+      return 'linear-gradient(to bottom right, #065F46, #047857)';
+    } else if (university.includes('APU') || university.includes('アジア太平洋大学')) {
+      return 'linear-gradient(to bottom right, #5B21B6, #6D28D9)';
+    } else if (university.includes('日本女子大学') || university.includes('東京女子大学') || university.includes('津田塾大学')) {
+      return 'linear-gradient(to bottom right, #9D174D, #BE185D)';
     }
-    // デフォルトは慶應の色
-    return 'linear-gradient(to bottom right, #044465, #055a7a)';
+    // その他の大学はグレー系
+    return 'linear-gradient(to bottom right, #374151, #4B5563)';
   };
 
   const getAdmissionResult = (admissionType: string, firstRound?: string, secondRound?: string) => {
@@ -198,15 +212,45 @@ export default function StoriesPage() {
           onChange={(e) => setUniversityFilter(e.target.value)}
         >
           <option value="">すべて</option>
-          <option value="慶應義塾大学">慶應義塾大学</option>
-          <option value="早稲田大学">早稲田大学</option>
-          <option value="上智大学">上智大学</option>
-          <option value="青山学院大学">青山学院大学</option>
-          <option value="明治大学">明治大学</option>
-          <option value="明治学院大学">明治学院大学</option>
-          <option value="立教大学">立教大学</option>
-          <option value="中央大学">中央大学</option>
-          <option value="学習院大学">学習院大学</option>
+          <optgroup label="関東・難関私立">
+            <option value="慶應義塾大学">慶應義塾大学</option>
+            <option value="早稲田大学">早稲田大学</option>
+            <option value="上智大学">上智大学</option>
+            <option value="青山学院大学">青山学院大学</option>
+            <option value="明治大学">明治大学</option>
+            <option value="立教大学">立教大学</option>
+            <option value="中央大学">中央大学</option>
+            <option value="学習院大学">学習院大学</option>
+          </optgroup>
+          <optgroup label="関東・私立">
+            <option value="明治学院大学">明治学院大学</option>
+            <option value="國學院大学">國學院大学</option>
+            <option value="成城大学">成城大学</option>
+            <option value="成蹊大学">成蹊大学</option>
+            <option value="獨協大学">獨協大学</option>
+            <option value="武蔵大学">武蔵大学</option>
+            <option value="武蔵野大学">武蔵野大学</option>
+            <option value="日本大学">日本大学</option>
+            <option value="東洋大学">東洋大学</option>
+            <option value="駒澤大学">駒澤大学</option>
+            <option value="専修大学">専修大学</option>
+            <option value="東京都市大学">東京都市大学</option>
+            <option value="順天堂大学">順天堂大学</option>
+          </optgroup>
+          <optgroup label="女子大">
+            <option value="東京女子大学">東京女子大学</option>
+            <option value="津田塾大学">津田塾大学</option>
+            <option value="日本女子大学">日本女子大学</option>
+          </optgroup>
+          <optgroup label="関西・私立">
+            <option value="同志社大学">同志社大学</option>
+            <option value="立命館大学">立命館大学</option>
+            <option value="関西大学">関西大学</option>
+            <option value="関西学院大学">関西学院大学</option>
+          </optgroup>
+          <optgroup label="その他">
+            <option value="立命館アジア太平洋大学（APU）">立命館アジア太平洋大学（APU）</option>
+          </optgroup>
         </select>
       </div>
 
