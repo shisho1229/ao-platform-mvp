@@ -397,6 +397,8 @@ export default function NewStoryPage() {
   const [isSavingDraft, setIsSavingDraft] = useState(false)
   const [error, setError] = useState("")
   const [successMessage, setSuccessMessage] = useState("")
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
+  const [submittedUniversity, setSubmittedUniversity] = useState("")
 
   // フォームデータ
   const [formData, setFormData] = useState({
@@ -676,7 +678,10 @@ export default function NewStoryPage() {
       if (res.ok) {
         // 投稿成功時に下書きを削除
         localStorage.removeItem(STORAGE_KEY)
-        router.push("/stories")
+        // 投稿した大学を保存
+        setSubmittedUniversity(`${formData.university} ${formData.faculty}`)
+        // 成功モーダルを表示
+        setShowSuccessModal(true)
       } else {
         const data = await res.json()
         console.error("投稿エラー:", data)
@@ -692,6 +697,65 @@ export default function NewStoryPage() {
     } finally {
       setIsLoading(false)
     }
+  }
+
+  // 別の出願校を追加（共通フィールドを保持）
+  const handleContinueWithAnotherApplication = () => {
+    // 共通フィールド（保持するもの）
+    const commonFields = {
+      authorName: formData.authorName,
+      isAnonymous: formData.isAnonymous,
+      gender: formData.gender,
+      highSchoolLevel: formData.highSchoolLevel,
+      highSchoolName: formData.highSchoolName,
+      gradeAverage: formData.gradeAverage,
+      campus: formData.campus,
+      // 実績も共通
+      hasSportsAchievement: formData.hasSportsAchievement,
+      sportsDetails: formData.sportsDetails,
+      sportsAchievements: formData.sportsAchievements,
+      hasEnglishQualification: formData.hasEnglishQualification,
+      englishQualification: formData.englishQualification,
+      hasStudyAbroad: formData.hasStudyAbroad,
+      studyAbroadDetails: formData.studyAbroadDetails,
+      hasLeaderExperience: formData.hasLeaderExperience,
+      leaderExperienceDetails: formData.leaderExperienceDetails,
+      hasContestAchievement: formData.hasContestAchievement,
+      contestAchievementDetails: formData.contestAchievementDetails,
+    }
+
+    // フォームをリセット（共通フィールドは保持）
+    setFormData({
+      ...commonFields,
+      // 出願校ごとに異なるフィールドはリセット
+      admissionType: "",
+      university: "",
+      faculty: "",
+      year: formData.year, // 年度は同じ可能性が高いので保持
+      explorationThemeIds: [],
+      researchTheme: "",
+      researchMotivation: "",
+      researchDetails: "",
+      targetProfessor: "",
+      selectionFlowType: "",
+      firstRoundResult: "",
+      secondRoundResult: "",
+      documentPreparation: "",
+      secondRoundPreparation: "",
+      materials: "",
+      adviceToJuniors: "",
+    })
+
+    // 面接質問と併願校もリセット
+    setInterviewQuestions([])
+    setConcurrentApplications([])
+    setAgreedToTerms(false)
+
+    // モーダルを閉じる
+    setShowSuccessModal(false)
+
+    // ページ上部にスクロール
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   const handleSaveDraft = async () => {
@@ -1681,6 +1745,58 @@ export default function NewStoryPage() {
           </div>
         </form>
       </div>
+
+      {/* 投稿成功モーダル */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
+            <div className="text-center">
+              {/* 成功アイコン */}
+              <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                <svg className="w-8 h-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+
+              <h2 className="text-xl font-bold text-gray-900 mb-2">
+                投稿が完了しました！
+              </h2>
+              <p className="text-gray-600 mb-2">
+                {submittedUniversity}
+              </p>
+              <p className="text-sm text-gray-500 mb-6">
+                スタッフが確認後、公開されます
+              </p>
+
+              {/* アクションボタン */}
+              <div className="space-y-3">
+                <button
+                  onClick={handleContinueWithAnotherApplication}
+                  className="w-full px-4 py-3 text-white font-medium rounded-lg transition-colors"
+                  style={{ backgroundColor: '#044465' }}
+                >
+                  別の出願校を追加する
+                </button>
+                <p className="text-xs text-gray-400">
+                  名前・高校・実績などの共通情報は引き継がれます
+                </p>
+                <button
+                  onClick={() => router.push("/stories")}
+                  className="w-full px-4 py-3 text-gray-700 font-medium bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  体験記一覧を見る
+                </button>
+                <button
+                  onClick={() => router.push("/my-stories")}
+                  className="w-full px-4 py-2 text-gray-500 text-sm hover:underline"
+                >
+                  マイ投稿を確認する
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
