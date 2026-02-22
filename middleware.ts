@@ -2,43 +2,15 @@ import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 import { auth } from "@/auth"
 
-// 認証不要のルート（公開ページ）
+// 認証不要のルート（ログインページのみ公開）
 const publicRoutes = [
   "/auth/signin",
   "/auth/signup",
-  "/api/auth",
-  "/",           // トップページ
-  "/stories",    // 体験記一覧・詳細
-  "/api/stories", // 体験記API（GET）
-  "/api/exploration-themes", // 探究テーマAPI
-]
-
-// 認証が必要なルート（これらは明示的にログインが必要）
-const protectedRoutes = [
-  "/admin",
-  "/favorites",
-  "/stories/new",
-  "/mypage",
 ]
 
 export default auth((req) => {
   const { nextUrl } = req
   const isLoggedIn = !!req.auth
-
-  // 公開ルートかどうかチェック
-  const isPublicRoute = publicRoutes.some(route =>
-    nextUrl.pathname === route || nextUrl.pathname.startsWith(route + "/")
-  )
-
-  // 保護されたルートかどうかチェック
-  const isProtectedRoute = protectedRoutes.some(route =>
-    nextUrl.pathname === route || nextUrl.pathname.startsWith(route + "/")
-  )
-
-  // API ルートは個別に認証を処理するため基本的に通す
-  if (nextUrl.pathname.startsWith("/api/") && !nextUrl.pathname.startsWith("/api/auth")) {
-    return NextResponse.next()
-  }
 
   // 静的ファイルは除外
   if (
@@ -49,8 +21,23 @@ export default auth((req) => {
     return NextResponse.next()
   }
 
-  // 未ログインで保護されたページ → ログインページへリダイレクト
-  if (!isLoggedIn && isProtectedRoute) {
+  // 認証APIは常に通す
+  if (nextUrl.pathname.startsWith("/api/auth")) {
+    return NextResponse.next()
+  }
+
+  // 公開ルート（ログイン・登録ページ）
+  const isPublicRoute = publicRoutes.some(route =>
+    nextUrl.pathname === route || nextUrl.pathname.startsWith(route + "/")
+  )
+
+  // 未ログインの場合
+  if (!isLoggedIn && !isPublicRoute) {
+    // APIリクエストには401を返す
+    if (nextUrl.pathname.startsWith("/api/")) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+    // ページリクエストはログインページへリダイレクト
     return NextResponse.redirect(new URL("/auth/signin", nextUrl))
   }
 
